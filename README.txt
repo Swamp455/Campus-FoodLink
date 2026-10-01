@@ -46,3 +46,4 @@ EXPORT ORDER DATA
 - It downloads a JSON file named CampusFoodLink_Order_<OrderID>.json.
 - The export includes the saved order and an exportedAt timestamp.
 - If no order exists, the interface displays an error instead of downloading an empty file.
+- GitHub Pages deployment enabled. 
