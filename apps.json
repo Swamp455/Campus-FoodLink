@@ -5,30 +5,25 @@
       "first_name": "Ale",
       "last_name": "Leon",
       "email_address": "aleon@campus.edu",
-      "username": "aleon",
-      "password": "password",
-      "balance": 100.00
+      "phone_number": "123-345-6789",
+      "meal_plan_balance": 100.0
     },
     {
       "student_id": 102,
       "first_name": "Peter",
       "last_name": "Parker",
       "email_address": "pparker@campus.edu",
-      "username": "pparker",
-      "password": "password",
-      "balance": 75.00
+      "phone_number": "987-654-5432",
+      "meal_plan_balance": 75.0
     }
   ],
-
   "Staff": [
     {
       "staff_id": 113,
       "first_name": "Dominic",
       "last_name": "Toretto",
       "email_address": "domt@campusbites.com",
-      "username": "dtoretto",
-      "password": "password",
-      "role": "DIETARY ASSOCIATE",
+      "role": "Dietary Associate",
       "is_active": true
     },
     {
@@ -36,9 +31,7 @@
       "first_name": "Luke",
       "last_name": "Hobbs",
       "email_address": "lukeh@campus.edu",
-      "username": "lhobbs",
-      "password": "password",
-      "role": "DIETARY MANAGER",
+      "role": "Dietary Manager",
       "is_active": true
     },
     {
@@ -46,137 +39,129 @@
       "first_name": "Emmett",
       "last_name": "Brown",
       "email_address": "ebrown@campus.edu",
-      "username": "ebrown",
-      "password": "password",
-      "role": "IT STAFF",
-      "is_active": true
-    },
-    {
-      "staff_id": 116,
-      "first_name": "Professor",
-      "last_name": "Demo",
-      "email_address": "professor@campus.edu",
-      "username": "professor",
-      "password": "demo",
-      "role": "PROFESSOR DEMO",
+      "role": "IT Staff",
       "is_active": true
     }
   ],
-
   "Vendors": [
     {
       "vendor_id": 1,
-      "vendor_name": "Frenchies"
+      "vendor_name": "Frenchies",
+      "location": "Student Union",
+      "contact_email": "frenchies@campus.edu",
+      "is_active": true
     },
     {
       "vendor_id": 2,
-      "vendor_name": "Campus Grill"
+      "vendor_name": "Campus Grill",
+      "location": "Dining Hall",
+      "contact_email": "grill@campus.edu",
+      "is_active": true
     },
     {
       "vendor_id": 3,
-      "vendor_name": "Student Cafe"
+      "vendor_name": "Student Cafe",
+      "location": "Library Commons",
+      "contact_email": "cafe@campus.edu",
+      "is_active": true
     }
   ],
-
   "MenuItems": [
     {
       "menu_item_id": 991,
       "vendor_id": 1,
       "item_name": "Tuna Sandwich",
-      "price": 10.00,
-      "inventory_quantity": 20,
+      "description": "Tuna sandwich",
+      "category": "Sandwich",
+      "price": 10.0,
       "is_available": true
     },
     {
       "menu_item_id": 992,
       "vendor_id": 1,
       "item_name": "Pizza",
-      "price": 20.00,
-      "inventory_quantity": 15,
+      "description": "Cheese pizza",
+      "category": "Entree",
+      "price": 20.0,
       "is_available": true
     },
     {
       "menu_item_id": 993,
       "vendor_id": 1,
       "item_name": "Roasted Green Beans",
-      "price": 6.00,
-      "inventory_quantity": 12,
+      "description": "Roasted green beans",
+      "category": "Side",
+      "price": 6.0,
       "is_available": true
     },
     {
       "menu_item_id": 994,
       "vendor_id": 2,
       "item_name": "Classic Cheeseburger",
-      "price": 8.50,
-      "inventory_quantity": 25,
+      "description": "Classic cheeseburger",
+      "category": "Entree",
+      "price": 8.5,
       "is_available": true
     },
     {
       "menu_item_id": 995,
       "vendor_id": 2,
       "item_name": "Seasoned Fries",
-      "price": 3.50,
-      "inventory_quantity": 30,
+      "description": "Seasoned french fries",
+      "category": "Side",
+      "price": 3.5,
       "is_available": true
     },
     {
       "menu_item_id": 996,
       "vendor_id": 2,
       "item_name": "Grilled Chicken Sandwich",
-      "price": 9.00,
-      "inventory_quantity": 18,
-      "is_available": true
-    },
-    {
-      "menu_item_id": 997,
-      "vendor_id": 3,
-      "item_name": "Turkey Club",
-      "price": 8.00,
-      "inventory_quantity": 15,
-      "is_available": true
-    },
-    {
-      "menu_item_id": 998,
-      "vendor_id": 3,
-      "item_name": "Garden Salad",
-      "price": 7.00,
-      "inventory_quantity": 10,
-      "is_available": true
-    },
-    {
-      "menu_item_id": 999,
-      "vendor_id": 3,
-      "item_name": "Fruit Cup",
-      "price": 4.00,
-      "inventory_quantity": 20,
+      "description": "Grilled chicken sandwich",
+      "category": "Sandwich",
+      "price": 9.0,
       "is_available": true
     }
   ],
-
-  "OrderStatus": [
-    {
-      "status_id": 1,
-      "status_name": "Pending"
-    },
-    {
-      "status_id": 2,
-      "status_name": "Approved"
-    },
-    {
-      "status_id": 3,
-      "status_name": "Preparing"
-    },
-    {
-      "status_id": 4,
-      "status_name": "Ready"
-    },
-    {
-      "status_id": 5,
-      "status_name": "Canceled"
-    }
-  ],
-
   "Orders": [],
   "OrderItems": [],
-  "Transactions": []
+  "OrderStatus": [],
+  "Transactions": [],
+  "DemoAccounts": [
+    {
+      "login": "aleon",
+      "password": "password",
+      "account_type": "Student",
+      "record_id": 101
+    },
+    {
+      "login": "pparker",
+      "password": "password",
+      "account_type": "Student",
+      "record_id": 102
+    },
+    {
+      "login": "dtoretto",
+      "password": "password",
+      "account_type": "Staff",
+      "record_id": 113
+    },
+    {
+      "login": "lhobbs",
+      "password": "password",
+      "account_type": "Staff",
+      "record_id": 114
+    },
+    {
+      "login": "ebrown",
+      "password": "password",
+      "account_type": "Staff",
+      "record_id": 115
+    },
+    {
+      "login": "professor",
+      "password": "demo",
+      "account_type": "Professor Demo",
+      "record_id": 113
+    }
+  ]
 }
