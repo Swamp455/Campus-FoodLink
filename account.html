@@ -21,6 +21,10 @@
 
   <main class="wireframe">
 
+    <!-- =================================================
+         HEADER
+         ================================================= -->
+
     <header class="student-head">
 
       <button
@@ -42,29 +46,44 @@
     </header>
 
 
+    <!-- =================================================
+         STUDENT ACCOUNT
+         ================================================= -->
+
     <section class="profile-row">
 
       <div class="avatar">
         ●
       </div>
 
-      <div>
+
+      <div class="student-details">
 
         <p>
+
           <b>Name:</b>
 
           <span id="studentName">
             [DATA NEEDED HERE]
           </span>
+
         </p>
+
 
         <p>
+
           <b>Balance:</b>
-          $<span id="balance">0.00</span>
+
+          $<span id="balance">
+            0.00
+          </span>
+
         </p>
 
 
-        <!-- ADD FUNDS -->
+        <!-- =============================================
+             ADD FUNDS
+             ============================================= -->
 
         <div class="add-funds">
 
@@ -103,35 +122,49 @@
     </section>
 
 
+    <!-- =================================================
+         CURRENT ORDER
+         ================================================= -->
+
     <section class="current-order">
 
       <h2>
         Current Order
       </h2>
 
+
       <p>
+
         <b>Order #:</b>
 
         <span id="orderId">
           No Current Order
         </span>
+
       </p>
 
+
       <p>
+
         <b>Vendor:</b>
 
         <span id="orderVendor">
           -
         </span>
+
       </p>
 
+
       <p>
+
         <b>Status:</b>
 
         <span id="orderStatus">
           -
         </span>
+
       </p>
+
 
       <button
         id="cancelOrderBtn"
@@ -140,6 +173,7 @@
       >
         Cancel Order
       </button>
+
 
       <p
         id="accountMessage"
