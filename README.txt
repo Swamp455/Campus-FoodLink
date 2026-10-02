@@ -1,0 +1,1 @@
+Campus FoodLink+ wireframe-aligned build. Five HTML pages only: index.html, account.html, menu.html, confirmation.html, orders.html. app.js provides prototype behavior and localStorage persistence. apps.json contains demo users, vendor, menu, and statuses.
