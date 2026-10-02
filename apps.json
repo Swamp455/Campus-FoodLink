@@ -69,71 +69,79 @@
   ],
 
   "MenuItems": [
-    {
-      "menu_item_id": 991,
-      "vendor_id": 1,
-      "item_name": "Tuna Sandwich",
-      "price": 10.00,
-      "is_available": true
-    },
-    {
-      "menu_item_id": 992,
-      "vendor_id": 1,
-      "item_name": "Pizza",
-      "price": 20.00,
-      "is_available": true
-    },
-    {
-      "menu_item_id": 993,
-      "vendor_id": 1,
-      "item_name": "Roasted Green Beans",
-      "price": 6.00,
-      "is_available": true
-    },
-    {
-      "menu_item_id": 994,
-      "vendor_id": 2,
-      "item_name": "Classic Cheeseburger",
-      "price": 8.50,
-      "is_available": true
-    },
-    {
-      "menu_item_id": 995,
-      "vendor_id": 2,
-      "item_name": "Seasoned Fries",
-      "price": 3.50,
-      "is_available": true
-    },
-    {
-      "menu_item_id": 996,
-      "vendor_id": 2,
-      "item_name": "Grilled Chicken Sandwich",
-      "price": 9.00,
-      "is_available": true
-    },
-    {
-      "menu_item_id": 997,
-      "vendor_id": 3,
-      "item_name": "Turkey Club",
-      "price": 8.00,
-      "is_available": true
-    },
-    {
-      "menu_item_id": 998,
-      "vendor_id": 3,
-      "item_name": "Garden Salad",
-      "price": 7.00,
-      "is_available": true
-    },
-    {
-      "menu_item_id": 999,
-      "vendor_id": 3,
-      "item_name": "Fruit Cup",
-      "price": 4.00,
-      "is_available": true
-    }
-  ],
-
+  {
+    "menu_item_id": 991,
+    "vendor_id": 1,
+    "item_name": "Tuna Sandwich",
+    "price": 10.00,
+    "inventory_quantity": 20,
+    "is_available": true
+  },
+  {
+    "menu_item_id": 992,
+    "vendor_id": 1,
+    "item_name": "Pizza",
+    "price": 20.00,
+    "inventory_quantity": 15,
+    "is_available": true
+  },
+  {
+    "menu_item_id": 993,
+    "vendor_id": 1,
+    "item_name": "Roasted Green Beans",
+    "price": 6.00,
+    "inventory_quantity": 12,
+    "is_available": true
+  },
+  {
+    "menu_item_id": 994,
+    "vendor_id": 2,
+    "item_name": "Classic Cheeseburger",
+    "price": 8.50,
+    "inventory_quantity": 25,
+    "is_available": true
+  },
+  {
+    "menu_item_id": 995,
+    "vendor_id": 2,
+    "item_name": "Seasoned Fries",
+    "price": 3.50,
+    "inventory_quantity": 30,
+    "is_available": true
+  },
+  {
+    "menu_item_id": 996,
+    "vendor_id": 2,
+    "item_name": "Grilled Chicken Sandwich",
+    "price": 9.00,
+    "inventory_quantity": 18,
+    "is_available": true
+  },
+  {
+    "menu_item_id": 997,
+    "vendor_id": 3,
+    "item_name": "Turkey Club",
+    "price": 8.00,
+    "inventory_quantity": 15,
+    "is_available": true
+  },
+  {
+    "menu_item_id": 998,
+    "vendor_id": 3,
+    "item_name": "Garden Salad",
+    "price": 7.00,
+    "inventory_quantity": 10,
+    "is_available": true
+  },
+  {
+    "menu_item_id": 999,
+    "vendor_id": 3,
+    "item_name": "Fruit Cup",
+    "price": 4.00,
+    "inventory_quantity": 20,
+    "is_available": true
+  }
+]
   "OrderStatus": [
     {
       "status_id": 1,
