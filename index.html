@@ -1,9 +1,7 @@
 <!doctype html>
-
 <html lang="en">
 
 <head>
-
   <meta charset="utf-8">
 
   <meta
@@ -11,46 +9,28 @@
     content="width=device-width, initial-scale=1"
   >
 
-  <title>
-    Campus FoodLink+ Login
-  </title>
+  <title>Campus FoodLink+ Login</title>
 
   <link
     rel="stylesheet"
     href="style.css"
   >
-
 </head>
-
 
 <body data-page="login">
 
   <main class="wireframe login-page">
 
-
-    <!-- =====================================================
-         CAMPUS FOODLINK+ LOGO
-         ===================================================== -->
-
     <h1 class="mini-logo">
       Campus FoodLink+
     </h1>
 
-
     <div class="login-rule"></div>
-
-
-    <!-- =====================================================
-         LOGIN FORM
-         ===================================================== -->
 
     <form
       id="loginForm"
       class="login-form"
     >
-
-
-      <!-- USERNAME -->
 
       <label for="userId">
         Username:
@@ -64,9 +44,6 @@
         required
       >
 
-
-      <!-- PASSWORD -->
-
       <label for="password">
         Password:
       </label>
@@ -79,17 +56,11 @@
         required
       >
 
-
-      <!-- LOGIN ERROR -->
-
       <p
         id="loginError"
         class="error"
         aria-live="polite"
       ></p>
-
-
-      <!-- LOGIN BUTTON -->
 
       <div class="login-actions">
 
@@ -99,15 +70,30 @@
 
       </div>
 
-
     </form>
 
 
-  </main>
+    <!-- DEMO RESET -->
 
+    <div class="demo-reset">
+
+      <button
+        id="resetDemoBtn"
+        type="button"
+      >
+        Reset Demo Data
+      </button>
+
+      <p
+        id="resetMessage"
+        aria-live="polite"
+      ></p>
+
+    </div>
+
+  </main>
 
   <script src="app.js"></script>
 
 </body>
-
 </html>
