@@ -11,7 +11,9 @@
     content="width=device-width, initial-scale=1"
   >
 
-  <title>Vendor Menu</title>
+  <title>
+    Vendor Menu
+  </title>
 
   <link
     rel="stylesheet"
@@ -63,7 +65,7 @@
           Select a Vendor
         </option>
 
-        <!-- Vendors are loaded from apps.json by app.js -->
+        <!-- Vendors loaded from apps.json -->
 
       </select>
 
@@ -71,7 +73,7 @@
 
 
     <!-- =====================================================
-         VENDOR MENU ITEMS
+         MENU ITEMS
          ===================================================== -->
 
     <section
@@ -79,7 +81,9 @@
       class="menu-items"
     >
 
-      <!-- Menu items are loaded by app.js -->
+      <p>
+        Please select a vendor to view the menu.
+      </p>
 
     </section>
 
@@ -89,6 +93,9 @@
          ===================================================== -->
 
     <aside class="cart-panel">
+
+
+      <!-- CART TABLE -->
 
       <table>
 
@@ -108,6 +115,10 @@
               Price
             </th>
 
+            <th>
+              Remove
+            </th>
+
           </tr>
 
         </thead>
@@ -115,7 +126,7 @@
 
         <tbody id="cartRows">
 
-          <!-- Cart items are loaded by app.js -->
+          <!-- Cart items loaded by app.js -->
 
         </tbody>
 
@@ -135,6 +146,7 @@
           </small>
 
         </label>
+
 
         <select id="pickupTime">
 
@@ -156,7 +168,7 @@
 
 
       <!-- ===================================================
-           ORDER TOTAL
+           CART TOTAL
            =================================================== -->
 
       <p class="cart-total">
@@ -173,7 +185,7 @@
 
 
       <!-- ===================================================
-           PLACE ORDER
+           CONFIRM ORDER
            =================================================== -->
 
       <button
@@ -190,12 +202,7 @@
   </main>
 
 
-  <!-- =======================================================
-       CAMPUS FOODLINK+ JAVASCRIPT
-       ======================================================= -->
-
   <script src="app.js"></script>
-
 
 </body>
 
