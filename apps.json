@@ -51,6 +51,16 @@
       "role": "IT STAFF",
       "is_active": true
     }
+    {
+      "staff_id": 116,
+      "first_name": "Professor",
+      "last_name": "Demo",
+      "email_address": "professor@campus.edu",
+      "username": "professor",
+      "password": "demo",
+      "role": "PROFESSOR DEMO",
+      "is_active": true
+    }
   ],
 
   "Vendors": [
