@@ -26,12 +26,12 @@ body {
 
 
 /* =========================================================
-   LOGIN PAGE
+   LOGIN
    ========================================================= */
 
 .mini-logo {
   text-align: center;
-  font-size: 20px;
+  font-size: 22px;
   color: #1565c0;
   margin: 48px 0 35px;
 }
@@ -42,7 +42,7 @@ body {
 
 .login-form {
   width: 60%;
-  margin: 55px auto;
+  margin: 45px auto 20px;
 }
 
 .login-form label {
@@ -50,7 +50,6 @@ body {
   width: 30%;
   font-size: 14px;
   margin: 9px 0;
-  color: #37474f;
 }
 
 .login-form input {
@@ -62,9 +61,9 @@ body {
   padding: 5px;
 }
 
-.login-form input:focus {
+.login-form input:focus,
+.add-funds input:focus {
   outline: 2px solid #42a5f5;
-  background: #ffffff;
 }
 
 .error {
@@ -77,9 +76,13 @@ body {
   border-radius: 3px;
 }
 
+.error:empty {
+  background: transparent;
+}
+
 .login-actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   margin-top: 20px;
 }
 
@@ -110,7 +113,7 @@ body {
 
 
 /* =========================================================
-   STUDENT HEADER / MENU HEADER
+   HEADERS
    ========================================================= */
 
 .student-head,
@@ -129,17 +132,16 @@ body {
   border: 0;
   background: none;
   color: #1565c0;
-  cursor: pointer;
 }
 
 .school-logo {
   border: 1px solid #64b5f6;
-  border-radius: 3px;
   background: #ffffff;
   color: #1565c0;
-  padding: 2px 8px;
+  padding: 3px 8px;
   font-size: 12px;
   font-weight: bold;
+  border-radius: 3px;
 }
 
 .search {
@@ -153,12 +155,11 @@ body {
    ========================================================= */
 
 .profile-row {
-  height: 145px;
+  min-height: 160px;
   display: grid;
   grid-template-columns: 110px 1fr auto;
   align-items: center;
   padding: 12px 20px;
-  background: #ffffff;
 }
 
 .avatar {
@@ -166,20 +167,40 @@ body {
   height: 82px;
   border-radius: 50%;
   background: #bbdefb;
+  border: 2px solid #64b5f6;
   color: #1565c0;
   font-size: 56px;
   text-align: center;
   line-height: 68px;
-  border: 2px solid #64b5f6;
 }
 
 .profile-row p {
-  margin: 13px 0;
+  margin: 10px 0;
 }
 
-.small-button {
-  align-self: center;
-  padding: 6px 14px;
+
+/* =========================================================
+   ADD FUNDS
+   ========================================================= */
+
+.add-funds {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.add-funds label {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.add-funds input {
+  width: 90px;
+  height: 30px;
+  padding: 5px;
+  border: 1px solid #90a4ae;
+  border-radius: 4px;
 }
 
 
@@ -195,14 +216,20 @@ body {
 }
 
 .current-order h2 {
-  font-size: 16px;
   color: #2e7d32;
+  font-size: 16px;
+}
+
+#accountMessage,
+#saveMessage {
+  color: #2e7d32;
+  font-size: 13px;
   font-weight: bold;
 }
 
 
 /* =========================================================
-   VENDOR SELECTION
+   VENDOR
    ========================================================= */
 
 .vendor-select {
@@ -220,20 +247,16 @@ body {
   margin-left: 10px;
   width: 250px;
   padding: 5px;
-  border: 1px solid #90a4ae;
-  border-radius: 4px;
-  background: #ffffff;
 }
 
 
 /* =========================================================
-   VENDOR MENU
+   MENU
    ========================================================= */
 
 .menu-items {
   width: 62%;
   padding: 5px 12px;
-  background: #ffffff;
 }
 
 .menu-item {
@@ -270,13 +293,9 @@ body {
   cursor: pointer;
 }
 
-.menu-item button:hover {
-  background: #2e7d32;
-}
-
 
 /* =========================================================
-   SHOPPING CART
+   CART
    ========================================================= */
 
 .cart-panel {
@@ -309,9 +328,6 @@ body {
   padding: 5px;
 }
 
-
-/* REMOVE ITEM BUTTON */
-
 .remove-item {
   border: 1px solid #c62828;
   border-radius: 3px;
@@ -330,13 +346,6 @@ body {
   position: absolute;
   bottom: 55px;
   left: 5px;
-}
-
-.pickup select {
-  border: 1px solid #90a4ae;
-  border-radius: 3px;
-  background: #ffffff;
-  padding: 3px;
 }
 
 .cart-total {
@@ -359,18 +368,13 @@ body {
   cursor: pointer;
 }
 
-.cart-panel > button:hover {
-  background: #2e7d32;
-}
-
 
 /* =========================================================
-   ORDER CONFIRMATION
+   CONFIRMATION
    ========================================================= */
 
 .confirmation {
   text-align: center;
-  background: #ffffff;
 }
 
 .confirmation > .school-logo {
@@ -400,12 +404,11 @@ body {
 
 
 /* =========================================================
-   DIETARY ASSOCIATE HEADER
+   STAFF
    ========================================================= */
 
 .staff-head {
   height: 42px;
-  border-bottom: 1px solid #1565c0;
   background: #1565c0;
   color: #ffffff;
   display: flex;
@@ -425,10 +428,6 @@ body {
   text-decoration: none;
 }
 
-.staff-head a:hover {
-  color: #ffffff;
-}
-
 .staff-head .active {
   color: #ffffff;
   font-weight: bold;
@@ -438,7 +437,6 @@ body {
 .staff-welcome {
   font-size: 17px;
   padding: 20px;
-  color: #37474f;
 }
 
 
@@ -473,9 +471,6 @@ body {
 .orders-table textarea {
   width: 100%;
   font: inherit;
-  border: 1px solid #90a4ae;
-  border-radius: 3px;
-  background: #ffffff;
 }
 
 .orders-table textarea {
@@ -491,31 +486,50 @@ body {
   cursor: pointer;
 }
 
-.orders-table button:hover {
-  background: #1565c0;
-}
-
 #saveMessage {
   padding: 10px;
-  color: #2e7d32;
-  font-weight: bold;
 }
 
 
 /* =========================================================
-   STATUS / ACCOUNT MESSAGES
+   DEMO RESET
    ========================================================= */
 
-#accountMessage {
+.demo-reset {
+  text-align: center;
+  margin: 25px auto;
+  padding-top: 15px;
+  border-top: 1px solid #cfd8dc;
+  width: 60%;
+}
+
+.demo-reset button {
+  border: 1px solid #607d8b;
+  border-radius: 4px;
+  background: #78909c;
+  color: #ffffff;
+  padding: 7px 14px;
+  cursor: pointer;
+}
+
+.demo-reset button:hover {
+  background: #546e7a;
+}
+
+.demo-reset button:disabled {
+  opacity: 0.6;
+}
+
+#resetMessage {
+  min-height: 18px;
   color: #2e7d32;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: bold;
-  margin-top: 15px;
 }
 
 
 /* =========================================================
-   RESPONSIVE / MOBILE
+   MOBILE
    ========================================================= */
 
 @media (max-width: 700px) {
@@ -532,8 +546,13 @@ body {
     grid-template-columns: 80px 1fr;
   }
 
-  .profile-row .small-button {
+  .profile-row > .small-button {
     grid-column: 2;
+    width: fit-content;
+  }
+
+  .add-funds {
+    flex-wrap: wrap;
   }
 
   .menu-items {
