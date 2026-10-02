@@ -3,201 +3,123 @@
 
 <head>
   <meta charset="utf-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Vendor Menu</title>
 
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body data-page="menu">
 
   <main class="wireframe">
 
-    <!-- =================================================
-         HEADER
-         ================================================= -->
+    <!-- Header -->
+    <header>
+      <b>Campus FoodLink+</b>
 
-    <header class="menu-head">
-
-      <span class="school-logo">
-        Campus FoodLink+
-      </span>
-
-      <b>
-        MENU
-      </b>
-
-      <a
-        class="small-button"
-        href="account.html"
-      >
-        Dashboard
-      </a>
-
+      <nav>
+        <a href="account.html">Dashboard</a>
+      </nav>
     </header>
 
 
-    <!-- =================================================
-         VENDOR SELECTION
-         ================================================= -->
+    <!-- Vendor and Menu -->
+    <section class="panel">
 
-    <div class="vendor-select">
+      <h2>Vendor Menu</h2>
 
       <label for="vendorSelect">
-        Vendor:
+        <strong>Select Vendor:</strong>
       </label>
 
       <select id="vendorSelect">
-
-        <option value="">
-          Select a Vendor
-        </option>
-
+        <option value="">Select a Vendor</option>
       </select>
 
-    </div>
-
-
-    <!-- =================================================
-         MENU ITEMS
-
-         Populated from:
-         Vendors -> MenuItems
-         ================================================= -->
-
-    <section
-      id="menuItems"
-      class="menu-items"
-    >
-
-      <p>
-        Please select a vendor to view the menu.
-      </p>
+      <!-- MenuItems are loaded here by app.js -->
+      <div id="menuItems"></div>
 
     </section>
 
 
-    <!-- =================================================
-         SHOPPING CART
-         ================================================= -->
+    <!-- Current Order -->
+    <section class="panel">
 
-    <aside class="cart-panel">
+      <h2>Your Order</h2>
 
       <table>
 
         <thead>
-
           <tr>
-
-            <th>
-              Qty
-            </th>
-
-            <th>
-              Item
-            </th>
-
-            <th>
-              Price
-            </th>
-
-            <th>
-              Remove
-            </th>
-
+            <th>Qty</th>
+            <th>Item</th>
+            <th>Unit Price</th>
+            <th>Total Price</th>
+            <th>Action</th>
           </tr>
-
         </thead>
 
-
         <tbody id="cartRows">
+          <!-- Cart items are loaded by app.js -->
         </tbody>
 
       </table>
 
 
-      <!-- ===============================================
-           PICKUP TIME
-           =============================================== -->
+      <!-- Special Instructions -->
+      <label for="specialInstructions">
+        <strong>Special Instructions:</strong>
+      </label>
 
-      <div class="pickup">
+      <textarea
+        id="specialInstructions"
+        maxlength="255"
+        placeholder="Enter any special instructions">
+      </textarea>
 
-        <label for="pickupTime">
 
-          <small>
-            Pickup Time
-          </small>
+      <!-- Pickup Time -->
+      <label for="pickupTime">
+        <strong>Pickup Time:</strong>
+      </label>
 
-        </label>
+      <input
+        id="pickupTime"
+        type="datetime-local"
+        required
+      >
 
-        <select id="pickupTime">
 
-          <option value="12:30 PM">
-            12:30 PM
-          </option>
+      <!-- Order Summary -->
+      <div class="order-summary">
 
-          <option value="12:45 PM">
-            12:45 PM
-          </option>
+        <p>
+          <strong>Order Total:</strong>
+          $<span id="cartTotal">0.00</span>
+        </p>
 
-          <option value="1:00 PM">
-            1:00 PM
-          </option>
-
-          <option value="1:15 PM">
-            1:15 PM
-          </option>
-
-          <option value="1:30 PM">
-            1:30 PM
-          </option>
-
-        </select>
+        <p>
+          <strong>Meal Plan Balance:</strong>
+          $<span id="menuBalance">0.00</span>
+        </p>
 
       </div>
 
 
-      <!-- ===============================================
-           CART TOTAL
-           =============================================== -->
-
-      <p class="cart-total">
-
-        Total:
-
-        $<span id="cartTotal">
-          0.00
-        </span>
-
-        🛒
-
-      </p>
-
-
-      <!-- ===============================================
-           CREATE ORDER
-           =============================================== -->
-
+      <!-- Submit Order -->
       <button
         id="placeOrder"
-        type="button"
-      >
+        type="button">
         Confirm Order
       </button>
 
-    </aside>
+    </section>
 
   </main>
 
   <script src="app.js"></script>
 
 </body>
+
 </html>
