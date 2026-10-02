@@ -1,4 +1,16 @@
+/* =========================================================
+   CAMPUS FOODLINK+
+   APPLICATION JAVASCRIPT
+   ========================================================= */
+
+
+/* =========================================================
+   FALLBACK APPLICATION DATA
+   Used if apps.json cannot be loaded
+   ========================================================= */
+
 const FALLBACK = {
+
   student: {
     id: 101,
     userId: "aleon",
@@ -14,35 +26,76 @@ const FALLBACK = {
   },
 
   vendors: [
+
     {
       id: 1,
       name: "Frenchies",
+
       menu: [
-        { id: 991, name: "Tuna Sandwich", price: 10.00 },
-        { id: 992, name: "Pizza", price: 20.00 },
-        { id: 993, name: "Roasted Green Beans", price: 6.00 }
+        {
+          id: 991,
+          name: "Tuna Sandwich",
+          price: 10.00
+        },
+        {
+          id: 992,
+          name: "Pizza",
+          price: 20.00
+        },
+        {
+          id: 993,
+          name: "Roasted Green Beans",
+          price: 6.00
+        }
       ]
     },
 
     {
       id: 2,
       name: "Campus Grill",
+
       menu: [
-        { id: 994, name: "Classic Cheeseburger", price: 8.50 },
-        { id: 995, name: "Seasoned Fries", price: 3.50 },
-        { id: 996, name: "Grilled Chicken Sandwich", price: 9.00 }
+        {
+          id: 994,
+          name: "Classic Cheeseburger",
+          price: 8.50
+        },
+        {
+          id: 995,
+          name: "Seasoned Fries",
+          price: 3.50
+        },
+        {
+          id: 996,
+          name: "Grilled Chicken Sandwich",
+          price: 9.00
+        }
       ]
     },
 
     {
       id: 3,
       name: "Student Cafe",
+
       menu: [
-        { id: 997, name: "Turkey Club", price: 8.00 },
-        { id: 998, name: "Garden Salad", price: 7.00 },
-        { id: 999, name: "Fruit Cup", price: 4.00 }
+        {
+          id: 997,
+          name: "Turkey Club",
+          price: 8.00
+        },
+        {
+          id: 998,
+          name: "Garden Salad",
+          price: 7.00
+        },
+        {
+          id: 999,
+          name: "Fruit Cup",
+          price: 4.00
+        }
       ]
     }
+
   ],
 
   orderStatus: [
@@ -52,6 +105,7 @@ const FALLBACK = {
     "Ready",
     "Canceled"
   ]
+
 };
 
 
@@ -60,102 +114,217 @@ const FALLBACK = {
    ========================================================= */
 
 const read = (key, fallback = null) => {
+
   try {
-    return JSON.parse(localStorage.getItem(key)) ?? fallback;
+
+    return JSON.parse(
+      localStorage.getItem(key)
+    ) ?? fallback;
+
   } catch {
+
     return fallback;
+
   }
+
 };
 
+
 const write = (key, value) => {
-  localStorage.setItem(key, JSON.stringify(value));
+
+  localStorage.setItem(
+    key,
+    JSON.stringify(value)
+  );
+
 };
 
 
 /* =========================================================
-   LOAD APPLICATION DATA
+   LOAD APPS.JSON
    ========================================================= */
 
 async function data() {
+
   try {
-    const response = await fetch("apps.json");
+
+    const response =
+      await fetch("apps.json");
 
     if (response.ok) {
+
       return await response.json();
+
     }
-  } catch {}
+
+  } catch {
+
+    console.warn(
+      "apps.json could not be loaded. Using fallback data."
+    );
+
+  }
 
   return FALLBACK;
+
 }
 
 
 /* =========================================================
-   ROLE / LOGIN SECURITY
+   USER ROLE
    ========================================================= */
 
 function role() {
-  return sessionStorage.getItem("cflRole");
-}
 
-function guard(requiredRole) {
-  if (role() !== requiredRole) {
-    location.href = "index.html";
-    return false;
-  }
+  return sessionStorage.getItem(
+    "cflRole"
+  );
 
-  return true;
 }
 
 
 /* =========================================================
-   ORDER / CART
+   PAGE ACCESS
+   ========================================================= */
+
+function guard(requiredRole) {
+
+  if (role() !== requiredRole) {
+
+    location.href =
+      "index.html";
+
+    return false;
+
+  }
+
+  return true;
+
+}
+
+
+/* =========================================================
+   CURRENT ORDER
    ========================================================= */
 
 function order() {
-  return read("cflOrder", null);
+
+  return read(
+    "cflOrder",
+    null
+  );
+
 }
 
+
+/* =========================================================
+   SHOPPING CART
+   ========================================================= */
+
 function cart() {
-  return read("cflCart", []);
+
+  return read(
+    "cflCart",
+    []
+  );
+
 }
 
 
 /* =========================================================
    LOGIN PAGE
+   USER FLOW 1
    ========================================================= */
 
-async function loginInit(d) {
+function loginInit(d) {
 
-  document.querySelector("#loginForm").onsubmit = event => {
+  const loginForm =
+    document.querySelector(
+      "#loginForm"
+    );
+
+
+  /* -------------------------------------------------------
+     STUDENT LOGIN
+     ------------------------------------------------------- */
+
+  loginForm.onsubmit = event => {
 
     event.preventDefault();
 
-    const username = userId.value.trim();
-    const enteredPassword = password.value;
+
+    const username =
+      document
+        .getElementById("userId")
+        .value
+        .trim();
+
+
+    const enteredPassword =
+      document
+        .getElementById("password")
+        .value;
+
+
+    const loginError =
+      document.getElementById(
+        "loginError"
+      );
+
+
+    /* VALIDATE STUDENT CREDENTIALS */
 
     if (
       username === d.student.userId &&
       enteredPassword === d.student.password
     ) {
 
-      sessionStorage.setItem("cflRole", "student");
+      sessionStorage.setItem(
+        "cflRole",
+        "student"
+      );
 
-      location.href = "account.html";
+
+      loginError.textContent =
+        "";
+
+
+      location.href =
+        "account.html";
 
     } else {
 
       loginError.textContent =
         "Invalid User ID or password. Please try again.";
+
     }
+
   };
 
 
-  document.querySelector("[data-role=staff]").onclick = () => {
+  /* -------------------------------------------------------
+     STAFF LOGIN
+     ------------------------------------------------------- */
 
-    sessionStorage.setItem("cflRole", "staff");
+  const staffButton =
+    document.querySelector(
+      "[data-role='staff']"
+    );
 
-    location.href = "orders.html";
+
+  staffButton.onclick = () => {
+
+    sessionStorage.setItem(
+      "cflRole",
+      "staff"
+    );
+
+
+    location.href =
+      "orders.html";
+
   };
+
 }
 
 
@@ -165,44 +334,126 @@ async function loginInit(d) {
 
 function accountInit(d) {
 
-  if (!guard("student")) return;
+  if (!guard("student")) {
 
-  const student = read("cflStudent", d.student);
-  const currentOrder = order();
+    return;
 
-  studentName.textContent = student.name;
+  }
 
-  balance.textContent =
-    Number(student.balance).toFixed(2);
 
+  const student =
+    read(
+      "cflStudent",
+      d.student
+    );
+
+
+  const currentOrder =
+    order();
+
+
+  /* -------------------------------------------------------
+     DISPLAY STUDENT INFORMATION
+     ------------------------------------------------------- */
+
+  document.getElementById(
+    "studentName"
+  ).textContent =
+    student.name;
+
+
+  document.getElementById(
+    "balance"
+  ).textContent =
+    Number(
+      student.balance
+    ).toFixed(2);
+
+
+  /* -------------------------------------------------------
+     DISPLAY CURRENT ORDER
+     ------------------------------------------------------- */
 
   if (currentOrder) {
 
-    orderId.textContent =
+    document.getElementById(
+      "orderId"
+    ).textContent =
       currentOrder.id;
 
-    orderVendor.textContent =
+
+    document.getElementById(
+      "orderVendor"
+    ).textContent =
       currentOrder.vendor;
 
-    orderStatus.textContent =
+
+    document.getElementById(
+      "orderStatus"
+    ).textContent =
       currentOrder.status;
+
   }
+
 }
 
 
 /* =========================================================
    VENDOR MENU
+   USER FLOW 2
    ========================================================= */
 
 function menuInit(d) {
 
-  if (!guard("student")) return;
+  if (!guard("student")) {
 
-  let selectedVendor = null;
+    return;
+
+  }
+
+
+  const vendorSelect =
+    document.getElementById(
+      "vendorSelect"
+    );
+
+
+  const menuItems =
+    document.getElementById(
+      "menuItems"
+    );
+
+
+  const cartRows =
+    document.getElementById(
+      "cartRows"
+    );
+
+
+  const cartTotal =
+    document.getElementById(
+      "cartTotal"
+    );
+
+
+  const pickupTime =
+    document.getElementById(
+      "pickupTime"
+    );
+
+
+  const placeOrder =
+    document.getElementById(
+      "placeOrder"
+    );
+
+
+  let selectedVendor =
+    null;
 
 
   /* -------------------------------------------------------
-     BUILD VENDOR DROPDOWN
+     CREATE VENDOR DROPDOWN
      ------------------------------------------------------- */
 
   vendorSelect.innerHTML =
@@ -212,112 +463,174 @@ function menuInit(d) {
   d.vendors.forEach(vendor => {
 
     const option =
-      document.createElement("option");
+      document.createElement(
+        "option"
+      );
+
 
     option.value =
       vendor.id;
 
+
     option.textContent =
       vendor.name;
 
-    vendorSelect.appendChild(option);
+
+    vendorSelect.appendChild(
+      option
+    );
+
   });
 
 
   /* -------------------------------------------------------
-     CHANGE VENDOR
+     VENDOR SELECTION
      ------------------------------------------------------- */
 
   vendorSelect.onchange = () => {
 
     const vendorId =
-      Number(vendorSelect.value);
+      Number(
+        vendorSelect.value
+      );
+
 
     selectedVendor =
       d.vendors.find(
-        vendor => vendor.id === vendorId
+        vendor =>
+          vendor.id === vendorId
       );
 
-    localStorage.removeItem("cflCart");
+
+    /*
+       Clear the cart when switching vendors
+       so items from different vendors are
+       not placed in the same order.
+    */
+
+    localStorage.removeItem(
+      "cflCart"
+    );
+
 
     draw();
+
   };
 
 
-  /* -------------------------------------------------------
+  /* =======================================================
      DRAW MENU AND CART
-     ------------------------------------------------------- */
+     ======================================================= */
 
   function draw() {
+
+
+    /* -----------------------------------------------------
+       NO VENDOR SELECTED
+       ----------------------------------------------------- */
 
     if (!selectedVendor) {
 
       menuItems.innerHTML =
         "<p>Please select a vendor to view the menu.</p>";
 
-      cartRows.innerHTML = "";
+
+      cartRows.innerHTML =
+        "";
+
 
       cartTotal.textContent =
         "0.00";
 
+
       return;
+
     }
 
 
+    /* -----------------------------------------------------
+       DISPLAY VENDOR MENU
+       ----------------------------------------------------- */
+
     menuItems.innerHTML =
-      selectedVendor.menu.map(item => `
+      selectedVendor.menu
+        .map(item => `
 
-        <div class="menu-item">
+          <div class="menu-item">
 
-          <div class="food-img"></div>
+            <div class="food-img"></div>
 
-          <div>
-            <b>${item.name}</b>
-            <br>
-            $${item.price.toFixed(2)}
+            <div>
+
+              <b>
+                ${item.name}
+              </b>
+
+              <br>
+
+              $${item.price.toFixed(2)}
+
+            </div>
+
+            <button
+              type="button"
+              data-id="${item.id}"
+              aria-label="Add ${item.name} to order"
+            >
+              +
+            </button>
+
           </div>
 
-          <button
-            data-id="${item.id}"
-            aria-label="Add ${item.name}">
-            +
-          </button>
+        `)
+        .join("");
 
-        </div>
 
-      `).join("");
-
+    /* -----------------------------------------------------
+       DISPLAY SHOPPING CART
+       ----------------------------------------------------- */
 
     const currentCart =
       cart();
 
 
     cartRows.innerHTML =
-      currentCart.map(item => `
+      currentCart
+        .map(item => `
 
-        <tr>
+          <tr>
 
-          <td>
-            ${item.qty}
-          </td>
+            <td>
+              ${item.qty}
+            </td>
 
-          <td>
-            ${item.name}
-          </td>
+            <td>
+              ${item.name}
+            </td>
 
-          <td>
-            $${(item.price * item.qty).toFixed(2)}
-          </td>
+            <td>
+              $${(
+                item.price *
+                item.qty
+              ).toFixed(2)}
+            </td>
 
-        </tr>
+          </tr>
 
-      `).join("");
+        `)
+        .join("");
 
+
+    /* -----------------------------------------------------
+       CALCULATE CART TOTAL
+       ----------------------------------------------------- */
 
     const total =
       currentCart.reduce(
         (sum, item) =>
-          sum + item.price * item.qty,
+          sum +
+          item.price *
+          item.qty,
         0
       );
 
@@ -327,20 +640,24 @@ function menuInit(d) {
 
 
     /* -----------------------------------------------------
-       ADD ITEM BUTTONS
+       ADD MENU ITEMS TO CART
        ----------------------------------------------------- */
 
     document
-      .querySelectorAll(".menu-item button")
+      .querySelectorAll(
+        ".menu-item button"
+      )
       .forEach(button => {
 
         button.onclick = () => {
 
           const item =
             selectedVendor.menu.find(
-              item =>
-                item.id ==
-                button.dataset.id
+              menuItem =>
+                menuItem.id ===
+                Number(
+                  button.dataset.id
+                )
             );
 
 
@@ -351,9 +668,15 @@ function menuInit(d) {
           const existingItem =
             currentCart.find(
               cartItem =>
-                cartItem.id === item.id
+                cartItem.id ===
+                item.id
             );
 
+
+          /*
+             If the item is already in the
+             cart, increase its quantity.
+          */
 
           if (existingItem) {
 
@@ -362,9 +685,13 @@ function menuInit(d) {
           } else {
 
             currentCart.push({
+
               ...item,
+
               qty: 1
+
             });
+
           }
 
 
@@ -375,16 +702,24 @@ function menuInit(d) {
 
 
           draw();
+
         };
+
       });
+
   }
 
 
-  /* -------------------------------------------------------
-     PLACE ORDER
-     ------------------------------------------------------- */
+  /* =======================================================
+     CONFIRM / PLACE ORDER
+     ======================================================= */
 
   placeOrder.onclick = () => {
+
+
+    /* -----------------------------------------------------
+       VALIDATE VENDOR
+       ----------------------------------------------------- */
 
     if (!selectedVendor) {
 
@@ -393,8 +728,13 @@ function menuInit(d) {
       );
 
       return;
+
     }
 
+
+    /* -----------------------------------------------------
+       VALIDATE CART
+       ----------------------------------------------------- */
 
     const currentCart =
       cart();
@@ -407,13 +747,20 @@ function menuInit(d) {
       );
 
       return;
+
     }
 
+
+    /* -----------------------------------------------------
+       CALCULATE ORDER TOTAL
+       ----------------------------------------------------- */
 
     const total =
       currentCart.reduce(
         (sum, item) =>
-          sum + item.price * item.qty,
+          sum +
+          item.price *
+          item.qty,
         0
       );
 
@@ -425,19 +772,42 @@ function menuInit(d) {
       );
 
 
-    if (total > student.balance) {
+    /* -----------------------------------------------------
+       VALIDATE MEAL-PLAN BALANCE
+       ----------------------------------------------------- */
+
+    if (
+      total >
+      Number(student.balance)
+    ) {
 
       alert(
         "Insufficient meal-plan balance."
       );
 
       return;
+
     }
 
 
+    /* -----------------------------------------------------
+       CREATE UNIQUE ORDER NUMBER
+       ----------------------------------------------------- */
+
+    const orderId =
+      Date.now()
+        .toString()
+        .slice(-6);
+
+
+    /* -----------------------------------------------------
+       CREATE ORDER
+       ----------------------------------------------------- */
+
     const newOrder = {
 
-      id: Date.now(),
+      id:
+        orderId,
 
       studentId:
         student.id,
@@ -455,7 +825,8 @@ function menuInit(d) {
         "Pending",
 
       date:
-        new Date().toLocaleDateString(),
+        new Date()
+          .toLocaleDateString(),
 
       pickup:
         pickupTime.value,
@@ -468,8 +839,13 @@ function menuInit(d) {
 
       total:
         total
+
     };
 
+
+    /* -----------------------------------------------------
+       SAVE ORDER
+       ----------------------------------------------------- */
 
     write(
       "cflOrder",
@@ -477,31 +853,51 @@ function menuInit(d) {
     );
 
 
+    /* -----------------------------------------------------
+       UPDATE STUDENT BALANCE
+       ----------------------------------------------------- */
+
     write(
       "cflStudent",
       {
+
         ...student,
 
         balance:
           +(
-            student.balance -
+            Number(
+              student.balance
+            ) -
             total
           ).toFixed(2)
+
       }
     );
 
+
+    /* -----------------------------------------------------
+       CLEAR CART
+       ----------------------------------------------------- */
 
     localStorage.removeItem(
       "cflCart"
     );
 
 
+    /* -----------------------------------------------------
+       ORDER CONFIRMATION
+       ----------------------------------------------------- */
+
     location.href =
       "confirmation.html";
+
   };
 
 
+  /* INITIAL DRAW */
+
   draw();
+
 }
 
 
@@ -511,7 +907,11 @@ function menuInit(d) {
 
 function confirmationInit() {
 
-  if (!guard("student")) return;
+  if (!guard("student")) {
+
+    return;
+
+  }
 
 
   const currentOrder =
@@ -520,70 +920,170 @@ function confirmationInit() {
 
   if (currentOrder) {
 
-    confirmOrder.textContent =
+    document.getElementById(
+      "confirmOrder"
+    ).textContent =
       currentOrder.id;
 
-    confirmStatus.textContent =
+
+    document.getElementById(
+      "confirmStatus"
+    ).textContent =
       currentOrder.status === "Ready"
         ? "ready!"
-        : currentOrder.status.toLowerCase() + "!";
+        : currentOrder.status
+            .toLowerCase() +
+          "!";
 
-    confirmPickup.textContent =
+
+    document.getElementById(
+      "confirmPickup"
+    ).textContent =
       currentOrder.pickup;
+
   }
 
 
-  logoutBtn.onclick = () => {
+  /* -------------------------------------------------------
+     LOGOUT
+     ------------------------------------------------------- */
+
+  document.getElementById(
+    "logoutBtn"
+  ).onclick = () => {
 
     sessionStorage.clear();
 
+
     location.href =
       "index.html";
+
   };
+
 }
 
 
 /* =========================================================
-   STAFF VIEW ORDERS
+   STAFF / DIETARY ASSOCIATE ORDERS
+   USER FLOW 3
    ========================================================= */
 
 function ordersInit(d) {
 
-  if (!guard("staff")) return;
+  if (!guard("staff")) {
+
+    return;
+
+  }
 
 
-  staffName.textContent =
-    d.staff.name;
+  const staffName =
+    document.getElementById(
+      "staffName"
+    );
+
+
+  const ordersBody =
+    document.getElementById(
+      "ordersBody"
+    );
+
+
+  const saveMessage =
+    document.getElementById(
+      "saveMessage"
+    );
+
+
+  const staffVendor =
+    document.getElementById(
+      "staffVendor"
+    );
 
 
   const currentOrder =
     order();
 
 
+  /* -------------------------------------------------------
+     DISPLAY STAFF NAME
+     ------------------------------------------------------- */
+
+  staffName.textContent =
+    d.staff.name;
+
+
+  /* -------------------------------------------------------
+     NO ORDERS
+     ------------------------------------------------------- */
+
   if (!currentOrder) {
 
-    ordersBody.innerHTML =
-      '<tr><td colspan="5">No current orders.</td></tr>';
+    ordersBody.innerHTML = `
+
+      <tr>
+
+        <td colspan="7">
+          No current orders.
+        </td>
+
+      </tr>
+
+    `;
+
+
+    if (staffVendor) {
+
+      staffVendor.textContent =
+        "Vendor Orders";
+
+    }
+
 
     return;
+
   }
 
 
+  /* -------------------------------------------------------
+     DISPLAY CURRENT VENDOR
+     ------------------------------------------------------- */
+
+  if (staffVendor) {
+
+    staffVendor.textContent =
+      `${currentOrder.vendor} Orders`;
+
+  }
+
+
+  /* -------------------------------------------------------
+     BUILD ORDER STATUS OPTIONS
+     ------------------------------------------------------- */
+
   const statusOptions =
-    d.orderStatus.map(orderStatus => `
+    d.orderStatus
+      .map(orderStatus => `
 
-      <option
-        value="${orderStatus}"
-        ${currentOrder.status === orderStatus
-          ? "selected"
-          : ""}>
+        <option
+          value="${orderStatus}"
+          ${
+            currentOrder.status ===
+            orderStatus
+              ? "selected"
+              : ""
+          }
+        >
+          ${orderStatus}
+        </option>
 
-        ${orderStatus}
+      `)
+      .join("");
 
-      </option>
 
-    `).join("");
-
+  /* -------------------------------------------------------
+     DISPLAY ORDER
+     ------------------------------------------------------- */
 
   ordersBody.innerHTML = `
 
@@ -594,9 +1094,15 @@ function ordersInit(d) {
       </td>
 
       <td>
+        ${currentOrder.vendor}
+      </td>
+
+      <td>
 
         <select id="status">
+
           ${statusOptions}
+
         </select>
 
       </td>
@@ -611,18 +1117,102 @@ function ordersInit(d) {
 
       <td>
 
-        <textarea id="notes">${currentOrder.notes || ""}</textarea>
+        <textarea
+          id="notes"
+          aria-label="Order notes"
+        >${currentOrder.notes || ""}</textarea>
+
+      </td>
+
+      <td>
+
+        <button
+          id="viewOrder"
+          type="button"
+        >
+          View Order
+        </button>
 
       </td>
 
     </tr>
+
   `;
 
+
+  /* -------------------------------------------------------
+     GET ORDER CONTROLS
+     ------------------------------------------------------- */
+
+  const status =
+    document.getElementById(
+      "status"
+    );
+
+
+  const notes =
+    document.getElementById(
+      "notes"
+    );
+
+
+  const viewOrder =
+    document.getElementById(
+      "viewOrder"
+    );
+
+
+  /* =======================================================
+     SELECT / REVIEW ORDER DETAILS
+     ======================================================= */
+
+  viewOrder.onclick = () => {
+
+    const itemDetails =
+      currentOrder.items
+        .map(item =>
+
+          `${item.qty} x ${item.name} - $${(
+            item.price *
+            item.qty
+          ).toFixed(2)}`
+
+        )
+        .join("\n");
+
+
+    alert(
+
+      `Order #${currentOrder.id}\n\n` +
+
+      `Student: ${currentOrder.studentName}\n` +
+
+      `Vendor: ${currentOrder.vendor}\n` +
+
+      `Pickup Time: ${currentOrder.pickup}\n` +
+
+      `Status: ${currentOrder.status}\n\n` +
+
+      `Order Items:\n${itemDetails}\n\n` +
+
+      `Total: $${Number(
+        currentOrder.total
+      ).toFixed(2)}`
+
+    );
+
+  };
+
+
+  /* =======================================================
+     UPDATE ORDER STATUS
+     ======================================================= */
 
   status.onchange = () => {
 
     currentOrder.status =
       status.value;
+
 
     currentOrder.notes =
       notes.value;
@@ -636,33 +1226,54 @@ function ordersInit(d) {
 
     saveMessage.textContent =
       `Order #${currentOrder.id} updated to ${currentOrder.status}.`;
+
   };
 
+
+  /* =======================================================
+     UPDATE ORDER NOTES
+     ======================================================= */
 
   notes.onchange = () => {
 
     currentOrder.notes =
       notes.value;
 
+
     write(
       "cflOrder",
       currentOrder
     );
+
+
+    saveMessage.textContent =
+      `Notes saved for Order #${currentOrder.id}.`;
+
   };
+
 }
 
 
 /* =========================================================
-   START APPLICATION
+   START CAMPUS FOODLINK+
    ========================================================= */
 
 document.addEventListener(
   "DOMContentLoaded",
   async () => {
 
+
+    /* -----------------------------------------------------
+       LOAD APPLICATION DATA
+       ----------------------------------------------------- */
+
     const d =
       await data();
 
+
+    /* -----------------------------------------------------
+       CREATE STUDENT DATA IF IT DOES NOT EXIST
+       ----------------------------------------------------- */
 
     if (
       !localStorage.getItem(
@@ -674,12 +1285,21 @@ document.addEventListener(
         "cflStudent",
         d.student
       );
+
     }
 
+
+    /* -----------------------------------------------------
+       DETERMINE CURRENT PAGE
+       ----------------------------------------------------- */
 
     const page =
       document.body.dataset.page;
 
+
+    /* -----------------------------------------------------
+       PAGE INITIALIZERS
+       ----------------------------------------------------- */
 
     const pages = {
 
@@ -697,8 +1317,13 @@ document.addEventListener(
 
       orders:
         ordersInit
+
     };
 
+
+    /* -----------------------------------------------------
+       INITIALIZE CURRENT PAGE
+       ----------------------------------------------------- */
 
     const initialize =
       pages[page];
@@ -707,6 +1332,8 @@ document.addEventListener(
     if (initialize) {
 
       initialize(d);
+
     }
+
   }
 );
