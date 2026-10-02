@@ -10,80 +10,49 @@ body {
   margin: 0;
   background: #263238;
   font-family: Arial, Helvetica, sans-serif;
-  color: #263238;
+  color: #172026;
 }
 
 .wireframe {
-  width: min(920px, 96vw);
-  min-height: 455px;
-  margin: 36px auto;
-  background: #ffffff;
-  border: 1px solid #90a4ae;
-  border-radius: 6px;
-  position: relative;
-  overflow: hidden;
+  width: min(980px, 96vw);
+  min-height: 460px;
+  margin: 32px auto;
+  background: #f7f7f7;
+  border: 1px solid #78909c;
 }
 
 
 /* =========================================================
-   LOGIN
+   HEADER / NAVIGATION
    ========================================================= */
 
-.mini-logo {
-  text-align: center;
-  font-size: 22px;
-  color: #1565c0;
-  margin: 48px 0 35px;
-}
-
-.login-rule {
-  border-top: 2px solid #42a5f5;
-}
-
-.login-form {
-  width: 60%;
-  margin: 45px auto 20px;
-}
-
-.login-form label {
-  display: inline-block;
-  width: 30%;
-  font-size: 14px;
-  margin: 9px 0;
-}
-
-.login-form input {
-  width: 65%;
-  height: 32px;
-  border: 1px solid #b0bec5;
-  border-radius: 4px;
-  background: #f5f8fa;
-  padding: 5px;
-}
-
-.login-form input:focus,
-.add-funds input:focus {
-  outline: 2px solid #42a5f5;
-}
-
-.error {
-  background: #c62828;
+header {
+  background: #1565c0;
   color: #ffffff;
-  text-align: center;
-  min-height: 20px;
-  font-size: 12px;
-  padding: 3px;
-  border-radius: 3px;
-}
-
-.error:empty {
-  background: transparent;
-}
-
-.login-actions {
   display: flex;
-  justify-content: center;
-  margin-top: 20px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  gap: 12px;
+}
+
+header b {
+  font-size: 18px;
+}
+
+header a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+header a:hover {
+  text-decoration: underline;
+}
+
+nav {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 
@@ -91,483 +60,345 @@ body {
    BUTTONS
    ========================================================= */
 
-.login-actions button,
-.small-button,
-.button,
-.confirm-actions button {
-  border: 1px solid #1565c0;
-  border-radius: 4px;
-  background: #1976d2;
-  color: #ffffff;
-  padding: 8px 22px;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.login-actions button:hover,
-.small-button:hover,
-.button:hover,
-.confirm-actions button:hover {
+button,
+.button {
+  display: inline-block;
   background: #1565c0;
-}
-
-
-/* =========================================================
-   HEADERS
-   ========================================================= */
-
-.student-head,
-.menu-head {
-  height: 42px;
-  border-bottom: 1px solid #1565c0;
-  background: #e3f2fd;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 10px;
-}
-
-.hamburger {
-  font-size: 26px;
+  color: #ffffff;
   border: 0;
-  background: none;
-  color: #1565c0;
-}
-
-.school-logo {
-  border: 1px solid #64b5f6;
-  background: #ffffff;
-  color: #1565c0;
-  padding: 3px 8px;
-  font-size: 12px;
-  font-weight: bold;
-  border-radius: 3px;
-}
-
-.search {
-  font-size: 28px;
-  color: #1565c0;
-}
-
-
-/* =========================================================
-   STUDENT PROFILE
-   ========================================================= */
-
-.profile-row {
-  min-height: 160px;
-  display: grid;
-  grid-template-columns: 110px 1fr auto;
-  align-items: center;
-  padding: 12px 20px;
-}
-
-.avatar {
-  width: 82px;
-  height: 82px;
-  border-radius: 50%;
-  background: #bbdefb;
-  border: 2px solid #64b5f6;
-  color: #1565c0;
-  font-size: 56px;
-  text-align: center;
-  line-height: 68px;
-}
-
-.profile-row p {
-  margin: 10px 0;
-}
-
-
-/* =========================================================
-   ADD FUNDS
-   ========================================================= */
-
-.add-funds {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 8px;
-}
-
-.add-funds label {
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.add-funds input {
-  width: 90px;
-  height: 30px;
-  padding: 5px;
-  border: 1px solid #90a4ae;
   border-radius: 4px;
+  padding: 9px 14px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+button:hover,
+.button:hover {
+  background: #0d47a1;
+}
+
+button:disabled {
+  background: #90a4ae;
+  cursor: not-allowed;
 }
 
 
 /* =========================================================
-   CURRENT ORDER
+   LOGIN PAGE
    ========================================================= */
 
-.current-order {
-  background: #e8f5e9;
-  border-top: 2px solid #66bb6a;
-  min-height: 260px;
-  padding: 24px;
-}
-
-.current-order h2 {
-  color: #2e7d32;
-  font-size: 16px;
-}
-
-#accountMessage,
-#saveMessage {
-  color: #2e7d32;
-  font-size: 13px;
-  font-weight: bold;
-}
-
-
-/* =========================================================
-   VENDOR
-   ========================================================= */
-
-.vendor-select {
-  padding: 10px;
-  border-bottom: 1px solid #90caf9;
-  background: #e3f2fd;
-}
-
-.vendor-select label {
+.mini-logo {
+  text-align: center;
   color: #1565c0;
+  margin-top: 45px;
+}
+
+.login-form,
+.demo-reset {
+  width: min(520px, 88%);
+  margin: 30px auto;
+}
+
+.login-form label {
+  display: block;
+  margin-top: 14px;
+  margin-bottom: 5px;
   font-weight: bold;
 }
 
-.vendor-select select {
-  margin-left: 10px;
-  width: 250px;
-  padding: 5px;
+.login-form input {
+  width: 100%;
+}
+
+.login-form button {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.demo-reset {
+  text-align: center;
 }
 
 
 /* =========================================================
-   MENU
+   FORM ELEMENTS
    ========================================================= */
 
-.menu-items {
-  width: 62%;
-  padding: 5px 12px;
+input,
+textarea,
+select {
+  padding: 8px;
+  border: 1px solid #90a4ae;
+  border-radius: 3px;
+  background: #ffffff;
+  color: #172026;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid #90caf9;
+  border-color: #1565c0;
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  min-height: 70px;
+  margin: 6px 0 12px;
+  resize: vertical;
+}
+
+.panel > label {
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 6px;
+}
+
+
+/* =========================================================
+   PANELS
+   ========================================================= */
+
+.panel {
+  margin: 20px;
+  padding: 18px;
+  background: #ffffff;
+  border: 1px solid #cfd8dc;
+}
+
+.panel h2 {
+  color: #1565c0;
+  margin-top: 0;
+}
+
+
+/* =========================================================
+   STUDENT ACCOUNT
+   ========================================================= */
+
+#studentName,
+#balance,
+#orderId {
+  color: #172026;
+}
+
+#returnStaffBtn {
+  margin-top: 10px;
+}
+
+
+/* =========================================================
+   VENDOR MENU
+   ========================================================= */
+
+#vendorSelect {
+  min-width: 220px;
+  margin-bottom: 12px;
 }
 
 .menu-item {
-  display: grid;
-  grid-template-columns: 85px 1fr 30px;
-  gap: 10px;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #cfd8dc;
-  padding: 12px 0;
+  gap: 15px;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #cfd8dc;
+  background: #f8fbfc;
 }
 
 .menu-item:hover {
-  background: #f5faff;
-}
-
-.food-img {
-  height: 70px;
-  border: 1px solid #90caf9;
-  background: linear-gradient(
-    135deg,
-    #e3f2fd 48%,
-    #90caf9 49%,
-    #e3f2fd 51%
-  );
+  background: #eef4f7;
 }
 
 .menu-item button {
-  width: 28px;
-  height: 28px;
-  background: #43a047;
-  color: #ffffff;
-  border: 1px solid #2e7d32;
-  border-radius: 4px;
-  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.order-summary {
+  margin-top: 15px;
+  padding: 10px 14px;
+  background: #eceff1;
+  border: 1px solid #cfd8dc;
+}
+
+.order-summary p {
+  margin: 6px 0;
 }
 
 
 /* =========================================================
-   CART
+   TABLES
    ========================================================= */
 
-.cart-panel {
-  position: absolute;
-  right: 0;
-  top: 42px;
-  width: 38%;
-  height: 413px;
-  border-left: 2px solid #90caf9;
-  background: #f5f8fa;
-  padding: 4px;
-}
-
-.cart-panel table {
+table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 11px;
+  margin: 12px 0;
 }
 
-.cart-panel th {
-  border: 1px solid #90a4ae;
-  background: #bbdefb;
-  color: #0d47a1;
-  padding: 5px;
+th,
+td {
+  border: 1px solid #b0bec5;
+  padding: 8px;
+  text-align: left;
+  font-size: 13px;
+  vertical-align: middle;
 }
 
-.cart-panel td {
-  border: 1px solid #cfd8dc;
-  background: #ffffff;
-  padding: 5px;
+th {
+  background: #eceff1;
+  color: #263238;
 }
 
-.remove-item {
-  border: 1px solid #c62828;
-  border-radius: 3px;
-  background: #ef5350;
-  color: #ffffff;
-  padding: 4px 6px;
-  font-size: 10px;
-  cursor: pointer;
+tbody tr:nth-child(even) {
+  background: #fafafa;
 }
 
-.remove-item:hover {
-  background: #c62828;
+tbody tr:hover {
+  background: #f1f5f7;
 }
 
-.pickup {
-  position: absolute;
-  bottom: 55px;
-  left: 5px;
-}
-
-.cart-total {
-  position: absolute;
-  bottom: 8px;
-  left: 5px;
-  font-weight: bold;
-  color: #2e7d32;
-}
-
-.cart-panel > button {
-  position: absolute;
-  bottom: 10px;
-  right: 8px;
-  border: 1px solid #2e7d32;
-  border-radius: 4px;
-  background: #43a047;
-  color: #ffffff;
-  padding: 7px 12px;
-  cursor: pointer;
+td button {
+  white-space: nowrap;
 }
 
 
 /* =========================================================
-   CONFIRMATION
+   ORDER CONFIRMATION
    ========================================================= */
 
 .confirmation {
   text-align: center;
 }
 
-.confirmation > .school-logo {
-  display: inline-block;
-  margin-top: 28px;
+.confirmation h2 {
+  margin-bottom: 20px;
 }
 
-.confirmation-copy {
-  margin-top: 120px;
-  font-size: 14px;
-}
-
-.confirmation-copy p {
-  margin: 25px;
-}
-
-.confirmation-copy b {
-  color: #2e7d32;
+.confirmation p {
+  font-size: 16px;
+  margin: 12px 0;
 }
 
 .confirm-actions {
-  margin-top: 75px;
   display: flex;
   justify-content: center;
-  gap: 80px;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 25px;
 }
 
 
 /* =========================================================
-   STAFF
+   STAFF DASHBOARD
    ========================================================= */
 
-.staff-head {
-  height: 42px;
-  background: #1565c0;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 8px;
-  font-size: 12px;
+#staffName {
+  color: #1565c0;
 }
 
-.staff-head nav {
-  display: flex;
-  gap: 30px;
-}
-
-.staff-head a {
-  color: #e3f2fd;
-  text-decoration: none;
-}
-
-.staff-head .active {
-  color: #ffffff;
+#staffRole {
   font-weight: bold;
-  border-bottom: 2px solid #ffffff;
 }
 
-.staff-welcome {
-  font-size: 17px;
-  padding: 20px;
+#ordersSection,
+#menuSection {
+  overflow-x: auto;
 }
 
-
-/* =========================================================
-   ORDERS TABLE
-   ========================================================= */
-
-.orders-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12px;
-}
-
-.orders-table th {
-  background: #90caf9;
-  color: #0d47a1;
-  border: 1px solid #64b5f6;
-  padding: 9px;
-}
-
-.orders-table td {
-  border: 1px solid #b0bec5;
-  background: #f5f8fa;
-  padding: 6px;
-}
-
-.orders-table tr:nth-child(even) td {
-  background: #e3f2fd;
-}
-
-.orders-table select,
-.orders-table textarea {
-  width: 100%;
-  font: inherit;
-}
-
-.orders-table textarea {
-  height: 44px;
-}
-
-.orders-table button {
-  border: 1px solid #1565c0;
-  border-radius: 4px;
-  background: #1976d2;
-  color: #ffffff;
-  padding: 6px 10px;
-  cursor: pointer;
-}
-
-#saveMessage {
-  padding: 10px;
+.new-status,
+.avail {
+  min-width: 110px;
 }
 
 
 /* =========================================================
-   DEMO RESET
+   STATUS / MESSAGES
    ========================================================= */
 
-.demo-reset {
-  text-align: center;
-  margin: 25px auto;
-  padding-top: 15px;
-  border-top: 1px solid #cfd8dc;
-  width: 60%;
+.error {
+  color: #c62828;
+  font-weight: bold;
 }
 
-.demo-reset button {
-  border: 1px solid #607d8b;
-  border-radius: 4px;
-  background: #78909c;
-  color: #ffffff;
-  padding: 7px 14px;
-  cursor: pointer;
-}
-
-.demo-reset button:hover {
-  background: #546e7a;
-}
-
-.demo-reset button:disabled {
-  opacity: 0.6;
-}
-
+#accountMessage,
+#saveMessage,
+#menuMessage,
 #resetMessage {
-  min-height: 18px;
   color: #2e7d32;
-  font-size: 12px;
   font-weight: bold;
+  min-height: 18px;
 }
 
 
 /* =========================================================
-   MOBILE
+   ACCESSIBILITY
+   ========================================================= */
+
+button:focus-visible,
+.button:focus-visible,
+a:focus-visible {
+  outline: 3px solid #ffca28;
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   RESPONSIVE DESIGN
    ========================================================= */
 
 @media (max-width: 700px) {
 
   .wireframe {
-    margin: 8px auto;
+    width: 100%;
+    margin: 0;
+    border-left: 0;
+    border-right: 0;
   }
 
-  .login-form {
-    width: 90%;
+  header {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
-  .profile-row {
-    grid-template-columns: 80px 1fr;
+  nav {
+    width: 100%;
   }
 
-  .profile-row > .small-button {
-    grid-column: 2;
-    width: fit-content;
+  .panel {
+    margin: 12px;
+    padding: 14px;
   }
 
-  .add-funds {
-    flex-wrap: wrap;
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
   }
 
-  .menu-items {
-    width: 58%;
+  .menu-item {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
-  .cart-panel {
-    width: 42%;
+  .menu-item button {
+    width: 100%;
   }
 
-  .staff-head nav {
-    gap: 8px;
+  #vendorSelect {
+    width: 100%;
   }
 
-  .orders-table {
-    font-size: 10px;
+  .confirm-actions {
+    flex-direction: column;
+  }
+
+  .confirm-actions .button,
+  .confirm-actions button {
+    width: 100%;
   }
 }
