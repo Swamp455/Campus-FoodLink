@@ -1,6 +1,7 @@
 /* =========================================================
    CAMPUS FOODLINK+
-   ERD-BASED PROTOTYPE
+   PROTOTYPE APPLICATION
+   ERD-BASED JSON / LOCALSTORAGE DATA MODEL
    ========================================================= */
 
 const DB_KEY = "CampusFoodLinkDB";
@@ -8,34 +9,25 @@ const CART_KEY = "CampusFoodLinkCart";
 
 
 /* =========================================================
-   STORAGE
+   STORAGE FUNCTIONS
    ========================================================= */
 
 function readStorage(key, fallback = null) {
-
   try {
-
-    const value =
-      localStorage.getItem(key);
+    const value = localStorage.getItem(key);
 
     return value
       ? JSON.parse(value)
       : fallback;
 
   } catch (error) {
-
-    console.error(
-      "Storage read error:",
-      error
-    );
-
+    console.error("Storage read error:", error);
     return fallback;
   }
 }
 
 
 function writeStorage(key, value) {
-
   localStorage.setItem(
     key,
     JSON.stringify(value)
@@ -44,7 +36,6 @@ function writeStorage(key, value) {
 
 
 function getDB() {
-
   return readStorage(
     DB_KEY,
     null
@@ -53,7 +44,6 @@ function getDB() {
 
 
 function saveDB(db) {
-
   writeStorage(
     DB_KEY,
     db
@@ -62,7 +52,6 @@ function saveDB(db) {
 
 
 function getCart() {
-
   return readStorage(
     CART_KEY,
     []
@@ -71,24 +60,23 @@ function getCart() {
 
 
 function saveCart(cart) {
-
   writeStorage(
     CART_KEY,
     cart
   );
 }
+
+
 /* =========================================================
    EXPORT DATABASE FOR GRADING
    ========================================================= */
 
 function exportDatabase() {
 
-  const db =
-    getDB();
+  const db = getDB();
 
 
   if (!db) {
-
     alert(
       "No Campus FoodLink+ data is available to export."
     );
@@ -98,8 +86,8 @@ function exportDatabase() {
 
 
   /*
-     Make a copy so removing passwords does not
-     change the working prototype database.
+     Create a copy so passwords can be removed
+     without changing the working database.
   */
 
   const cleanDatabase =
@@ -115,12 +103,9 @@ function exportDatabase() {
       cleanDatabase.Students
     )
   ) {
-
     cleanDatabase.Students.forEach(
       student => {
-
         delete student.password;
-
       }
     );
   }
@@ -133,16 +118,18 @@ function exportDatabase() {
       cleanDatabase.Staff
     )
   ) {
-
     cleanDatabase.Staff.forEach(
       staff => {
-
         delete staff.password;
-
       }
     );
   }
 
+
+  /*
+     Add basic information to help identify
+     the grading export.
+  */
 
   const exportData = {
 
@@ -150,7 +137,7 @@ function exportDatabase() {
       "Campus FoodLink+",
 
     export_type:
-      "Prototype Data",
+      "Prototype Grading Data",
 
     exported_at:
       new Date().toISOString(),
@@ -172,8 +159,7 @@ function exportDatabase() {
     new Blob(
       [json],
       {
-        type:
-          "application/json"
+        type: "application/json"
       }
     );
 
@@ -196,12 +182,10 @@ function exportDatabase() {
       .slice(0, 10);
 
 
-  link.href =
-    url;
-
+  link.href = url;
 
   link.download =
-    `CampusFoodLink_Data_${date}.json`;
+    `CampusFoodLink_Grading_Data_${date}.json`;
 
 
   document.body.appendChild(
@@ -224,13 +208,15 @@ function exportDatabase() {
 
 
 /* =========================================================
-   INITIALIZE DATABASE FROM apps.json
+   INITIALIZE DATABASE
+
+   apps.json = original seed database
+   localStorage = working persistent database
    ========================================================= */
 
 async function initializeDatabase() {
 
-  let db =
-    getDB();
+  let db = getDB();
 
 
   if (db) {
@@ -247,11 +233,9 @@ async function initializeDatabase() {
 
 
     if (!response.ok) {
-
       throw new Error(
         "Unable to load apps.json."
       );
-
     }
 
 
@@ -266,11 +250,15 @@ async function initializeDatabase() {
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      "Database initialization error:",
+      error
+    );
 
 
     alert(
-      "Unable to load the Campus FoodLink+ database."
+      "Unable to load the Campus FoodLink+ database. " +
+      "Make sure the project is running through a web server."
     );
 
 
@@ -280,7 +268,26 @@ async function initializeDatabase() {
 
 
 /* =========================================================
-   RESET DEMO DATA
+   RESET DEMO DATABASE
+
+   Reloads the original apps.json data.
+
+   Restores:
+   - Students
+   - Staff
+   - Vendors
+   - MenuItems
+   - OrderStatus
+   - Original balances
+   - Original inventory
+   - Original availability
+
+   Clears:
+   - Orders
+   - OrderItems
+   - Transactions
+   - Cart
+   - Login session
    ========================================================= */
 
 async function resetDemoData() {
@@ -288,8 +295,9 @@ async function resetDemoData() {
   const confirmed =
     confirm(
       "Reset all Campus FoodLink+ demo data?\n\n" +
-      "This will remove test orders, transactions, " +
-      "balance changes, cart items, notes, and status changes."
+      "This will restore balances and inventory and remove " +
+      "test orders, transactions, cart items, notes, and " +
+      "status changes."
     );
 
 
@@ -301,7 +309,8 @@ async function resetDemoData() {
   try {
 
     /*
-       Timestamp prevents browser caching.
+       Timestamp prevents the browser from
+       returning a cached copy.
     */
 
     const response =
@@ -312,11 +321,9 @@ async function resetDemoData() {
 
 
     if (!response.ok) {
-
       throw new Error(
         "Unable to reload apps.json."
       );
-
     }
 
 
@@ -324,21 +331,21 @@ async function resetDemoData() {
       await response.json();
 
 
-    /* RESTORE ORIGINAL DATABASE */
+    /* REPLACE WORKING DATABASE */
 
     saveDB(
       freshDatabase
     );
 
 
-    /* CLEAR TEMPORARY CART */
+    /* CLEAR CART */
 
     localStorage.removeItem(
       CART_KEY
     );
 
 
-    /* CLEAR CURRENT SESSION */
+    /* CLEAR LOGIN SESSION */
 
     sessionStorage.clear();
 
@@ -348,7 +355,7 @@ async function resetDemoData() {
   } catch (error) {
 
     console.error(
-      "Reset error:",
+      "Demo reset error:",
       error
     );
 
@@ -364,7 +371,7 @@ async function resetDemoData() {
 
 
 /* =========================================================
-   SESSION
+   SESSION FUNCTIONS
    ========================================================= */
 
 function getRole() {
@@ -414,7 +421,7 @@ function guard(requiredRole) {
 
 
 /* =========================================================
-   ERD LOOKUPS
+   ERD LOOKUP FUNCTIONS
    ========================================================= */
 
 function findStudent(
@@ -497,7 +504,7 @@ function findStatusByName(
 
 
 /* =========================================================
-   LOGIN
+   LOGIN PAGE
    ========================================================= */
 
 function loginInit(db) {
@@ -539,7 +546,7 @@ function loginInit(db) {
 
 
   /* =======================================================
-     RESET BUTTON
+     RESET DEMO DATA
      ======================================================= */
 
   if (resetDemoBtn) {
@@ -562,8 +569,10 @@ function loginInit(db) {
 
         if (success) {
 
-          resetMessage.textContent =
-            "Demo data successfully reset.";
+          if (resetMessage) {
+            resetMessage.textContent =
+              "Demo data successfully reset.";
+          }
 
 
           resetDemoBtn.textContent =
@@ -572,9 +581,7 @@ function loginInit(db) {
 
           setTimeout(
             () => {
-
               window.location.reload();
-
             },
             800
           );
@@ -595,6 +602,11 @@ function loginInit(db) {
   }
 
 
+  if (!form) {
+    return;
+  }
+
+
   /* =======================================================
      LOGIN VALIDATION
      ======================================================= */
@@ -606,8 +618,7 @@ function loginInit(db) {
       event.preventDefault();
 
 
-      error.textContent =
-        "";
+      error.textContent = "";
 
 
       const enteredUsername =
@@ -621,7 +632,7 @@ function loginInit(db) {
 
 
       /* ---------------------------------------------------
-         STUDENTS TABLE
+         CHECK STUDENTS
          --------------------------------------------------- */
 
       const student =
@@ -666,7 +677,7 @@ function loginInit(db) {
 
 
       /* ---------------------------------------------------
-         STAFF TABLE
+         CHECK STAFF
          --------------------------------------------------- */
 
       const staff =
@@ -715,8 +726,7 @@ function loginInit(db) {
         "Invalid username or password.";
 
 
-      password.value =
-        "";
+      password.value = "";
 
 
       password.focus();
@@ -747,8 +757,10 @@ function accountInit(db) {
 
     sessionStorage.clear();
 
+
     window.location.href =
       "index.html";
+
 
     return;
   }
@@ -808,18 +820,99 @@ function accountInit(db) {
     );
 
 
-  function displayStudent() {
+  const returnStaffBtn =
+    document.getElementById(
+      "returnStaffBtn"
+    );
 
-    studentName.textContent =
-      `${student.first_name} ${student.last_name}`;
+
+  /* =======================================================
+     PROFESSOR DEMO MODE
+     ======================================================= */
+
+  if (
+    returnStaffBtn &&
+    sessionStorage.getItem(
+      "cflProfessorDemo"
+    ) ===
+    "true"
+  ) {
+
+    returnStaffBtn.hidden =
+      false;
 
 
-    balance.textContent =
-      Number(
-        student.balance
-      ).toFixed(2);
+    returnStaffBtn.addEventListener(
+      "click",
+      () => {
+
+        const professorStaffId =
+          sessionStorage.getItem(
+            "cflProfessorStaffId"
+          );
+
+
+        if (!professorStaffId) {
+
+          sessionStorage.clear();
+
+          window.location.href =
+            "index.html";
+
+          return;
+        }
+
+
+        sessionStorage.setItem(
+          "cflRole",
+          "staff"
+        );
+
+
+        sessionStorage.setItem(
+          "cflStaffId",
+          professorStaffId
+        );
+
+
+        sessionStorage.removeItem(
+          "cflStudentId"
+        );
+
+
+        window.location.href =
+          "orders.html";
+      }
+    );
   }
 
+
+  /* =======================================================
+     DISPLAY STUDENT
+     ======================================================= */
+
+  function displayStudent() {
+
+    if (studentName) {
+
+      studentName.textContent =
+        `${student.first_name} ${student.last_name}`;
+    }
+
+
+    if (balance) {
+
+      balance.textContent =
+        Number(
+          student.balance
+        ).toFixed(2);
+    }
+  }
+
+
+  /* =======================================================
+     GET MOST RECENT STUDENT ORDER
+     ======================================================= */
 
   function getCurrentOrder() {
 
@@ -832,7 +925,8 @@ function accountInit(db) {
 
 
     if (
-      studentOrders.length === 0
+      studentOrders.length ===
+      0
     ) {
 
       return null;
@@ -845,6 +939,10 @@ function accountInit(db) {
   }
 
 
+  /* =======================================================
+     DISPLAY CURRENT ORDER
+     ======================================================= */
+
   function displayOrder() {
 
     const currentOrder =
@@ -853,20 +951,28 @@ function accountInit(db) {
 
     if (!currentOrder) {
 
-      orderId.textContent =
-        "No Current Order";
+      if (orderId) {
+        orderId.textContent =
+          "No Current Order";
+      }
 
 
-      orderVendor.textContent =
-        "-";
+      if (orderVendor) {
+        orderVendor.textContent =
+          "-";
+      }
 
 
-      orderStatus.textContent =
-        "-";
+      if (orderStatus) {
+        orderStatus.textContent =
+          "-";
+      }
 
 
-      cancelOrderBtn.style.display =
-        "none";
+      if (cancelOrderBtn) {
+        cancelOrderBtn.style.display =
+          "none";
+      }
 
 
       return;
@@ -887,20 +993,29 @@ function accountInit(db) {
       );
 
 
-    orderId.textContent =
-      currentOrder.order_id;
+    if (orderId) {
+
+      orderId.textContent =
+        currentOrder.order_id;
+    }
 
 
-    orderVendor.textContent =
-      vendor
-        ? vendor.vendor_name
-        : "Unknown Vendor";
+    if (orderVendor) {
+
+      orderVendor.textContent =
+        vendor
+          ? vendor.vendor_name
+          : "Unknown Vendor";
+    }
 
 
-    orderStatus.textContent =
-      status
-        ? status.status_name
-        : "Unknown";
+    if (orderStatus) {
+
+      orderStatus.textContent =
+        status
+          ? status.status_name
+          : "Unknown";
+    }
 
 
     const canCancel =
@@ -908,225 +1023,342 @@ function accountInit(db) {
       (
         status.status_name ===
           "Pending" ||
+
         status.status_name ===
           "Approved"
       );
 
 
-    cancelOrderBtn.style.display =
-      canCancel
-        ? "inline-block"
-        : "none";
+    if (cancelOrderBtn) {
+
+      cancelOrderBtn.style.display =
+        canCancel
+          ? "inline-block"
+          : "none";
+    }
   }
 
 
   /* =======================================================
      ADD FUNDS
-     Students + Transactions
      ======================================================= */
 
-  addFundsBtn.addEventListener(
-    "click",
-    () => {
+  if (
+    addFundsBtn &&
+    fundAmount
+  ) {
 
-      const amount =
-        Number(
-          fundAmount.value
-        );
+    addFundsBtn.addEventListener(
+      "click",
+      () => {
+
+        const amount =
+          Number(
+            fundAmount.value
+          );
 
 
-      if (
-        !Number.isFinite(amount) ||
-        amount <= 0
-      ) {
+        if (
+          !Number.isFinite(amount) ||
+          amount <= 0
+        ) {
+
+          accountMessage.textContent =
+            "Please enter a valid amount greater than $0.00.";
+
+
+          fundAmount.focus();
+
+
+          return;
+        }
+
+
+        /* UPDATE STUDENT BALANCE */
+
+        student.balance =
+          Number(
+            (
+              Number(
+                student.balance
+              ) +
+              amount
+            ).toFixed(2)
+          );
+
+
+        /* CREATE DEPOSIT TRANSACTION */
+
+        db.Transactions.push({
+
+          transaction_id:
+            Date.now(),
+
+          order_id:
+            null,
+
+          student_id:
+            student.student_id,
+
+          transaction_type:
+            "DEPOSIT",
+
+          amount:
+            amount,
+
+          transaction_status:
+            "COMPLETE",
+
+          transaction_date:
+            new Date().toISOString()
+        });
+
+
+        saveDB(db);
+
+
+        displayStudent();
+
+
+        fundAmount.value = "";
+
 
         accountMessage.textContent =
-          "Please enter a valid amount greater than $0.00.";
-
-
-        fundAmount.focus();
-
-
-        return;
+          `$${amount.toFixed(2)} was added. ` +
+          `New balance: $${student.balance.toFixed(2)}.`;
       }
-
-
-      /* UPDATE STUDENT */
-
-      student.balance =
-        Number(
-          (
-            Number(student.balance) +
-            amount
-          ).toFixed(2)
-        );
-
-
-      /* CREATE TRANSACTION */
-
-      db.Transactions.push({
-
-        transaction_id:
-          Date.now(),
-
-        order_id:
-          null,
-
-        student_id:
-          student.student_id,
-
-        transaction_type:
-          "DEPOSIT",
-
-        amount:
-          amount,
-
-        transaction_status:
-          "COMPLETE",
-
-        transaction_date:
-          new Date().toISOString()
-      });
-
-
-      saveDB(db);
-
-
-      displayStudent();
-
-
-      fundAmount.value =
-        "";
-
-
-      accountMessage.textContent =
-        `$${amount.toFixed(2)} was added. ` +
-        `New balance: $${student.balance.toFixed(2)}.`;
-    }
-  );
+    );
+  }
 
 
   /* =======================================================
      CANCEL ORDER
      ======================================================= */
 
-  cancelOrderBtn.addEventListener(
-    "click",
-    () => {
+  if (cancelOrderBtn) {
 
-      const currentOrder =
-        getCurrentOrder();
+    cancelOrderBtn.addEventListener(
+      "click",
+      () => {
 
-
-      if (!currentOrder) {
-        return;
-      }
+        const currentOrder =
+          getCurrentOrder();
 
 
-      const currentStatus =
-        findStatus(
-          db,
-          currentOrder.status_id
+        if (!currentOrder) {
+          return;
+        }
+
+
+        const currentStatus =
+          findStatus(
+            db,
+            currentOrder.status_id
+          );
+
+
+        /*
+           Only Pending and Approved
+           orders can be canceled.
+        */
+
+        if (
+          !currentStatus ||
+          ![
+            "Pending",
+            "Approved"
+          ].includes(
+            currentStatus.status_name
+          )
+        ) {
+
+          accountMessage.textContent =
+            "This order can no longer be canceled.";
+
+
+          return;
+        }
+
+
+        /*
+           Prevent duplicate refund transactions.
+        */
+
+        const existingRefund =
+          db.Transactions.find(
+            transaction =>
+              transaction.order_id ===
+                currentOrder.order_id &&
+              transaction.transaction_type ===
+                "REFUND" &&
+              transaction.transaction_status ===
+                "COMPLETE"
+          );
+
+
+        if (existingRefund) {
+
+          accountMessage.textContent =
+            "This order has already been refunded.";
+
+
+          return;
+        }
+
+
+        const confirmed =
+          confirm(
+            `Cancel Order #${currentOrder.order_id}?`
+          );
+
+
+        if (!confirmed) {
+          return;
+        }
+
+
+        const canceledStatus =
+          findStatusByName(
+            db,
+            "Canceled"
+          );
+
+
+        if (!canceledStatus) {
+
+          accountMessage.textContent =
+            "Canceled order status could not be found.";
+
+
+          return;
+        }
+
+
+        /* -------------------------------------------------
+           UPDATE ORDER STATUS
+           ------------------------------------------------- */
+
+        currentOrder.status_id =
+          canceledStatus.status_id;
+
+
+        /* -------------------------------------------------
+           RESTORE INVENTORY
+           ------------------------------------------------- */
+
+        const canceledItems =
+          db.OrderItems.filter(
+            item =>
+              item.order_id ===
+              currentOrder.order_id
+          );
+
+
+        canceledItems.forEach(
+          orderItem => {
+
+            const menuItem =
+              findMenuItem(
+                db,
+                orderItem.menu_item_id
+              );
+
+
+            if (!menuItem) {
+              return;
+            }
+
+
+            menuItem.inventory_quantity =
+              Number(
+                menuItem.inventory_quantity
+              ) +
+              Number(
+                orderItem.quantity
+              );
+
+
+            /*
+               Restore availability if inventory
+               now exists.
+            */
+
+            if (
+              menuItem.inventory_quantity >
+              0
+            ) {
+
+              menuItem.is_available =
+                true;
+            }
+          }
         );
 
 
-      if (
-        !currentStatus ||
-        ![
-          "Pending",
-          "Approved"
-        ].includes(
-          currentStatus.status_name
-        )
-      ) {
+        /* -------------------------------------------------
+           REFUND STUDENT
+           ------------------------------------------------- */
 
-        accountMessage.textContent =
-          "This order can no longer be canceled.";
-
-
-        return;
-      }
-
-
-      const confirmed =
-        confirm(
-          `Cancel Order #${currentOrder.order_id}?`
-        );
+        student.balance =
+          Number(
+            (
+              Number(
+                student.balance
+              ) +
+              Number(
+                currentOrder.total_amount
+              )
+            ).toFixed(2)
+          );
 
 
-      if (!confirmed) {
-        return;
-      }
+        /* -------------------------------------------------
+           CREATE REFUND TRANSACTION
+           ------------------------------------------------- */
 
+        db.Transactions.push({
 
-      const canceledStatus =
-        findStatusByName(
-          db,
-          "Canceled"
-        );
+          transaction_id:
+            Date.now(),
 
+          order_id:
+            currentOrder.order_id,
 
-      currentOrder.status_id =
-        canceledStatus.status_id;
+          student_id:
+            student.student_id,
 
+          transaction_type:
+            "REFUND",
 
-      /* REFUND */
-
-      student.balance =
-        Number(
-          (
-            Number(student.balance) +
+          amount:
             Number(
               currentOrder.total_amount
-            )
-          ).toFixed(2)
-        );
+            ),
+
+          transaction_status:
+            "COMPLETE",
+
+          transaction_date:
+            new Date().toISOString()
+        });
 
 
-      /* REFUND TRANSACTION */
+        saveDB(db);
 
-      db.Transactions.push({
 
-        transaction_id:
-          Date.now(),
+        displayStudent();
 
-        order_id:
-          currentOrder.order_id,
+        displayOrder();
 
-        student_id:
-          student.student_id,
 
-        transaction_type:
-          "REFUND",
-
-        amount:
-          Number(
+        accountMessage.textContent =
+          `Order #${currentOrder.order_id} was canceled. ` +
+          `$${Number(
             currentOrder.total_amount
-          ),
-
-        transaction_status:
-          "COMPLETE",
-
-        transaction_date:
-          new Date().toISOString()
-      });
-
-
-      saveDB(db);
-
-
-      displayStudent();
-
-      displayOrder();
-
-
-      accountMessage.textContent =
-        `Order #${currentOrder.order_id} was canceled. ` +
-        `$${Number(
-          currentOrder.total_amount
-        ).toFixed(2)} was returned to your balance.`;
-    }
-  );
+          ).toFixed(2)} was returned to your balance.`;
+      }
+    );
+  }
 
 
   displayStudent();
@@ -1136,7 +1368,7 @@ function accountInit(db) {
 
 
 /* =========================================================
-   VENDOR MENU / CART
+   STUDENT MENU
    ========================================================= */
 
 function menuInit(db) {
@@ -1154,6 +1386,8 @@ function menuInit(db) {
 
 
   if (!student) {
+
+    sessionStorage.clear();
 
     window.location.href =
       "index.html";
@@ -1198,7 +1432,9 @@ function menuInit(db) {
     );
 
 
-  /* LOAD VENDORS */
+  /* =======================================================
+     LOAD VENDORS
+     ======================================================= */
 
   vendorSelect.innerHTML =
     '<option value="">Select a Vendor</option>';
@@ -1228,16 +1464,31 @@ function menuInit(db) {
   );
 
 
+  /* =======================================================
+     CHANGE VENDOR
+     ======================================================= */
+
   vendorSelect.addEventListener(
     "change",
     () => {
 
+      /*
+         Clear cart when changing vendors so
+         items from different vendors cannot
+         be mixed into one order.
+      */
+
       saveCart([]);
+
 
       draw();
     }
   );
 
+
+  /* =======================================================
+     DRAW MENU AND CART
+     ======================================================= */
 
   function draw() {
 
@@ -1265,55 +1516,84 @@ function menuInit(db) {
     }
 
 
-    /* MENU ITEMS FOR SELECTED VENDOR */
+    /* ---------------------------------------------------
+       AVAILABLE MENU ITEMS
+       --------------------------------------------------- */
 
     const vendorMenu =
       db.MenuItems.filter(
         item =>
           item.vendor_id ===
             vendorId &&
+
           item.is_available ===
-            true
+            true &&
+
+          Number(
+            item.inventory_quantity
+          ) > 0
       );
 
 
-    menuItems.innerHTML =
-      vendorMenu
-        .map(
-          item => `
+    if (
+      vendorMenu.length ===
+      0
+    ) {
 
-            <div class="menu-item">
+      menuItems.innerHTML =
+        "<p>No menu items are currently available from this vendor.</p>";
 
-              <div class="food-img"></div>
+    } else {
 
-              <div>
+      menuItems.innerHTML =
+        vendorMenu
+          .map(
+            item => `
 
-                <b>
-                  ${item.item_name}
-                </b>
+              <div class="menu-item">
 
-                <br>
+                <div class="food-img"></div>
 
-                $${Number(
-                  item.price
-                ).toFixed(2)}
+                <div>
+
+                  <b>
+                    ${item.item_name}
+                  </b>
+
+                  <br>
+
+                  $${Number(
+                    item.price
+                  ).toFixed(2)}
+
+                  <br>
+
+                  <small>
+                    ${item.inventory_quantity} available
+                  </small>
+
+                </div>
+
+                <button
+                  type="button"
+                  class="add-item"
+                  data-id="${item.menu_item_id}"
+                  aria-label="Add ${item.item_name}"
+                >
+                  +
+                </button>
 
               </div>
 
-              <button
-                type="button"
-                class="add-item"
-                data-id="${item.menu_item_id}"
-              >
-                +
-              </button>
+            `
+          )
+          .join("");
+    }
 
-            </div>
 
-          `
-        )
-        .join("");
-
+    /* ---------------------------------------------------
+       DRAW CART
+       --------------------------------------------------- */
 
     const cart =
       getCart();
@@ -1354,7 +1634,9 @@ function menuInit(db) {
                     Number(
                       menuItem.price
                     ) *
-                    cartItem.quantity
+                    Number(
+                      cartItem.quantity
+                    )
                   ).toFixed(2)}
 
                 </td>
@@ -1379,11 +1661,16 @@ function menuInit(db) {
         .join("");
 
 
-    /* CALCULATE TOTAL */
+    /* ---------------------------------------------------
+       CART TOTAL
+       --------------------------------------------------- */
 
     const total =
       cart.reduce(
-        (sum, cartItem) => {
+        (
+          sum,
+          cartItem
+        ) => {
 
           const menuItem =
             findMenuItem(
@@ -1399,8 +1686,12 @@ function menuInit(db) {
 
           return (
             sum +
-            Number(menuItem.price) *
-            cartItem.quantity
+            Number(
+              menuItem.price
+            ) *
+            Number(
+              cartItem.quantity
+            )
           );
         },
         0
@@ -1411,7 +1702,9 @@ function menuInit(db) {
       total.toFixed(2);
 
 
-    /* ADD ITEMS */
+    /* =====================================================
+       ADD ITEM
+       ===================================================== */
 
     document
       .querySelectorAll(
@@ -1430,7 +1723,19 @@ function menuInit(db) {
                 );
 
 
-              const cart =
+              const menuItem =
+                findMenuItem(
+                  db,
+                  menuItemId
+                );
+
+
+              if (!menuItem) {
+                return;
+              }
+
+
+              let cart =
                 getCart();
 
 
@@ -1442,10 +1747,39 @@ function menuInit(db) {
                 );
 
 
+              const currentQuantity =
+                existing
+                  ? Number(
+                      existing.quantity
+                    )
+                  : 0;
+
+
+              /*
+                 Do not allow the cart quantity
+                 to exceed inventory.
+              */
+
+              if (
+                currentQuantity >=
+                Number(
+                  menuItem.inventory_quantity
+                )
+              ) {
+
+                alert(
+                  `Only ${menuItem.inventory_quantity} ` +
+                  `${menuItem.item_name} are available.`
+                );
+
+
+                return;
+              }
+
+
               if (existing) {
 
-                existing.quantity +=
-                  1;
+                existing.quantity += 1;
 
               } else {
 
@@ -1456,12 +1790,12 @@ function menuInit(db) {
 
                   quantity:
                     1
-
                 });
               }
 
 
               saveCart(cart);
+
 
               draw();
             }
@@ -1470,7 +1804,9 @@ function menuInit(db) {
       );
 
 
-    /* REMOVE ITEMS */
+    /* =====================================================
+       REMOVE ITEM
+       ===================================================== */
 
     document
       .querySelectorAll(
@@ -1511,8 +1847,7 @@ function menuInit(db) {
                 1
               ) {
 
-                existing.quantity -=
-                  1;
+                existing.quantity -= 1;
 
               } else {
 
@@ -1526,6 +1861,7 @@ function menuInit(db) {
 
 
               saveCart(cart);
+
 
               draw();
             }
@@ -1553,6 +1889,8 @@ function menuInit(db) {
         getCart();
 
 
+      /* VALIDATE VENDOR */
+
       if (!vendorId) {
 
         alert(
@@ -1563,7 +1901,12 @@ function menuInit(db) {
       }
 
 
-      if (!cart.length) {
+      /* VALIDATE CART */
+
+      if (
+        cart.length ===
+        0
+      ) {
 
         alert(
           "Please add at least one item."
@@ -1572,6 +1915,76 @@ function menuInit(db) {
         return;
       }
 
+
+      /* VALIDATE INVENTORY */
+
+      for (
+        const cartItem of cart
+      ) {
+
+        const menuItem =
+          findMenuItem(
+            db,
+            cartItem.menu_item_id
+          );
+
+
+        if (!menuItem) {
+
+          alert(
+            "One of the selected menu items could not be found."
+          );
+
+          return;
+        }
+
+
+        if (
+          menuItem.vendor_id !==
+          vendorId
+        ) {
+
+          alert(
+            "The cart contains an item from another vendor."
+          );
+
+          return;
+        }
+
+
+        if (
+          menuItem.is_available !==
+          true
+        ) {
+
+          alert(
+            `${menuItem.item_name} is no longer available.`
+          );
+
+          return;
+        }
+
+
+        if (
+          Number(
+            cartItem.quantity
+          ) >
+          Number(
+            menuItem.inventory_quantity
+          )
+        ) {
+
+          alert(
+            `Only ${menuItem.inventory_quantity} ` +
+            `${menuItem.item_name} are currently available.`
+          );
+
+          return;
+        }
+      }
+
+
+      /* CALCULATE TOTAL */
 
       let total = 0;
 
@@ -1587,14 +2000,13 @@ function menuInit(db) {
           );
 
 
-        if (!menuItem) {
-          continue;
-        }
-
-
         total +=
-          Number(menuItem.price) *
-          cartItem.quantity;
+          Number(
+            menuItem.price
+          ) *
+          Number(
+            cartItem.quantity
+          );
       }
 
 
@@ -1604,11 +2016,13 @@ function menuInit(db) {
         );
 
 
-      /* CHECK BALANCE */
+      /* VALIDATE BALANCE */
 
       if (
         total >
-        Number(student.balance)
+        Number(
+          student.balance
+        )
       ) {
 
         alert(
@@ -1626,7 +2040,21 @@ function menuInit(db) {
         );
 
 
-      const orderId =
+      if (!pendingStatus) {
+
+        alert(
+          "Pending order status could not be found."
+        );
+
+        return;
+      }
+
+
+      /* ---------------------------------------------------
+         CREATE UNIQUE ORDER ID
+         --------------------------------------------------- */
+
+      let orderId =
         Number(
           Date.now()
             .toString()
@@ -1634,7 +2062,21 @@ function menuInit(db) {
         );
 
 
-      /* CREATE ORDER */
+      while (
+        db.Orders.some(
+          order =>
+            order.order_id ===
+            orderId
+        )
+      ) {
+
+        orderId += 1;
+      }
+
+
+      /* ===================================================
+         CREATE ORDER
+         =================================================== */
 
       db.Orders.push({
 
@@ -1667,10 +2109,15 @@ function menuInit(db) {
       });
 
 
-      /* CREATE ORDER ITEMS */
+      /* ===================================================
+         CREATE ORDER ITEMS AND REDUCE INVENTORY
+         =================================================== */
 
       cart.forEach(
-        (cartItem, index) => {
+        (
+          cartItem,
+          index
+        ) => {
 
           const menuItem =
             findMenuItem(
@@ -1683,6 +2130,8 @@ function menuInit(db) {
             return;
           }
 
+
+          /* CREATE ORDER ITEM */
 
           db.OrderItems.push({
 
@@ -1698,29 +2147,64 @@ function menuInit(db) {
               menuItem.menu_item_id,
 
             quantity:
-              cartItem.quantity,
+              Number(
+                cartItem.quantity
+              ),
 
             unit_price:
               Number(
                 menuItem.price
               )
           });
+
+
+          /* REDUCE INVENTORY */
+
+          menuItem.inventory_quantity =
+            Number(
+              menuItem.inventory_quantity
+            ) -
+            Number(
+              cartItem.quantity
+            );
+
+
+          /* AUTO MARK OUT OF STOCK */
+
+          if (
+            menuItem.inventory_quantity <=
+            0
+          ) {
+
+            menuItem.inventory_quantity =
+              0;
+
+
+            menuItem.is_available =
+              false;
+          }
         }
       );
 
 
-      /* DEDUCT BALANCE */
+      /* ===================================================
+         DEDUCT STUDENT BALANCE
+         =================================================== */
 
       student.balance =
         Number(
           (
-            Number(student.balance) -
+            Number(
+              student.balance
+            ) -
             total
           ).toFixed(2)
         );
 
 
-      /* CREATE PURCHASE TRANSACTION */
+      /* ===================================================
+         CREATE PURCHASE TRANSACTION
+         =================================================== */
 
       db.Transactions.push({
 
@@ -1747,16 +2231,25 @@ function menuInit(db) {
       });
 
 
+      /* SAVE DATABASE */
+
       saveDB(db);
+
+
+      /* CLEAR CART */
 
       saveCart([]);
 
+
+      /* REMEMBER ORDER */
 
       sessionStorage.setItem(
         "cflLastOrderId",
         orderId
       );
 
+
+      /* OPEN CONFIRMATION */
 
       window.location.href =
         "confirmation.html";
@@ -1769,7 +2262,7 @@ function menuInit(db) {
 
 
 /* =========================================================
-   CONFIRMATION
+   ORDER CONFIRMATION
    ========================================================= */
 
 function confirmationInit(db) {
@@ -1792,6 +2285,7 @@ function confirmationInit(db) {
       order =>
         order.order_id ===
           orderId &&
+
         order.student_id ===
           getStudentId()
     );
@@ -1813,41 +2307,61 @@ function confirmationInit(db) {
     );
 
 
-  document
-    .getElementById(
+  const confirmOrder =
+    document.getElementById(
       "confirmOrder"
-    )
-    .textContent =
-      currentOrder.order_id;
+    );
 
 
-  document
-    .getElementById(
+  const confirmStatus =
+    document.getElementById(
       "confirmStatus"
-    )
-    .textContent =
+    );
+
+
+  const confirmPickup =
+    document.getElementById(
+      "confirmPickup"
+    );
+
+
+  const logoutBtn =
+    document.getElementById(
+      "logoutBtn"
+    );
+
+
+  if (confirmOrder) {
+
+    confirmOrder.textContent =
+      currentOrder.order_id;
+  }
+
+
+  if (confirmStatus) {
+
+    confirmStatus.textContent =
       status
         ? `${status.status_name.toLowerCase()}!`
         : "unknown";
+  }
 
 
-  document
-    .getElementById(
-      "confirmPickup"
-    )
-    .textContent =
+  if (confirmPickup) {
+
+    confirmPickup.textContent =
       currentOrder.pickup_time;
+  }
 
 
-  document
-    .getElementById(
-      "logoutBtn"
-    )
-    .addEventListener(
+  if (logoutBtn) {
+
+    logoutBtn.addEventListener(
       "click",
       () => {
 
         sessionStorage.clear();
+
 
         localStorage.removeItem(
           CART_KEY
@@ -1858,11 +2372,12 @@ function confirmationInit(db) {
           "index.html";
       }
     );
+  }
 }
 
 
 /* =========================================================
-   STAFF ORDERS
+   STAFF DASHBOARD
    ========================================================= */
 
 function ordersInit(db) {
@@ -1896,6 +2411,12 @@ function ordersInit(db) {
     );
 
 
+  const staffVendor =
+    document.getElementById(
+      "staffVendor"
+    );
+
+
   const ordersBody =
     document.getElementById(
       "ordersBody"
@@ -1908,292 +2429,296 @@ function ordersInit(db) {
     );
 
 
-  const staffVendor =
+  const inventoryBody =
     document.getElementById(
-      "staffVendor"
+      "inventoryBody"
     );
 
 
-  staffName.textContent =
-    `${staff.first_name} ${staff.last_name}`;
+  const inventoryMessage =
+    document.getElementById(
+      "inventoryMessage"
+    );
 
 
-  staffVendor.textContent =
-    "Vendor Orders";
+  const ordersSection =
+    document.getElementById(
+      "ordersSection"
+    );
 
 
-  if (!db.Orders.length) {
-
-    ordersBody.innerHTML = `
-
-      <tr>
-
-        <td colspan="7">
-          No current orders.
-        </td>
-
-      </tr>
-
-    `;
+  const inventorySection =
+    document.getElementById(
+      "inventorySection"
+    );
 
 
-    return;
+  const showOrdersBtn =
+    document.getElementById(
+      "showOrdersBtn"
+    );
+
+
+  const showInventoryBtn =
+    document.getElementById(
+      "showInventoryBtn"
+    );
+
+
+  const studentDemoBtn =
+    document.getElementById(
+      "studentDemoBtn"
+    );
+
+
+  const exportDataBtn =
+    document.getElementById(
+      "exportDataBtn"
+    );
+
+
+  const staffLogoutBtn =
+    document.getElementById(
+      "staffLogoutBtn"
+    );
+
+
+  /* =======================================================
+     STAFF INFORMATION
+     ======================================================= */
+
+  if (staffName) {
+
+    staffName.textContent =
+      `${staff.first_name} ${staff.last_name}`;
   }
 
 
-  /* DISPLAY ORDERS */
+  if (staffVendor) {
 
-  ordersBody.innerHTML =
-    db.Orders
-      .map(
-        order => {
-
-          const vendor =
-            findVendor(
-              db,
-              order.vendor_id
-            );
+    staffVendor.textContent =
+      "Campus FoodLink+";
+  }
 
 
-          const statusOptions =
-            db.OrderStatus
-              .map(
-                option => `
+  /* =======================================================
+     PROFESSOR DEMO ACCESS
+     ======================================================= */
 
-                  <option
-                    value="${option.status_id}"
-                    ${
-                      option.status_id ===
-                      order.status_id
-                        ? "selected"
-                        : ""
-                    }
-                  >
-                    ${option.status_name}
-                  </option>
+  if (
+    staff.role ===
+      "PROFESSOR DEMO" &&
+    studentDemoBtn
+  ) {
 
-                `
-              )
-              .join("");
+    studentDemoBtn.hidden =
+      false;
 
 
-          return `
+    studentDemoBtn.addEventListener(
+      "click",
+      () => {
 
-            <tr>
+        /*
+           Preserve the professor's actual
+           Staff primary key.
+        */
 
-              <td>
-                ${order.order_id}
-              </td>
+        sessionStorage.setItem(
+          "cflProfessorDemo",
+          "true"
+        );
 
-              <td>
-                ${
-                  vendor
-                    ? vendor.vendor_name
-                    : "Unknown"
-                }
-              </td>
 
-              <td>
+        sessionStorage.setItem(
+          "cflProfessorStaffId",
+          staff.staff_id
+        );
 
-                <select
-                  class="status-select"
-                  data-order-id="${order.order_id}"
-                >
-                  ${statusOptions}
-                </select>
 
-              </td>
+        /*
+           Switch to Ale Leon for the
+           student demonstration.
+        */
 
-              <td>
+        sessionStorage.setItem(
+          "cflRole",
+          "student"
+        );
 
-                ${new Date(
-                  order.order_date
-                ).toLocaleDateString()}
 
-              </td>
+        sessionStorage.setItem(
+          "cflStudentId",
+          101
+        );
 
-              <td>
-                ${order.pickup_time}
-              </td>
 
-              <td>
+        localStorage.removeItem(
+          CART_KEY
+        );
 
-                <textarea
-                  class="order-notes"
-                  data-order-id="${order.order_id}"
-                >${order.notes || ""}</textarea>
 
-              </td>
+        window.location.href =
+          "account.html";
+      }
+    );
+  }
 
-              <td>
 
-                <button
-                  type="button"
-                  class="view-order"
-                  data-order-id="${order.order_id}"
-                >
-                  View Order
-                </button>
+  /* =======================================================
+     EXPORT GRADING DATA
+     ======================================================= */
 
-              </td>
+  if (exportDataBtn) {
 
-            </tr>
+    exportDataBtn.addEventListener(
+      "click",
+      () => {
 
-          `;
+        const confirmed =
+          confirm(
+            "Export the current Campus FoodLink+ " +
+            "database as a JSON file for grading?"
+          );
+
+
+        if (!confirmed) {
+          return;
         }
-      )
-      .join("");
 
 
-  /* UPDATE STATUS */
-
-  document
-    .querySelectorAll(
-      ".status-select"
-    )
-    .forEach(
-      select => {
-
-        select.addEventListener(
-          "change",
-          () => {
-
-            const orderId =
-              Number(
-                select.dataset.orderId
-              );
+        exportDatabase();
+      }
+    );
+  }
 
 
-            const order =
-              db.Orders.find(
-                record =>
-                  record.order_id ===
-                  orderId
-              );
+  /* =======================================================
+     STAFF LOGOUT
+     ======================================================= */
+
+  if (staffLogoutBtn) {
+
+    staffLogoutBtn.addEventListener(
+      "click",
+      () => {
+
+        sessionStorage.clear();
 
 
-            if (!order) {
-              return;
-            }
-
-
-            order.status_id =
-              Number(
-                select.value
-              );
-
-
-            order.handled_by =
-              staff.staff_id;
-
-
-            saveDB(db);
-
-
-            const status =
-              findStatus(
-                db,
-                order.status_id
-              );
-
-
-            saveMessage.textContent =
-              `Order #${order.order_id} updated to ${status.status_name}.`;
-          }
+        localStorage.removeItem(
+          CART_KEY
         );
+
+
+        window.location.href =
+          "index.html";
+      }
+    );
+  }
+
+
+  /* =======================================================
+     STAFF DASHBOARD NAVIGATION
+     ======================================================= */
+
+  if (
+    showOrdersBtn &&
+    showInventoryBtn &&
+    ordersSection &&
+    inventorySection
+  ) {
+
+    showOrdersBtn.addEventListener(
+      "click",
+      () => {
+
+        ordersSection.hidden =
+          false;
+
+
+        inventorySection.hidden =
+          true;
+
+
+        showOrdersBtn.classList.add(
+          "active"
+        );
+
+
+        showInventoryBtn.classList.remove(
+          "active"
+        );
+
+
+        drawOrders();
       }
     );
 
 
-  /* SAVE NOTES */
+    showInventoryBtn.addEventListener(
+      "click",
+      () => {
 
-  document
-    .querySelectorAll(
-      ".order-notes"
-    )
-    .forEach(
-      textarea => {
-
-        textarea.addEventListener(
-          "change",
-          () => {
-
-            const orderId =
-              Number(
-                textarea.dataset.orderId
-              );
+        ordersSection.hidden =
+          true;
 
 
-            const order =
-              db.Orders.find(
-                record =>
-                  record.order_id ===
-                  orderId
-              );
+        inventorySection.hidden =
+          false;
 
 
-            if (!order) {
-              return;
-            }
-
-
-            order.notes =
-              textarea.value;
-
-
-            order.handled_by =
-              staff.staff_id;
-
-
-            saveDB(db);
-
-
-            saveMessage.textContent =
-              `Notes saved for Order #${order.order_id}.`;
-          }
+        showInventoryBtn.classList.add(
+          "active"
         );
+
+
+        showOrdersBtn.classList.remove(
+          "active"
+        );
+
+
+        drawInventory();
       }
     );
+  }
 
 
-  /* VIEW ORDER */
+  /* =======================================================
+     DRAW ORDERS
+     ======================================================= */
 
-  document
-    .querySelectorAll(
-      ".view-order"
-    )
-    .forEach(
-      button => {
+  function drawOrders() {
 
-        button.addEventListener(
-          "click",
-          () => {
-
-            const orderId =
-              Number(
-                button.dataset.orderId
-              );
+    if (!ordersBody) {
+      return;
+    }
 
 
-            const order =
-              db.Orders.find(
-                record =>
-                  record.order_id ===
-                  orderId
-              );
+    if (
+      db.Orders.length ===
+      0
+    ) {
+
+      ordersBody.innerHTML = `
+
+        <tr>
+          <td colspan="7">
+            No current orders.
+          </td>
+        </tr>
+
+      `;
 
 
-            if (!order) {
-              return;
-            }
+      return;
+    }
 
 
-            const student =
-              findStudent(
-                db,
-                order.student_id
-              );
-
+    ordersBody.innerHTML =
+      db.Orders
+        .map(
+          order => {
 
             const vendor =
               findVendor(
@@ -2202,86 +2727,668 @@ function ordersInit(db) {
               );
 
 
-            const status =
-              findStatus(
-                db,
-                order.status_id
-              );
-
-
-            const orderItems =
-              db.OrderItems.filter(
-                item =>
-                  item.order_id ===
-                  order.order_id
-              );
-
-
-            const itemText =
-              orderItems
+            const statusOptions =
+              db.OrderStatus
                 .map(
-                  orderItem => {
+                  option => `
 
-                    const menuItem =
-                      findMenuItem(
-                        db,
-                        orderItem.menu_item_id
-                      );
+                    <option
+                      value="${option.status_id}"
+                      ${
+                        option.status_id ===
+                        order.status_id
+                          ? "selected"
+                          : ""
+                      }
+                    >
+                      ${option.status_name}
+                    </option>
 
-
-                    return (
-                      `${orderItem.quantity} x ` +
-                      `${menuItem
-                        ? menuItem.item_name
-                        : "Unknown Item"} - ` +
-                      `$${(
-                        Number(
-                          orderItem.unit_price
-                        ) *
-                        orderItem.quantity
-                      ).toFixed(2)}`
-                    );
-                  }
+                  `
                 )
-                .join("\n");
+                .join("");
 
 
-            alert(
+            return `
 
-              `Order #${order.order_id}\n\n` +
+              <tr>
 
-              `Student: ${
-                student
-                  ? student.first_name +
-                    " " +
-                    student.last_name
-                  : "Unknown"
-              }\n` +
+                <td>
+                  ${order.order_id}
+                </td>
 
-              `Vendor: ${
-                vendor
-                  ? vendor.vendor_name
-                  : "Unknown"
-              }\n` +
+                <td>
+                  ${
+                    vendor
+                      ? vendor.vendor_name
+                      : "Unknown"
+                  }
+                </td>
 
-              `Pickup: ${order.pickup_time}\n` +
+                <td>
 
-              `Status: ${
-                status
-                  ? status.status_name
-                  : "Unknown"
-              }\n\n` +
+                  <select
+                    class="status-select"
+                    data-order-id="${order.order_id}"
+                  >
+                    ${statusOptions}
+                  </select>
 
-              `Items:\n${itemText}\n\n` +
+                </td>
 
-              `Total: $${Number(
-                order.total_amount
-              ).toFixed(2)}`
-            );
+                <td>
+                  ${new Date(
+                    order.order_date
+                  ).toLocaleDateString()}
+                </td>
+
+                <td>
+                  ${order.pickup_time}
+                </td>
+
+                <td>
+
+                  <textarea
+                    class="order-notes"
+                    data-order-id="${order.order_id}"
+                  >${order.notes || ""}</textarea>
+
+                </td>
+
+                <td>
+
+                  <button
+                    type="button"
+                    class="view-order"
+                    data-order-id="${order.order_id}"
+                  >
+                    View Order
+                  </button>
+
+                </td>
+
+              </tr>
+
+            `;
           }
-        );
-      }
-    );
+        )
+        .join("");
+
+
+    /* =====================================================
+       UPDATE ORDER STATUS
+       ===================================================== */
+
+    document
+      .querySelectorAll(
+        ".status-select"
+      )
+      .forEach(
+        select => {
+
+          select.addEventListener(
+            "change",
+            () => {
+
+              const selectedOrderId =
+                Number(
+                  select.dataset.orderId
+                );
+
+
+              const order =
+                db.Orders.find(
+                  record =>
+                    record.order_id ===
+                    selectedOrderId
+                );
+
+
+              if (!order) {
+                return;
+              }
+
+
+              const oldStatus =
+                findStatus(
+                  db,
+                  order.status_id
+                );
+
+
+              const newStatus =
+                findStatus(
+                  db,
+                  Number(
+                    select.value
+                  )
+                );
+
+
+              /*
+                 Prevent a canceled order from
+                 being reopened. This also helps
+                 prevent duplicate refunds.
+              */
+
+              if (
+                oldStatus &&
+                oldStatus.status_name ===
+                  "Canceled"
+              ) {
+
+                alert(
+                  "Canceled orders cannot be reopened."
+                );
+
+
+                select.value =
+                  order.status_id;
+
+
+                return;
+              }
+
+
+              order.status_id =
+                Number(
+                  select.value
+                );
+
+
+              order.handled_by =
+                staff.staff_id;
+
+
+              saveDB(db);
+
+
+              if (saveMessage) {
+
+                saveMessage.textContent =
+                  `Order #${order.order_id} updated to ` +
+                  `${newStatus
+                    ? newStatus.status_name
+                    : "Unknown"}.`;
+              }
+            }
+          );
+        }
+      );
+
+
+    /* =====================================================
+       SAVE ORDER NOTES
+       ===================================================== */
+
+    document
+      .querySelectorAll(
+        ".order-notes"
+      )
+      .forEach(
+        textarea => {
+
+          textarea.addEventListener(
+            "change",
+            () => {
+
+              const selectedOrderId =
+                Number(
+                  textarea.dataset.orderId
+                );
+
+
+              const order =
+                db.Orders.find(
+                  record =>
+                    record.order_id ===
+                    selectedOrderId
+                );
+
+
+              if (!order) {
+                return;
+              }
+
+
+              order.notes =
+                textarea.value;
+
+
+              order.handled_by =
+                staff.staff_id;
+
+
+              saveDB(db);
+
+
+              if (saveMessage) {
+
+                saveMessage.textContent =
+                  `Notes saved for Order #${order.order_id}.`;
+              }
+            }
+          );
+        }
+      );
+
+
+    /* =====================================================
+       VIEW ORDER DETAILS
+       ===================================================== */
+
+    document
+      .querySelectorAll(
+        ".view-order"
+      )
+      .forEach(
+        button => {
+
+          button.addEventListener(
+            "click",
+            () => {
+
+              const selectedOrderId =
+                Number(
+                  button.dataset.orderId
+                );
+
+
+              const order =
+                db.Orders.find(
+                  record =>
+                    record.order_id ===
+                    selectedOrderId
+                );
+
+
+              if (!order) {
+                return;
+              }
+
+
+              const student =
+                findStudent(
+                  db,
+                  order.student_id
+                );
+
+
+              const vendor =
+                findVendor(
+                  db,
+                  order.vendor_id
+                );
+
+
+              const status =
+                findStatus(
+                  db,
+                  order.status_id
+                );
+
+
+              const orderItems =
+                db.OrderItems.filter(
+                  item =>
+                    item.order_id ===
+                    order.order_id
+                );
+
+
+              const itemText =
+                orderItems
+                  .map(
+                    orderItem => {
+
+                      const menuItem =
+                        findMenuItem(
+                          db,
+                          orderItem.menu_item_id
+                        );
+
+
+                      return (
+                        `${orderItem.quantity} x ` +
+                        `${menuItem
+                          ? menuItem.item_name
+                          : "Unknown Item"} - ` +
+                        `$${(
+                          Number(
+                            orderItem.unit_price
+                          ) *
+                          Number(
+                            orderItem.quantity
+                          )
+                        ).toFixed(2)}`
+                      );
+                    }
+                  )
+                  .join("\n");
+
+
+              alert(
+
+                `Order #${order.order_id}\n\n` +
+
+                `Student: ${
+                  student
+                    ? student.first_name +
+                      " " +
+                      student.last_name
+                    : "Unknown"
+                }\n` +
+
+                `Vendor: ${
+                  vendor
+                    ? vendor.vendor_name
+                    : "Unknown"
+                }\n` +
+
+                `Pickup: ${order.pickup_time}\n` +
+
+                `Status: ${
+                  status
+                    ? status.status_name
+                    : "Unknown"
+                }\n\n` +
+
+                `Items:\n${itemText}\n\n` +
+
+                `Total: $${Number(
+                  order.total_amount
+                ).toFixed(2)}`
+              );
+            }
+          );
+        }
+      );
+  }
+
+
+  /* =======================================================
+     DRAW INVENTORY
+     ======================================================= */
+
+  function drawInventory() {
+
+    if (!inventoryBody) {
+      return;
+    }
+
+
+    if (
+      db.MenuItems.length ===
+      0
+    ) {
+
+      inventoryBody.innerHTML = `
+
+        <tr>
+          <td colspan="7">
+            No menu items found.
+          </td>
+        </tr>
+
+      `;
+
+
+      return;
+    }
+
+
+    inventoryBody.innerHTML =
+      db.MenuItems
+        .map(
+          item => {
+
+            const vendor =
+              findVendor(
+                db,
+                item.vendor_id
+              );
+
+
+            const actualAvailable =
+              item.is_available ===
+                true &&
+              Number(
+                item.inventory_quantity
+              ) > 0;
+
+
+            return `
+
+              <tr>
+
+                <td>
+                  ${item.menu_item_id}
+                </td>
+
+                <td>
+                  ${
+                    vendor
+                      ? vendor.vendor_name
+                      : "Unknown"
+                  }
+                </td>
+
+                <td>
+                  ${item.item_name}
+                </td>
+
+                <td>
+                  $${Number(
+                    item.price
+                  ).toFixed(2)}
+                </td>
+
+                <td>
+
+                  <input
+                    type="number"
+                    class="inventory-quantity"
+                    data-item-id="${item.menu_item_id}"
+                    min="0"
+                    step="1"
+                    value="${item.inventory_quantity}"
+                  >
+
+                </td>
+
+                <td>
+
+                  <select
+                    class="availability-select"
+                    data-item-id="${item.menu_item_id}"
+                  >
+
+                    <option
+                      value="true"
+                      ${
+                        item.is_available
+                          ? "selected"
+                          : ""
+                      }
+                    >
+                      Yes
+                    </option>
+
+                    <option
+                      value="false"
+                      ${
+                        !item.is_available
+                          ? "selected"
+                          : ""
+                      }
+                    >
+                      No
+                    </option>
+
+                  </select>
+
+                  <small>
+                    Currently:
+                    ${
+                      actualAvailable
+                        ? "Available"
+                        : "Unavailable"
+                    }
+                  </small>
+
+                </td>
+
+                <td>
+
+                  <button
+                    type="button"
+                    class="save-inventory"
+                    data-item-id="${item.menu_item_id}"
+                  >
+                    Save
+                  </button>
+
+                </td>
+
+              </tr>
+
+            `;
+          }
+        )
+        .join("");
+
+
+    /* =====================================================
+       SAVE INVENTORY
+       ===================================================== */
+
+    document
+      .querySelectorAll(
+        ".save-inventory"
+      )
+      .forEach(
+        button => {
+
+          button.addEventListener(
+            "click",
+            () => {
+
+              const itemId =
+                Number(
+                  button.dataset.itemId
+                );
+
+
+              const menuItem =
+                findMenuItem(
+                  db,
+                  itemId
+                );
+
+
+              if (!menuItem) {
+                return;
+              }
+
+
+              const quantityInput =
+                document.querySelector(
+                  `.inventory-quantity[data-item-id="${itemId}"]`
+                );
+
+
+              const availabilityInput =
+                document.querySelector(
+                  `.availability-select[data-item-id="${itemId}"]`
+                );
+
+
+              if (
+                !quantityInput ||
+                !availabilityInput
+              ) {
+
+                return;
+              }
+
+
+              const quantity =
+                Number(
+                  quantityInput.value
+                );
+
+
+              /* VALIDATE QUANTITY */
+
+              if (
+                !Number.isInteger(
+                  quantity
+                ) ||
+                quantity < 0
+              ) {
+
+                if (inventoryMessage) {
+
+                  inventoryMessage.textContent =
+                    "Inventory must be a whole number of 0 or greater.";
+                }
+
+
+                return;
+              }
+
+
+              /* UPDATE INVENTORY */
+
+              menuItem.inventory_quantity =
+                quantity;
+
+
+              /* UPDATE AVAILABILITY */
+
+              menuItem.is_available =
+                availabilityInput.value ===
+                "true";
+
+
+              /*
+                 Zero inventory always means
+                 unavailable.
+              */
+
+              if (
+                menuItem.inventory_quantity ===
+                0
+              ) {
+
+                menuItem.is_available =
+                  false;
+              }
+
+
+              saveDB(db);
+
+
+              if (inventoryMessage) {
+
+                inventoryMessage.textContent =
+                  `${menuItem.item_name} inventory updated successfully.`;
+              }
+
+
+              drawInventory();
+            }
+          );
+        }
+      );
+  }
+
+
+  /* =======================================================
+     INITIAL STAFF VIEW
+     ======================================================= */
+
+  drawOrders();
 }
 
 
@@ -2341,6 +3448,14 @@ document.addEventListener(
         ordersInit(db);
 
         break;
+
+
+      default:
+
+        console.warn(
+          "Unknown Campus FoodLink+ page:",
+          page
+        );
     }
   }
 );
