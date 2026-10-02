@@ -3,91 +3,81 @@
 
 <head>
   <meta charset="utf-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Order Confirmation</title>
 
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body data-page="confirmation">
 
-  <main class="wireframe confirmation">
+  <main class="wireframe">
 
-    <span class="school-logo">
-      Campus FoodLink+
-    </span>
+    <!-- Header -->
+    <header>
+      <b>Campus FoodLink+</b>
+    </header>
 
 
-    <!-- =================================================
-         ORDER CONFIRMATION
-         ================================================= -->
+    <!-- Order Confirmation -->
+    <section class="panel confirmation">
 
-    <div class="confirmation-copy">
+      <h2>Order Confirmation</h2>
 
       <p>
+        Your order has been successfully submitted.
+      </p>
 
-        Your Order #
+      <p>
+        <strong>Order #:</strong>
+        <span id="confirmOrder"></span>
+      </p>
 
-        <b id="confirmOrder">
-          [DATA NEEDED HERE]
-        </b>
+      <p>
+        <strong>Vendor:</strong>
+        <span id="confirmVendor"></span>
+      </p>
 
-        is
+      <p>
+        <strong>Status:</strong>
+        <span id="confirmStatus"></span>
+      </p>
 
-        <b id="confirmStatus">
-          pending!
-        </b>
+      <p>
+        <strong>Pickup Time:</strong>
+        <span id="confirmPickup"></span>
+      </p>
 
+      <p>
+        <strong>Order Total:</strong>
+        $<span id="confirmTotal">0.00</span>
       </p>
 
 
-      <p>
+      <!-- Navigation -->
+      <div class="confirm-actions">
 
-        Pickup Time:
+        <a
+          class="button"
+          href="account.html">
+          Return to Dashboard
+        </a>
 
-        <b id="confirmPickup">
-          [DATA NEEDED HERE]
-        </b>
+        <button
+          id="logoutBtn"
+          type="button">
+          Logout
+        </button>
 
-      </p>
+      </div>
 
-    </div>
-
-
-    <!-- =================================================
-         ACTIONS
-         ================================================= -->
-
-    <div class="confirm-actions">
-
-      <button
-        id="logoutBtn"
-        type="button"
-      >
-        Logout
-      </button>
-
-
-      <a
-        class="button"
-        href="account.html"
-      >
-        Return to Dashboard
-      </a>
-
-    </div>
+    </section>
 
   </main>
 
   <script src="app.js"></script>
 
 </body>
+
 </html>
