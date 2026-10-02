@@ -11,26 +11,51 @@
 
 const FALLBACK = {
 
-  student: {
-    id: 101,
-    userId: "aleon",
-    password: "password",
-    name: "Ale Leon",
-    balance: 100.00
-  },
+  students: [
+    {
+      id: 101,
+      userId: "aleon",
+      password: "password",
+      name: "Ale Leon",
+      balance: 100.00
+    },
+    {
+      id: 102,
+      userId: "pparker",
+      password: "password",
+      name: "Peter Parker",
+      balance: 75.00
+    }
+  ],
 
-  staff: {
-    userId: "staff",
-    password: "password",
-    name: "Dominic Toretto"
-  },
+  staff: [
+    {
+      id: 113,
+      userId: "dtoretto",
+      password: "password",
+      name: "Dominic Toretto",
+      role: "DIETARY ASSOCIATE"
+    },
+    {
+      id: 114,
+      userId: "lhobbs",
+      password: "password",
+      name: "Luke Hobbs",
+      role: "DIETARY MANAGER"
+    },
+    {
+      id: 115,
+      userId: "ebrown",
+      password: "password",
+      name: "Emmett Brown",
+      role: "IT STAFF"
+    }
+  ],
 
   vendors: [
-
     {
       id: 1,
       name: "Frenchies",
-
       menu: [
         {
           id: 991,
@@ -53,7 +78,6 @@ const FALLBACK = {
     {
       id: 2,
       name: "Campus Grill",
-
       menu: [
         {
           id: 994,
@@ -76,7 +100,6 @@ const FALLBACK = {
     {
       id: 3,
       name: "Student Cafe",
-
       menu: [
         {
           id: 997,
@@ -95,7 +118,6 @@ const FALLBACK = {
         }
       ]
     }
-
   ],
 
   orderStatus: [
@@ -105,12 +127,11 @@ const FALLBACK = {
     "Ready",
     "Canceled"
   ]
-
 };
 
 
 /* =========================================================
-   LOCAL STORAGE
+   LOCAL STORAGE FUNCTIONS
    ========================================================= */
 
 const read = (key, fallback = null) => {
@@ -141,7 +162,7 @@ const write = (key, value) => {
 
 
 /* =========================================================
-   LOAD APPS.JSON
+   LOAD apps.json
    ========================================================= */
 
 async function data() {
@@ -150,6 +171,7 @@ async function data() {
 
     const response =
       await fetch("apps.json");
+
 
     if (response.ok) {
 
@@ -165,13 +187,14 @@ async function data() {
 
   }
 
+
   return FALLBACK;
 
 }
 
 
 /* =========================================================
-   USER ROLE
+   CURRENT USER ROLE
    ========================================================= */
 
 function role() {
@@ -184,7 +207,7 @@ function role() {
 
 
 /* =========================================================
-   PAGE ACCESS
+   PAGE ACCESS CONTROL
    ========================================================= */
 
 function guard(requiredRole) {
@@ -198,7 +221,22 @@ function guard(requiredRole) {
 
   }
 
+
   return true;
+
+}
+
+
+/* =========================================================
+   CURRENT STUDENT
+   ========================================================= */
+
+function currentStudent() {
+
+  return read(
+    "cflStudent",
+    null
+  );
 
 }
 
@@ -239,44 +277,81 @@ function cart() {
 function loginInit(d) {
 
   const loginForm =
-    document.querySelector(
-      "#loginForm"
+    document.getElementById(
+      "loginForm"
     );
 
 
-  /* -------------------------------------------------------
-     STUDENT LOGIN
-     ------------------------------------------------------- */
+  const userIdInput =
+    document.getElementById(
+      "userId"
+    );
+
+
+  const passwordInput =
+    document.getElementById(
+      "password"
+    );
+
+
+  const loginError =
+    document.getElementById(
+      "loginError"
+    );
+
 
   loginForm.onsubmit = event => {
 
     event.preventDefault();
 
 
-    const username =
-      document
-        .getElementById("userId")
-        .value
-        .trim();
+    /* -----------------------------------------------------
+       GET USERNAME AND PASSWORD
+       ----------------------------------------------------- */
+
+    const enteredUserId =
+      userIdInput.value.trim();
 
 
     const enteredPassword =
-      document
-        .getElementById("password")
-        .value;
+      passwordInput.value;
 
 
-    const loginError =
-      document.getElementById(
-        "loginError"
+    loginError.textContent =
+      "";
+
+
+    /* -----------------------------------------------------
+       CHECK STUDENT TABLE
+       ----------------------------------------------------- */
+
+    const student =
+      d.students.find(
+        student =>
+          student.userId.toLowerCase() ===
+          enteredUserId.toLowerCase()
       );
 
 
-    /* VALIDATE STUDENT CREDENTIALS */
+    /* -----------------------------------------------------
+       CHECK STAFF TABLE
+       ----------------------------------------------------- */
+
+    const staffMember =
+      d.staff.find(
+        staff =>
+          staff.userId.toLowerCase() ===
+          enteredUserId.toLowerCase()
+      );
+
+
+    /* =====================================================
+       VALID STUDENT LOGIN
+       ===================================================== */
 
     if (
-      username === d.student.userId &&
-      enteredPassword === d.student.password
+      student &&
+      student.password === enteredPassword
     ) {
 
       sessionStorage.setItem(
@@ -285,43 +360,134 @@ function loginInit(d) {
       );
 
 
-      loginError.textContent =
-        "";
+      sessionStorage.setItem(
+        "cflUserId",
+        student.userId
+      );
+
+
+      sessionStorage.setItem(
+        "cflStudentId",
+        student.id
+      );
+
+
+      /*
+         Check whether this student already has
+         locally saved account information.
+      */
+
+      const savedStudent =
+        read(
+          `cflStudent_${student.id}`,
+          null
+        );
+
+
+      if (savedStudent) {
+
+        write(
+          "cflStudent",
+          savedStudent
+        );
+
+      } else {
+
+        write(
+          "cflStudent",
+          student
+        );
+
+
+        write(
+          `cflStudent_${student.id}`,
+          student
+        );
+
+      }
+
+
+      /* CLEAR OLD CART */
+
+      localStorage.removeItem(
+        "cflCart"
+      );
 
 
       location.href =
         "account.html";
 
-    } else {
 
-      loginError.textContent =
-        "Invalid User ID or password. Please try again.";
+      return;
 
     }
 
-  };
+
+    /* =====================================================
+       VALID STAFF LOGIN
+       ===================================================== */
+
+    if (
+      staffMember &&
+      staffMember.password === enteredPassword
+    ) {
+
+      sessionStorage.setItem(
+        "cflRole",
+        "staff"
+      );
 
 
-  /* -------------------------------------------------------
-     STAFF LOGIN
-     ------------------------------------------------------- */
-
-  const staffButton =
-    document.querySelector(
-      "[data-role='staff']"
-    );
+      sessionStorage.setItem(
+        "cflUserId",
+        staffMember.userId
+      );
 
 
-  staffButton.onclick = () => {
-
-    sessionStorage.setItem(
-      "cflRole",
-      "staff"
-    );
+      sessionStorage.setItem(
+        "cflStaffId",
+        staffMember.id
+      );
 
 
-    location.href =
-      "orders.html";
+      sessionStorage.setItem(
+        "cflStaffName",
+        staffMember.name
+      );
+
+
+      sessionStorage.setItem(
+        "cflStaffRole",
+        staffMember.role
+      );
+
+
+      location.href =
+        "orders.html";
+
+
+      return;
+
+    }
+
+
+    /* =====================================================
+       INVALID USERNAME OR PASSWORD
+       ===================================================== */
+
+    loginError.textContent =
+      "Invalid username or password.";
+
+
+    /*
+       Clear password after failed login.
+    */
+
+    passwordInput.value =
+      "";
+
+
+    passwordInput.focus();
 
   };
 
@@ -332,7 +498,7 @@ function loginInit(d) {
    STUDENT DASHBOARD
    ========================================================= */
 
-function accountInit(d) {
+function accountInit() {
 
   if (!guard("student")) {
 
@@ -341,59 +507,377 @@ function accountInit(d) {
   }
 
 
-  const student =
-    read(
-      "cflStudent",
-      d.student
+  const studentName =
+    document.getElementById(
+      "studentName"
     );
 
 
-  const currentOrder =
-    order();
+  const balance =
+    document.getElementById(
+      "balance"
+    );
 
 
-  /* -------------------------------------------------------
-     DISPLAY STUDENT INFORMATION
-     ------------------------------------------------------- */
-
-  document.getElementById(
-    "studentName"
-  ).textContent =
-    student.name;
-
-
-  document.getElementById(
-    "balance"
-  ).textContent =
-    Number(
-      student.balance
-    ).toFixed(2);
-
-
-  /* -------------------------------------------------------
-     DISPLAY CURRENT ORDER
-     ------------------------------------------------------- */
-
-  if (currentOrder) {
-
+  const orderId =
     document.getElementById(
       "orderId"
-    ).textContent =
+    );
+
+
+  const orderVendor =
+    document.getElementById(
+      "orderVendor"
+    );
+
+
+  const orderStatus =
+    document.getElementById(
+      "orderStatus"
+    );
+
+
+  const addFundsBtn =
+    document.getElementById(
+      "addFundsBtn"
+    );
+
+
+  const cancelOrderBtn =
+    document.getElementById(
+      "cancelOrderBtn"
+    );
+
+
+  const accountMessage =
+    document.getElementById(
+      "accountMessage"
+    );
+
+
+  /* =======================================================
+     DISPLAY STUDENT INFORMATION
+     ======================================================= */
+
+  function displayStudent() {
+
+    const student =
+      currentStudent();
+
+
+    if (!student) {
+
+      location.href =
+        "index.html";
+
+      return;
+
+    }
+
+
+    studentName.textContent =
+      student.name;
+
+
+    balance.textContent =
+      Number(
+        student.balance
+      ).toFixed(2);
+
+  }
+
+
+  /* =======================================================
+     DISPLAY CURRENT ORDER
+     ======================================================= */
+
+  function displayOrder() {
+
+    const student =
+      currentStudent();
+
+
+    const currentOrder =
+      order();
+
+
+    /*
+       Only display the order if it belongs
+       to the currently logged-in student.
+    */
+
+    if (
+      !currentOrder ||
+      !student ||
+      currentOrder.studentId !== student.id
+    ) {
+
+      orderId.textContent =
+        "No Current Order";
+
+
+      orderVendor.textContent =
+        "-";
+
+
+      orderStatus.textContent =
+        "-";
+
+
+      cancelOrderBtn.style.display =
+        "none";
+
+
+      return;
+
+    }
+
+
+    orderId.textContent =
       currentOrder.id;
 
 
-    document.getElementById(
-      "orderVendor"
-    ).textContent =
+    orderVendor.textContent =
       currentOrder.vendor;
 
 
-    document.getElementById(
-      "orderStatus"
-    ).textContent =
+    orderStatus.textContent =
       currentOrder.status;
 
+
+    /*
+       Student may cancel Pending or Approved orders.
+
+       Preparing, Ready, and Canceled orders
+       cannot be canceled by the student.
+    */
+
+    if (
+      currentOrder.status === "Preparing" ||
+      currentOrder.status === "Ready" ||
+      currentOrder.status === "Canceled"
+    ) {
+
+      cancelOrderBtn.style.display =
+        "none";
+
+    } else {
+
+      cancelOrderBtn.style.display =
+        "inline-block";
+
+    }
+
   }
+
+
+  /* =======================================================
+     ADD FUNDS
+     ======================================================= */
+
+  addFundsBtn.onclick = () => {
+
+    const amount =
+      prompt(
+        "Enter the amount you would like to add:"
+      );
+
+
+    if (amount === null) {
+
+      return;
+
+    }
+
+
+    const funds =
+      Number(amount);
+
+
+    /* VALIDATE AMOUNT */
+
+    if (
+      !Number.isFinite(funds) ||
+      funds <= 0
+    ) {
+
+      alert(
+        "Please enter a valid amount greater than $0."
+      );
+
+
+      return;
+
+    }
+
+
+    const student =
+      currentStudent();
+
+
+    if (!student) {
+
+      return;
+
+    }
+
+
+    student.balance =
+      +(
+        Number(student.balance) +
+        funds
+      ).toFixed(2);
+
+
+    /* SAVE STUDENT */
+
+    write(
+      "cflStudent",
+      student
+    );
+
+
+    write(
+      `cflStudent_${student.id}`,
+      student
+    );
+
+
+    accountMessage.textContent =
+      `$${funds.toFixed(2)} was added to your account.`;
+
+
+    displayStudent();
+
+  };
+
+
+  /* =======================================================
+     CANCEL ORDER
+     ======================================================= */
+
+  cancelOrderBtn.onclick = () => {
+
+    const student =
+      currentStudent();
+
+
+    const currentOrder =
+      order();
+
+
+    if (
+      !student ||
+      !currentOrder
+    ) {
+
+      return;
+
+    }
+
+
+    /*
+       Make sure the order belongs to
+       the logged-in student.
+    */
+
+    if (
+      currentOrder.studentId !== student.id
+    ) {
+
+      return;
+
+    }
+
+
+    /* CHECK ORDER STATUS */
+
+    if (
+      currentOrder.status === "Preparing" ||
+      currentOrder.status === "Ready" ||
+      currentOrder.status === "Canceled"
+    ) {
+
+      alert(
+        "This order can no longer be canceled."
+      );
+
+
+      return;
+
+    }
+
+
+    /* CONFIRM CANCELLATION */
+
+    const confirmed =
+      confirm(
+        `Are you sure you want to cancel Order #${currentOrder.id}?`
+      );
+
+
+    if (!confirmed) {
+
+      return;
+
+    }
+
+
+    /* CHANGE STATUS */
+
+    currentOrder.status =
+      "Canceled";
+
+
+    write(
+      "cflOrder",
+      currentOrder
+    );
+
+
+    /* REFUND ORDER */
+
+    student.balance =
+      +(
+        Number(student.balance) +
+        Number(currentOrder.total)
+      ).toFixed(2);
+
+
+    /* SAVE UPDATED STUDENT */
+
+    write(
+      "cflStudent",
+      student
+    );
+
+
+    write(
+      `cflStudent_${student.id}`,
+      student
+    );
+
+
+    accountMessage.textContent =
+      `Order #${currentOrder.id} was canceled. ` +
+      `$${Number(currentOrder.total).toFixed(2)} ` +
+      `was returned to your balance.`;
+
+
+    displayStudent();
+
+    displayOrder();
+
+  };
+
+
+  /* =======================================================
+     INITIAL DISPLAY
+     ======================================================= */
+
+  displayStudent();
+
+  displayOrder();
 
 }
 
@@ -406,6 +890,20 @@ function accountInit(d) {
 function menuInit(d) {
 
   if (!guard("student")) {
+
+    return;
+
+  }
+
+
+  const student =
+    currentStudent();
+
+
+  if (!student) {
+
+    location.href =
+      "index.html";
 
     return;
 
@@ -452,9 +950,9 @@ function menuInit(d) {
     null;
 
 
-  /* -------------------------------------------------------
-     CREATE VENDOR DROPDOWN
-     ------------------------------------------------------- */
+  /* =======================================================
+     BUILD VENDOR DROPDOWN
+     ======================================================= */
 
   vendorSelect.innerHTML =
     '<option value="">Select a Vendor</option>';
@@ -483,9 +981,9 @@ function menuInit(d) {
   });
 
 
-  /* -------------------------------------------------------
+  /* =======================================================
      VENDOR SELECTION
-     ------------------------------------------------------- */
+     ======================================================= */
 
   vendorSelect.onchange = () => {
 
@@ -499,13 +997,13 @@ function menuInit(d) {
       d.vendors.find(
         vendor =>
           vendor.id === vendorId
-      );
+      ) || null;
 
 
     /*
-       Clear the cart when switching vendors
-       so items from different vendors are
-       not placed in the same order.
+       Clear cart when changing vendors.
+       This prevents items from multiple
+       vendors being placed in one order.
     */
 
     localStorage.removeItem(
@@ -519,7 +1017,7 @@ function menuInit(d) {
 
 
   /* =======================================================
-     DRAW MENU AND CART
+     DRAW MENU AND SHOPPING CART
      ======================================================= */
 
   function draw() {
@@ -549,7 +1047,7 @@ function menuInit(d) {
 
 
     /* -----------------------------------------------------
-       DISPLAY VENDOR MENU
+       DISPLAY MENU
        ----------------------------------------------------- */
 
     menuItems.innerHTML =
@@ -568,14 +1066,17 @@ function menuInit(d) {
 
               <br>
 
-              $${item.price.toFixed(2)}
+              $${Number(
+                item.price
+              ).toFixed(2)}
 
             </div>
 
             <button
               type="button"
+              class="add-item"
               data-id="${item.id}"
-              aria-label="Add ${item.name} to order"
+              aria-label="Add ${item.name}"
             >
               +
             </button>
@@ -587,12 +1088,16 @@ function menuInit(d) {
 
 
     /* -----------------------------------------------------
-       DISPLAY SHOPPING CART
+       CURRENT CART
        ----------------------------------------------------- */
 
     const currentCart =
       cart();
 
+
+    /* -----------------------------------------------------
+       DISPLAY CART
+       ----------------------------------------------------- */
 
     cartRows.innerHTML =
       currentCart
@@ -610,9 +1115,22 @@ function menuInit(d) {
 
             <td>
               $${(
-                item.price *
+                Number(item.price) *
                 item.qty
               ).toFixed(2)}
+            </td>
+
+            <td>
+
+              <button
+                type="button"
+                class="remove-item"
+                data-id="${item.id}"
+                aria-label="Remove ${item.name}"
+              >
+                Remove
+              </button>
+
             </td>
 
           </tr>
@@ -621,15 +1139,89 @@ function menuInit(d) {
         .join("");
 
 
-    /* -----------------------------------------------------
-       CALCULATE CART TOTAL
-       ----------------------------------------------------- */
+    /* =====================================================
+       REMOVE ITEM FROM CART
+       ===================================================== */
+
+    document
+      .querySelectorAll(
+        ".remove-item"
+      )
+      .forEach(button => {
+
+        button.onclick = () => {
+
+          const itemId =
+            Number(
+              button.dataset.id
+            );
+
+
+          let updatedCart =
+            cart();
+
+
+          const item =
+            updatedCart.find(
+              cartItem =>
+                cartItem.id === itemId
+            );
+
+
+          if (!item) {
+
+            return;
+
+          }
+
+
+          /*
+             If quantity is greater than 1,
+             remove one.
+          */
+
+          if (item.qty > 1) {
+
+            item.qty--;
+
+          } else {
+
+            /*
+               If quantity is 1,
+               remove the item completely.
+            */
+
+            updatedCart =
+              updatedCart.filter(
+                cartItem =>
+                  cartItem.id !== itemId
+              );
+
+          }
+
+
+          write(
+            "cflCart",
+            updatedCart
+          );
+
+
+          draw();
+
+        };
+
+      });
+
+
+    /* =====================================================
+       CALCULATE TOTAL
+       ===================================================== */
 
     const total =
       currentCart.reduce(
         (sum, item) =>
           sum +
-          item.price *
+          Number(item.price) *
           item.qty,
         0
       );
@@ -639,13 +1231,13 @@ function menuInit(d) {
       total.toFixed(2);
 
 
-    /* -----------------------------------------------------
-       ADD MENU ITEMS TO CART
-       ----------------------------------------------------- */
+    /* =====================================================
+       ADD ITEM TO CART
+       ===================================================== */
 
     document
       .querySelectorAll(
-        ".menu-item button"
+        ".add-item"
       )
       .forEach(button => {
 
@@ -661,22 +1253,23 @@ function menuInit(d) {
             );
 
 
-          const currentCart =
+          if (!item) {
+
+            return;
+
+          }
+
+
+          const updatedCart =
             cart();
 
 
           const existingItem =
-            currentCart.find(
+            updatedCart.find(
               cartItem =>
-                cartItem.id ===
-                item.id
+                cartItem.id === item.id
             );
 
-
-          /*
-             If the item is already in the
-             cart, increase its quantity.
-          */
 
           if (existingItem) {
 
@@ -684,7 +1277,7 @@ function menuInit(d) {
 
           } else {
 
-            currentCart.push({
+            updatedCart.push({
 
               ...item,
 
@@ -697,7 +1290,7 @@ function menuInit(d) {
 
           write(
             "cflCart",
-            currentCart
+            updatedCart
           );
 
 
@@ -711,15 +1304,13 @@ function menuInit(d) {
 
 
   /* =======================================================
-     CONFIRM / PLACE ORDER
+     CONFIRM ORDER
      ======================================================= */
 
   placeOrder.onclick = () => {
 
 
-    /* -----------------------------------------------------
-       VALIDATE VENDOR
-       ----------------------------------------------------- */
+    /* VALIDATE VENDOR */
 
     if (!selectedVendor) {
 
@@ -727,14 +1318,13 @@ function menuInit(d) {
         "Please select a vendor."
       );
 
+
       return;
 
     }
 
 
-    /* -----------------------------------------------------
-       VALIDATE CART
-       ----------------------------------------------------- */
+    /* VALIDATE CART */
 
     const currentCart =
       cart();
@@ -746,53 +1336,60 @@ function menuInit(d) {
         "Select at least one item."
       );
 
+
       return;
 
     }
 
 
-    /* -----------------------------------------------------
-       CALCULATE ORDER TOTAL
-       ----------------------------------------------------- */
+    /* CALCULATE TOTAL */
 
     const total =
       currentCart.reduce(
         (sum, item) =>
           sum +
-          item.price *
+          Number(item.price) *
           item.qty,
         0
       );
 
 
-    const student =
-      read(
-        "cflStudent",
-        d.student
-      );
+    const currentStudentData =
+      currentStudent();
 
 
-    /* -----------------------------------------------------
-       VALIDATE MEAL-PLAN BALANCE
-       ----------------------------------------------------- */
+    if (!currentStudentData) {
 
-    if (
-      total >
-      Number(student.balance)
-    ) {
-
-      alert(
-        "Insufficient meal-plan balance."
-      );
+      location.href =
+        "index.html";
 
       return;
 
     }
 
 
-    /* -----------------------------------------------------
-       CREATE UNIQUE ORDER NUMBER
-       ----------------------------------------------------- */
+    /* VALIDATE BALANCE */
+
+    if (
+      total >
+      Number(
+        currentStudentData.balance
+      )
+    ) {
+
+      alert(
+        "Insufficient meal-plan balance. Please add funds to your account."
+      );
+
+
+      return;
+
+    }
+
+
+    /* =====================================================
+       CREATE ORDER
+       ===================================================== */
 
     const orderId =
       Date.now()
@@ -800,20 +1397,16 @@ function menuInit(d) {
         .slice(-6);
 
 
-    /* -----------------------------------------------------
-       CREATE ORDER
-       ----------------------------------------------------- */
-
     const newOrder = {
 
       id:
         orderId,
 
       studentId:
-        student.id,
+        currentStudentData.id,
 
       studentName:
-        student.name,
+        currentStudentData.name,
 
       vendorId:
         selectedVendor.id,
@@ -838,14 +1431,12 @@ function menuInit(d) {
         currentCart,
 
       total:
-        total
+        +total.toFixed(2)
 
     };
 
 
-    /* -----------------------------------------------------
-       SAVE ORDER
-       ----------------------------------------------------- */
+    /* SAVE ORDER */
 
     write(
       "cflOrder",
@@ -853,40 +1444,39 @@ function menuInit(d) {
     );
 
 
-    /* -----------------------------------------------------
-       UPDATE STUDENT BALANCE
-       ----------------------------------------------------- */
+    /* =====================================================
+       DEDUCT ORDER FROM BALANCE
+       ===================================================== */
+
+    currentStudentData.balance =
+      +(
+        Number(
+          currentStudentData.balance
+        ) -
+        total
+      ).toFixed(2);
+
 
     write(
       "cflStudent",
-      {
-
-        ...student,
-
-        balance:
-          +(
-            Number(
-              student.balance
-            ) -
-            total
-          ).toFixed(2)
-
-      }
+      currentStudentData
     );
 
 
-    /* -----------------------------------------------------
-       CLEAR CART
-       ----------------------------------------------------- */
+    write(
+      `cflStudent_${currentStudentData.id}`,
+      currentStudentData
+    );
+
+
+    /* CLEAR CART */
 
     localStorage.removeItem(
       "cflCart"
     );
 
 
-    /* -----------------------------------------------------
-       ORDER CONFIRMATION
-       ----------------------------------------------------- */
+    /* GO TO CONFIRMATION */
 
     location.href =
       "confirmation.html";
@@ -894,7 +1484,7 @@ function menuInit(d) {
   };
 
 
-  /* INITIAL DRAW */
+  /* INITIAL DISPLAY */
 
   draw();
 
@@ -914,45 +1504,72 @@ function confirmationInit() {
   }
 
 
+  const student =
+    currentStudent();
+
+
   const currentOrder =
     order();
 
 
-  if (currentOrder) {
+  if (
+    !student ||
+    !currentOrder ||
+    currentOrder.studentId !== student.id
+  ) {
 
-    document.getElementById(
-      "confirmOrder"
-    ).textContent =
-      currentOrder.id;
+    location.href =
+      "account.html";
 
-
-    document.getElementById(
-      "confirmStatus"
-    ).textContent =
-      currentOrder.status === "Ready"
-        ? "ready!"
-        : currentOrder.status
-            .toLowerCase() +
-          "!";
-
-
-    document.getElementById(
-      "confirmPickup"
-    ).textContent =
-      currentOrder.pickup;
+    return;
 
   }
 
 
-  /* -------------------------------------------------------
+  document.getElementById(
+    "confirmOrder"
+  ).textContent =
+    currentOrder.id;
+
+
+  document.getElementById(
+    "confirmStatus"
+  ).textContent =
+    currentOrder.status.toLowerCase() +
+    "!";
+
+
+  document.getElementById(
+    "confirmPickup"
+  ).textContent =
+    currentOrder.pickup;
+
+
+  /* =======================================================
      LOGOUT
-     ------------------------------------------------------- */
+     ======================================================= */
 
   document.getElementById(
     "logoutBtn"
   ).onclick = () => {
 
     sessionStorage.clear();
+
+
+    /*
+       cflStudent is only the active student
+       session copy. The student's persistent
+       account remains in cflStudent_ID.
+    */
+
+    localStorage.removeItem(
+      "cflStudent"
+    );
+
+
+    localStorage.removeItem(
+      "cflCart"
+    );
 
 
     location.href =
@@ -1001,21 +1618,24 @@ function ordersInit(d) {
     );
 
 
+  /* =======================================================
+     DISPLAY LOGGED-IN STAFF MEMBER
+     ======================================================= */
+
+  staffName.textContent =
+    sessionStorage.getItem(
+      "cflStaffName"
+    ) ||
+    "Staff Member";
+
+
   const currentOrder =
     order();
 
 
-  /* -------------------------------------------------------
-     DISPLAY STAFF NAME
-     ------------------------------------------------------- */
-
-  staffName.textContent =
-    d.staff.name;
-
-
-  /* -------------------------------------------------------
-     NO ORDERS
-     ------------------------------------------------------- */
+  /* =======================================================
+     NO CURRENT ORDERS
+     ======================================================= */
 
   if (!currentOrder) {
 
@@ -1045,9 +1665,9 @@ function ordersInit(d) {
   }
 
 
-  /* -------------------------------------------------------
-     DISPLAY CURRENT VENDOR
-     ------------------------------------------------------- */
+  /* =======================================================
+     DISPLAY VENDOR
+     ======================================================= */
 
   if (staffVendor) {
 
@@ -1057,9 +1677,9 @@ function ordersInit(d) {
   }
 
 
-  /* -------------------------------------------------------
-     BUILD ORDER STATUS OPTIONS
-     ------------------------------------------------------- */
+  /* =======================================================
+     BUILD STATUS OPTIONS
+     ======================================================= */
 
   const statusOptions =
     d.orderStatus
@@ -1081,9 +1701,9 @@ function ordersInit(d) {
       .join("");
 
 
-  /* -------------------------------------------------------
+  /* =======================================================
      DISPLAY ORDER
-     ------------------------------------------------------- */
+     ======================================================= */
 
   ordersBody.innerHTML = `
 
@@ -1140,10 +1760,6 @@ function ordersInit(d) {
   `;
 
 
-  /* -------------------------------------------------------
-     GET ORDER CONTROLS
-     ------------------------------------------------------- */
-
   const status =
     document.getElementById(
       "status"
@@ -1163,7 +1779,7 @@ function ordersInit(d) {
 
 
   /* =======================================================
-     SELECT / REVIEW ORDER DETAILS
+     VIEW / REVIEW ORDER
      ======================================================= */
 
   viewOrder.onclick = () => {
@@ -1173,7 +1789,7 @@ function ordersInit(d) {
         .map(item =>
 
           `${item.qty} x ${item.name} - $${(
-            item.price *
+            Number(item.price) *
             item.qty
           ).toFixed(2)}`
 
@@ -1231,7 +1847,7 @@ function ordersInit(d) {
 
 
   /* =======================================================
-     UPDATE ORDER NOTES
+     SAVE STAFF NOTES
      ======================================================= */
 
   notes.onchange = () => {
@@ -1263,43 +1879,19 @@ document.addEventListener(
   async () => {
 
 
-    /* -----------------------------------------------------
-       LOAD APPLICATION DATA
-       ----------------------------------------------------- */
+    /* LOAD APPLICATION DATA */
 
     const d =
       await data();
 
 
-    /* -----------------------------------------------------
-       CREATE STUDENT DATA IF IT DOES NOT EXIST
-       ----------------------------------------------------- */
-
-    if (
-      !localStorage.getItem(
-        "cflStudent"
-      )
-    ) {
-
-      write(
-        "cflStudent",
-        d.student
-      );
-
-    }
-
-
-    /* -----------------------------------------------------
-       DETERMINE CURRENT PAGE
-       ----------------------------------------------------- */
+    /* DETERMINE CURRENT PAGE */
 
     const page =
       document.body.dataset.page;
 
 
-    /* -----------------------------------------------------
-       PAGE INITIALIZERS
-       ----------------------------------------------------- */
+    /* PAGE FUNCTIONS */
 
     const pages = {
 
@@ -1321,9 +1913,7 @@ document.addEventListener(
     };
 
 
-    /* -----------------------------------------------------
-       INITIALIZE CURRENT PAGE
-       ----------------------------------------------------- */
+    /* START CURRENT PAGE */
 
     const initialize =
       pages[page];
