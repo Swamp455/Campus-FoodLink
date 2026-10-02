@@ -1,9 +1,9 @@
 
 const K={cart:"cflCart",order:"cflOrder",student:"cflStudent"};
 const MENU=[
- {id:991,name:"Tuna Sandwich",price:10.00,diet:"VGN"},
- {id:992,name:"Pizza",price:20.00,diet:""},
- {id:993,name:"Roasted Green Beans",price:6.00,diet:"GF VEG"}
+ {id:991,name:"Tuna Sandwich",price:10.00},
+ {id:992,name:"Pizza",price:20.00},
+ {id:993,name:"Roasted Green Beans",price:6.00}
 ];
 const DEFAULT_STUDENT={studentId:101,name:"Ale Leon",mealPlanBalance:25.00};
 const read=(k,f=null)=>{try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch{return f}};
