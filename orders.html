@@ -21,16 +21,11 @@
 
   <main class="wireframe staff-dashboard">
 
-    <!-- =================================================
-         STAFF HEADER
-         ================================================= -->
-
     <header class="staff-head">
 
       <span id="staffVendor">
         Campus FoodLink+
       </span>
-
 
       <nav>
 
@@ -42,7 +37,6 @@
           Orders
         </button>
 
-
         <button
           id="showInventoryBtn"
           class="staff-nav"
@@ -51,14 +45,35 @@
           Inventory
         </button>
 
+        <button
+          id="studentDemoBtn"
+          class="staff-nav"
+          type="button"
+          hidden
+        >
+          Student Demo
+        </button>
+
+        <button
+          id="exportDataBtn"
+          class="staff-nav"
+          type="button"
+        >
+          Export Data
+        </button>
+
+        <button
+          id="staffLogoutBtn"
+          class="staff-nav"
+          type="button"
+        >
+          Logout
+        </button>
+
       </nav>
 
     </header>
 
-
-    <!-- =================================================
-         STAFF INFORMATION
-         ================================================= -->
 
     <p class="staff-welcome">
 
@@ -73,9 +88,7 @@
     </p>
 
 
-    <!-- =================================================
-         ORDERS SECTION
-         ================================================= -->
+    <!-- ORDERS -->
 
     <section id="ordersSection">
 
@@ -83,51 +96,25 @@
         Recent Orders
       </h2>
 
-
       <table class="orders-table">
 
         <thead>
 
           <tr>
-
-            <th>
-              Order #
-            </th>
-
-            <th>
-              Vendor
-            </th>
-
-            <th>
-              Status
-            </th>
-
-            <th>
-              Date
-            </th>
-
-            <th>
-              Pickup Time
-            </th>
-
-            <th>
-              Notes
-            </th>
-
-            <th>
-              Action
-            </th>
-
+            <th>Order #</th>
+            <th>Vendor</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Pickup Time</th>
+            <th>Notes</th>
+            <th>Action</th>
           </tr>
 
         </thead>
 
-
-        <tbody id="ordersBody">
-        </tbody>
+        <tbody id="ordersBody"></tbody>
 
       </table>
-
 
       <p
         id="saveMessage"
@@ -137,20 +124,7 @@
     </section>
 
 
-    <!-- =================================================
-         INVENTORY SECTION
-
-         Uses:
-         Vendors -> MenuItems
-
-         Staff can:
-         - View item
-         - View vendor
-         - View price
-         - View inventory
-         - Change inventory
-         - Enable/disable item
-         ================================================= -->
+    <!-- INVENTORY -->
 
     <section
       id="inventorySection"
@@ -161,56 +135,29 @@
         Menu Inventory
       </h2>
 
-
       <p class="inventory-description">
         View available menu items and update inventory quantities.
       </p>
-
 
       <table class="orders-table inventory-table">
 
         <thead>
 
           <tr>
-
-            <th>
-              Item ID
-            </th>
-
-            <th>
-              Vendor
-            </th>
-
-            <th>
-              Menu Item
-            </th>
-
-            <th>
-              Price
-            </th>
-
-            <th>
-              Inventory
-            </th>
-
-            <th>
-              Available
-            </th>
-
-            <th>
-              Action
-            </th>
-
+            <th>Item ID</th>
+            <th>Vendor</th>
+            <th>Menu Item</th>
+            <th>Price</th>
+            <th>Inventory</th>
+            <th>Available</th>
+            <th>Action</th>
           </tr>
 
         </thead>
 
-
-        <tbody id="inventoryBody">
-        </tbody>
+        <tbody id="inventoryBody"></tbody>
 
       </table>
-
 
       <p
         id="inventoryMessage"
