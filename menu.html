@@ -1,9 +1,7 @@
 <!doctype html>
-
 <html lang="en">
 
 <head>
-
   <meta charset="utf-8">
 
   <meta
@@ -11,26 +9,17 @@
     content="width=device-width, initial-scale=1"
   >
 
-  <title>
-    Vendor Menu
-  </title>
+  <title>Vendor Menu</title>
 
   <link
     rel="stylesheet"
     href="style.css"
   >
-
 </head>
-
 
 <body data-page="menu">
 
   <main class="wireframe">
-
-
-    <!-- =====================================================
-         MENU HEADER
-         ===================================================== -->
 
     <header class="menu-head">
 
@@ -38,11 +27,7 @@
         Campus FoodLink+
       </span>
 
-
-      <b>
-        MENU
-      </b>
-
+      <b>MENU</b>
 
       <a
         class="small-button"
@@ -54,16 +39,11 @@
     </header>
 
 
-    <!-- =====================================================
-         VENDOR SELECTION
-         ===================================================== -->
-
     <div class="vendor-select">
 
       <label for="vendorSelect">
         Vendor:
       </label>
-
 
       <select id="vendorSelect">
 
@@ -75,10 +55,6 @@
 
     </div>
 
-
-    <!-- =====================================================
-         VENDOR MENU ITEMS
-         ===================================================== -->
 
     <section
       id="menuItems"
@@ -92,63 +68,31 @@
     </section>
 
 
-    <!-- =====================================================
-         SHOPPING CART
-         ===================================================== -->
-
     <aside class="cart-panel">
-
 
       <table>
 
         <thead>
 
           <tr>
-
-            <th>
-              Qty
-            </th>
-
-            <th>
-              Item
-            </th>
-
-            <th>
-              Price
-            </th>
-
-            <th>
-              Remove
-            </th>
-
+            <th>Qty</th>
+            <th>Item</th>
+            <th>Price</th>
+            <th>Remove</th>
           </tr>
 
         </thead>
 
-
-        <tbody id="cartRows">
-
-          <!-- Loaded by app.js -->
-
-        </tbody>
+        <tbody id="cartRows"></tbody>
 
       </table>
 
 
-      <!-- ===================================================
-           PICKUP TIME
-           =================================================== -->
-
       <div class="pickup">
 
         <label for="pickupTime">
-
-          <small>
-            Pickup Time
-          </small>
-
+          <small>Pickup Time</small>
         </label>
-
 
         <select id="pickupTime">
 
@@ -169,26 +113,15 @@
       </div>
 
 
-      <!-- ===================================================
-           CART TOTAL
-           =================================================== -->
-
       <p class="cart-total">
 
-        Total: $
-
-        <span id="cartTotal">
-          0.00
-        </span>
+        Total:
+        $<span id="cartTotal">0.00</span>
 
         🛒
 
       </p>
 
-
-      <!-- ===================================================
-           CONFIRM ORDER
-           =================================================== -->
 
       <button
         id="placeOrder"
@@ -197,15 +130,11 @@
         Confirm Order
       </button>
 
-
     </aside>
 
-
   </main>
-
 
   <script src="app.js"></script>
 
 </body>
-
 </html>
