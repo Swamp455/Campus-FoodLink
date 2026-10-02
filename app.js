@@ -1,743 +1,491 @@
-/* =========================================================
-   CAMPUS FOODLINK+
-   PROTOTYPE APPLICATION
-   ERD-BASED JSON / LOCALSTORAGE DATA MODEL
-   ========================================================= */
+/* ============================================================
+   Campus FoodLink+
+   app.js
+   MySQL Schema-Matched Prototype
+   ============================================================ */
+
+
+/* ============================================================
+   LOCAL STORAGE KEYS
+   ============================================================ */
 
 const DB_KEY = "CampusFoodLinkDB";
 const CART_KEY = "CampusFoodLinkCart";
 
 
-/* =========================================================
-   STORAGE FUNCTIONS
-   ========================================================= */
+/* ============================================================
+   GENERAL DATA FUNCTIONS
+   ============================================================ */
 
-function readStorage(key, fallback = null) {
+const read = (key, defaultValue = null) => {
   try {
     const value = localStorage.getItem(key);
 
     return value
       ? JSON.parse(value)
-      : fallback;
+      : defaultValue;
 
-  } catch (error) {
-    console.error("Storage read error:", error);
-    return fallback;
+  } catch {
+    return defaultValue;
   }
-}
+};
 
 
-function writeStorage(key, value) {
+const saveDB = (db) => {
   localStorage.setItem(
-    key,
-    JSON.stringify(value)
-  );
-}
-
-
-function getDB() {
-  return readStorage(
     DB_KEY,
-    null
+    JSON.stringify(db)
   );
-}
+};
 
 
-function saveDB(db) {
-  writeStorage(
-    DB_KEY,
-    db
-  );
-}
+const cart = () => {
+  return read(CART_KEY, []);
+};
 
 
-function getCart() {
-  return readStorage(
+const saveCart = (cartData) => {
+  localStorage.setItem(
     CART_KEY,
-    []
+    JSON.stringify(cartData)
   );
-}
+};
 
 
-function saveCart(cart) {
-  writeStorage(
-    CART_KEY,
-    cart
-  );
-}
+/* ============================================================
+   DATABASE HELPER FUNCTIONS
+   ============================================================ */
 
+const next = (array, key, start = 1) => {
 
-/* =========================================================
-   EXPORT DATABASE FOR GRADING
-   ========================================================= */
-
-function exportDatabase() {
-
-  const db = getDB();
-
-
-  if (!db) {
-    alert(
-      "No Campus FoodLink+ data is available to export."
-    );
-
-    return;
+  if (!array.length) {
+    return start;
   }
 
-
-  /*
-     Create a copy so passwords can be removed
-     without changing the working database.
-  */
-
-  const cleanDatabase =
-    JSON.parse(
-      JSON.stringify(db)
-    );
+  return (
+    Math.max(
+      ...array.map(item =>
+        Number(item[key]) || 0
+      )
+    ) + 1
+  );
+};
 
 
-  /* REMOVE STUDENT PASSWORDS */
+const byId = (array, key, id) => {
+
+  return array.find(
+    item =>
+      Number(item[key]) === Number(id)
+  );
+};
+
+
+/*
+   OrderStatus is a HISTORY table.
+
+   An order can have:
+
+   Pending
+   Approved
+   Preparing
+   Ready
+   Cancelled
+
+   This function returns the newest
+   status record for an order.
+*/
+
+const latestStatus = (db, orderId) => {
+
+  const statuses = db.OrderStatus
+    .filter(
+      status =>
+        Number(status.order_id) ===
+        Number(orderId)
+    )
+    .sort((a, b) => {
+
+      const dateDifference =
+        new Date(b.updated_at) -
+        new Date(a.updated_at);
+
+      if (dateDifference !== 0) {
+        return dateDifference;
+      }
+
+      return b.status_id - a.status_id;
+    });
+
+  return statuses[0] || null;
+};
+
+
+const currentStudent = (db) => {
+
+  return byId(
+    db.Students,
+    "student_id",
+    sessionStorage.getItem("cflStudentId")
+  );
+};
+
+
+const currentStaff = (db) => {
+
+  return byId(
+    db.Staff,
+    "staff_id",
+    sessionStorage.getItem("cflStaffId")
+  );
+};
+
+
+/* ============================================================
+   PAGE SECURITY
+   ============================================================ */
+
+function guard(requiredRole) {
 
   if (
-    Array.isArray(
-      cleanDatabase.Students
-    )
+    sessionStorage.getItem("cflRole")
+    !== requiredRole
   ) {
-    cleanDatabase.Students.forEach(
-      student => {
-        delete student.password;
-      }
-    );
+
+    window.location.href = "index.html";
+
+    return false;
   }
 
-
-  /* REMOVE STAFF PASSWORDS */
-
-  if (
-    Array.isArray(
-      cleanDatabase.Staff
-    )
-  ) {
-    cleanDatabase.Staff.forEach(
-      staff => {
-        delete staff.password;
-      }
-    );
-  }
-
-
-  /*
-     Add basic information to help identify
-     the grading export.
-  */
-
-  const exportData = {
-
-    project:
-      "Campus FoodLink+",
-
-    export_type:
-      "Prototype Grading Data",
-
-    exported_at:
-      new Date().toISOString(),
-
-    database:
-      cleanDatabase
-  };
-
-
-  const json =
-    JSON.stringify(
-      exportData,
-      null,
-      2
-    );
-
-
-  const blob =
-    new Blob(
-      [json],
-      {
-        type: "application/json"
-      }
-    );
-
-
-  const url =
-    URL.createObjectURL(
-      blob
-    );
-
-
-  const link =
-    document.createElement(
-      "a"
-    );
-
-
-  const date =
-    new Date()
-      .toISOString()
-      .slice(0, 10);
-
-
-  link.href = url;
-
-  link.download =
-    `CampusFoodLink_Grading_Data_${date}.json`;
-
-
-  document.body.appendChild(
-    link
-  );
-
-
-  link.click();
-
-
-  document.body.removeChild(
-    link
-  );
-
-
-  URL.revokeObjectURL(
-    url
-  );
+  return true;
 }
 
 
-/* =========================================================
+/* ============================================================
    INITIALIZE DATABASE
+   ============================================================ */
 
-   apps.json = original seed database
-   localStorage = working persistent database
-   ========================================================= */
+async function initDB() {
 
-async function initializeDatabase() {
-
-  let db = getDB();
-
+  let db = read(DB_KEY);
 
   if (db) {
     return db;
   }
 
-
   try {
 
     const response =
-      await fetch(
-        "apps.json"
-      );
-
+      await fetch("apps.json");
 
     if (!response.ok) {
       throw new Error(
-        "Unable to load apps.json."
+        "Unable to load apps.json"
       );
     }
 
-
-    db =
-      await response.json();
-
+    db = await response.json();
 
     saveDB(db);
-
 
     return db;
 
   } catch (error) {
 
-    console.error(
-      "Database initialization error:",
-      error
-    );
-
-
     alert(
-      "Unable to load the Campus FoodLink+ database. " +
-      "Make sure the project is running through a web server."
+      "Unable to load application data. " +
+      "Run Campus FoodLink+ through a web server " +
+      "or GitHub Pages."
     );
-
 
     return null;
   }
 }
 
 
-/* =========================================================
-   RESET DEMO DATABASE
+/* ============================================================
+   RESET DEMO DATA
+   ============================================================ */
 
-   Reloads the original apps.json data.
+async function resetDB() {
 
-   Restores:
-   - Students
-   - Staff
-   - Vendors
-   - MenuItems
-   - OrderStatus
-   - Original balances
-   - Original inventory
-   - Original availability
-
-   Clears:
-   - Orders
-   - OrderItems
-   - Transactions
-   - Cart
-   - Login session
-   ========================================================= */
-
-async function resetDemoData() {
-
-  const confirmed =
-    confirm(
-      "Reset all Campus FoodLink+ demo data?\n\n" +
-      "This will restore balances and inventory and remove " +
-      "test orders, transactions, cart items, notes, and " +
-      "status changes."
-    );
-
+  const confirmed = confirm(
+    "Reset all Campus FoodLink+ demo data?"
+  );
 
   if (!confirmed) {
     return false;
   }
 
-
   try {
 
-    /*
-       Timestamp prevents the browser from
-       returning a cached copy.
-    */
-
-    const response =
-      await fetch(
-        "apps.json?reset=" +
-        Date.now()
-      );
-
+    const response = await fetch(
+      "apps.json?" + Date.now()
+    );
 
     if (!response.ok) {
       throw new Error(
-        "Unable to reload apps.json."
+        "Unable to reload apps.json"
       );
     }
 
+    const db = await response.json();
 
-    const freshDatabase =
-      await response.json();
+    saveDB(db);
 
-
-    /* REPLACE WORKING DATABASE */
-
-    saveDB(
-      freshDatabase
-    );
-
-
-    /* CLEAR CART */
-
-    localStorage.removeItem(
-      CART_KEY
-    );
-
-
-    /* CLEAR LOGIN SESSION */
+    localStorage.removeItem(CART_KEY);
 
     sessionStorage.clear();
-
 
     return true;
 
   } catch (error) {
 
-    console.error(
-      "Demo reset error:",
-      error
-    );
-
-
     alert(
-      "Demo data could not be reset."
+      "Unable to reset demo data."
+    );
+
+    return false;
+  }
+}
+
+
+/* ============================================================
+   EXPORT DATABASE FOR GRADING
+   ============================================================ */
+
+function exportJSON() {
+
+  const db = read(DB_KEY);
+
+  if (!db) {
+    return;
+  }
+
+  const copy =
+    JSON.parse(
+      JSON.stringify(db)
     );
 
 
-    return false;
-  }
-}
+  /*
+     DemoAccounts supports prototype login only.
+     It is NOT one of the eight MySQL tables.
+  */
+
+  delete copy.DemoAccounts;
 
 
-/* =========================================================
-   SESSION FUNCTIONS
-   ========================================================= */
+  const exportData = {
 
-function getRole() {
+    project:
+      "Campus FoodLink+",
 
-  return sessionStorage.getItem(
-    "cflRole"
+    schema:
+      "MySQL-matched prototype export",
+
+    exported_at:
+      new Date().toISOString(),
+
+    tables:
+      copy
+  };
+
+
+  const blob = new Blob(
+    [
+      JSON.stringify(
+        exportData,
+        null,
+        2
+      )
+    ],
+    {
+      type: "application/json"
+    }
   );
+
+
+  const url =
+    URL.createObjectURL(blob);
+
+  const link =
+    document.createElement("a");
+
+
+  link.href = url;
+
+  link.download =
+    "CampusFoodLink_MySQL_Data_" +
+    new Date()
+      .toISOString()
+      .slice(0, 10) +
+    ".json";
+
+
+  link.click();
+
+  URL.revokeObjectURL(url);
 }
 
 
-function getStudentId() {
-
-  return Number(
-    sessionStorage.getItem(
-      "cflStudentId"
-    )
-  );
-}
-
-
-function getStaffId() {
-
-  return Number(
-    sessionStorage.getItem(
-      "cflStaffId"
-    )
-  );
-}
-
-
-function guard(requiredRole) {
-
-  if (
-    getRole() !==
-    requiredRole
-  ) {
-
-    window.location.href =
-      "index.html";
-
-    return false;
-  }
-
-
-  return true;
-}
-
-
-/* =========================================================
-   ERD LOOKUP FUNCTIONS
-   ========================================================= */
-
-function findStudent(
-  db,
-  studentId
-) {
-
-  return db.Students.find(
-    student =>
-      student.student_id ===
-      Number(studentId)
-  );
-}
-
-
-function findStaff(
-  db,
-  staffId
-) {
-
-  return db.Staff.find(
-    staff =>
-      staff.staff_id ===
-      Number(staffId)
-  );
-}
-
-
-function findVendor(
-  db,
-  vendorId
-) {
-
-  return db.Vendors.find(
-    vendor =>
-      vendor.vendor_id ===
-      Number(vendorId)
-  );
-}
-
-
-function findMenuItem(
-  db,
-  menuItemId
-) {
-
-  return db.MenuItems.find(
-    item =>
-      item.menu_item_id ===
-      Number(menuItemId)
-  );
-}
-
-
-function findStatus(
-  db,
-  statusId
-) {
-
-  return db.OrderStatus.find(
-    status =>
-      status.status_id ===
-      Number(statusId)
-  );
-}
-
-
-function findStatusByName(
-  db,
-  name
-) {
-
-  return db.OrderStatus.find(
-    status =>
-      status.status_name
-        .toLowerCase() ===
-      name.toLowerCase()
-  );
-}
-
-
-/* =========================================================
+/* ============================================================
    LOGIN PAGE
-   ========================================================= */
+   index.html
+   ============================================================ */
 
 function loginInit(db) {
 
-  const form =
+  const loginForm =
     document.getElementById(
       "loginForm"
     );
 
-
-  const username =
-    document.getElementById(
-      "userId"
-    );
-
-
-  const password =
-    document.getElementById(
-      "password"
-    );
-
-
-  const error =
+  const loginError =
     document.getElementById(
       "loginError"
     );
 
-
-  const resetDemoBtn =
+  const resetButton =
     document.getElementById(
       "resetDemoBtn"
     );
 
 
-  const resetMessage =
-    document.getElementById(
-      "resetMessage"
-    );
+  /* Reset demo */
 
+  resetButton.addEventListener(
+    "click",
+    async () => {
 
-  /* =======================================================
-     RESET DEMO DATA
-     ======================================================= */
+      const reset =
+        await resetDB();
 
-  if (resetDemoBtn) {
-
-    resetDemoBtn.addEventListener(
-      "click",
-      async () => {
-
-        resetDemoBtn.disabled =
-          true;
-
-
-        resetDemoBtn.textContent =
-          "Resetting...";
-
-
-        const success =
-          await resetDemoData();
-
-
-        if (success) {
-
-          if (resetMessage) {
-            resetMessage.textContent =
-              "Demo data successfully reset.";
-          }
-
-
-          resetDemoBtn.textContent =
-            "Reset Complete";
-
-
-          setTimeout(
-            () => {
-              window.location.reload();
-            },
-            800
-          );
-
-
-          return;
-        }
-
-
-        resetDemoBtn.disabled =
-          false;
-
-
-        resetDemoBtn.textContent =
-          "Reset Demo Data";
+      if (reset) {
+        window.location.reload();
       }
-    );
-  }
+    }
+  );
 
 
-  if (!form) {
-    return;
-  }
+  /* Login */
 
-
-  /* =======================================================
-     LOGIN VALIDATION
-     ======================================================= */
-
-  form.addEventListener(
+  loginForm.addEventListener(
     "submit",
-    event => {
+    (event) => {
 
       event.preventDefault();
 
 
-      error.textContent = "";
-
-
-      const enteredUsername =
-        username.value
+      const username =
+        document
+          .getElementById("userId")
+          .value
           .trim()
           .toLowerCase();
 
 
-      const enteredPassword =
-        password.value;
+      const password =
+        document
+          .getElementById("password")
+          .value;
 
 
-      /* ---------------------------------------------------
-         CHECK STUDENTS
-         --------------------------------------------------- */
-
-      const student =
-        db.Students.find(
-          record =>
-            record.username
-              .toLowerCase() ===
-              enteredUsername &&
-            record.password ===
-              enteredPassword
+      const account =
+        db.DemoAccounts.find(
+          item =>
+            item.login.toLowerCase()
+              === username &&
+            item.password
+              === password
         );
 
 
-      if (student) {
+      if (!account) {
 
-        sessionStorage.clear();
+        loginError.textContent =
+          "Invalid username or password.";
 
+        return;
+      }
+
+
+      sessionStorage.clear();
+
+
+      /* Student login */
+
+      if (
+        account.account_type
+        === "Student"
+      ) {
 
         sessionStorage.setItem(
           "cflRole",
           "student"
         );
 
-
         sessionStorage.setItem(
           "cflStudentId",
-          student.student_id
+          account.record_id
         );
-
-
-        localStorage.removeItem(
-          CART_KEY
-        );
-
 
         window.location.href =
           "account.html";
 
-
         return;
       }
 
 
-      /* ---------------------------------------------------
-         CHECK STAFF
-         --------------------------------------------------- */
+      /* Staff / Professor login */
 
-      const staff =
-        db.Staff.find(
-          record =>
-            record.username
-              .toLowerCase() ===
-              enteredUsername &&
-            record.password ===
-              enteredPassword &&
-            record.is_active ===
-              true
-        );
+      sessionStorage.setItem(
+        "cflRole",
+        "staff"
+      );
+
+      sessionStorage.setItem(
+        "cflStaffId",
+        account.record_id
+      );
 
 
-      if (staff) {
+      /*
+         Professor Demo uses an existing
+         staff record for demonstration.
 
-        sessionStorage.clear();
+         Preserve the original staff ID so
+         Student Demo can return correctly.
+      */
 
-
-        sessionStorage.setItem(
-          "cflRole",
-          "staff"
-        );
-
+      if (
+        account.account_type
+        === "Professor Demo"
+      ) {
 
         sessionStorage.setItem(
-          "cflStaffId",
-          staff.staff_id
+          "cflProfessorDemo",
+          "true"
         );
 
-
-        window.location.href =
-          "orders.html";
-
-
-        return;
+        sessionStorage.setItem(
+          "cflProfessorStaffId",
+          account.record_id
+        );
       }
 
 
-      /* ---------------------------------------------------
-         INVALID LOGIN
-         --------------------------------------------------- */
-
-      error.textContent =
-        "Invalid username or password.";
-
-
-      password.value = "";
-
-
-      password.focus();
+      window.location.href =
+        "orders.html";
     }
   );
 }
 
 
-/* =========================================================
+/* ============================================================
    STUDENT DASHBOARD
-   ========================================================= */
+   account.html
+   ============================================================ */
 
 function accountInit(db) {
 
@@ -747,71 +495,18 @@ function accountInit(db) {
 
 
   const student =
-    findStudent(
-      db,
-      getStudentId()
-    );
+    currentStudent(db);
 
 
   if (!student) {
 
     sessionStorage.clear();
 
-
     window.location.href =
       "index.html";
 
-
     return;
   }
-
-
-  const studentName =
-    document.getElementById(
-      "studentName"
-    );
-
-
-  const balance =
-    document.getElementById(
-      "balance"
-    );
-
-
-  const orderId =
-    document.getElementById(
-      "orderId"
-    );
-
-
-  const orderVendor =
-    document.getElementById(
-      "orderVendor"
-    );
-
-
-  const orderStatus =
-    document.getElementById(
-      "orderStatus"
-    );
-
-
-  const fundAmount =
-    document.getElementById(
-      "fundAmount"
-    );
-
-
-  const addFundsBtn =
-    document.getElementById(
-      "addFundsBtn"
-    );
-
-
-  const cancelOrderBtn =
-    document.getElementById(
-      "cancelOrderBtn"
-    );
 
 
   const accountMessage =
@@ -819,30 +514,77 @@ function accountInit(db) {
       "accountMessage"
     );
 
+  const cancelButton =
+    document.getElementById(
+      "cancelOrderBtn"
+    );
 
-  const returnStaffBtn =
+
+  /* Student information */
+
+  document.getElementById(
+    "studentName"
+  ).textContent =
+    `${student.first_name} ${student.last_name}`;
+
+
+  document.getElementById(
+    "studentEmail"
+  ).textContent =
+    student.email_address;
+
+
+  document.getElementById(
+    "balance"
+  ).textContent =
+    Number(
+      student.meal_plan_balance
+    ).toFixed(2);
+
+
+  /* ========================================================
+     STUDENT LOGOUT
+     ======================================================== */
+
+  const studentLogout =
+    document.getElementById(
+      "studentLogout"
+    );
+
+
+  if (studentLogout) {
+
+    studentLogout.addEventListener(
+      "click",
+      () => {
+
+        sessionStorage.clear();
+      }
+    );
+  }
+
+
+  /* ========================================================
+     PROFESSOR DEMO RETURN
+     ======================================================== */
+
+  const returnStaffButton =
     document.getElementById(
       "returnStaffBtn"
     );
 
 
-  /* =======================================================
-     PROFESSOR DEMO MODE
-     ======================================================= */
-
   if (
-    returnStaffBtn &&
     sessionStorage.getItem(
       "cflProfessorDemo"
-    ) ===
-    "true"
+    ) === "true"
   ) {
 
-    returnStaffBtn.hidden =
+    returnStaffButton.hidden =
       false;
 
 
-    returnStaffBtn.addEventListener(
+    returnStaffButton.addEventListener(
       "click",
       () => {
 
@@ -850,17 +592,6 @@ function accountInit(db) {
           sessionStorage.getItem(
             "cflProfessorStaffId"
           );
-
-
-        if (!professorStaffId) {
-
-          sessionStorage.clear();
-
-          window.location.href =
-            "index.html";
-
-          return;
-        }
 
 
         sessionStorage.setItem(
@@ -887,489 +618,216 @@ function accountInit(db) {
   }
 
 
-  /* =======================================================
-     DISPLAY STUDENT
-     ======================================================= */
+  /* ========================================================
+     FIND STUDENT'S LATEST ORDER
+     ======================================================== */
 
-  function displayStudent() {
-
-    if (studentName) {
-
-      studentName.textContent =
-        `${student.first_name} ${student.last_name}`;
-    }
-
-
-    if (balance) {
-
-      balance.textContent =
-        Number(
-          student.balance
-        ).toFixed(2);
-    }
-  }
-
-
-  /* =======================================================
-     GET MOST RECENT STUDENT ORDER
-     ======================================================= */
-
-  function getCurrentOrder() {
-
-    const studentOrders =
-      db.Orders.filter(
+  const studentOrders =
+    db.Orders
+      .filter(
         order =>
-          order.student_id ===
-          student.student_id
+          Number(order.student_id)
+          === Number(student.student_id)
+      )
+      .sort(
+        (a, b) =>
+          new Date(a.order_date) -
+          new Date(b.order_date)
       );
 
 
-    if (
-      studentOrders.length ===
-      0
-    ) {
-
-      return null;
-    }
+  const order =
+    studentOrders.at(-1);
 
 
-    return studentOrders[
-      studentOrders.length - 1
-    ];
+  if (!order) {
+
+    cancelButton.hidden = true;
+
+    return;
   }
 
 
-  /* =======================================================
-     DISPLAY CURRENT ORDER
-     ======================================================= */
-
-  function displayOrder() {
-
-    const currentOrder =
-      getCurrentOrder();
-
-
-    if (!currentOrder) {
-
-      if (orderId) {
-        orderId.textContent =
-          "No Current Order";
-      }
-
-
-      if (orderVendor) {
-        orderVendor.textContent =
-          "-";
-      }
-
-
-      if (orderStatus) {
-        orderStatus.textContent =
-          "-";
-      }
-
-
-      if (cancelOrderBtn) {
-        cancelOrderBtn.style.display =
-          "none";
-      }
-
-
-      return;
-    }
-
-
-    const vendor =
-      findVendor(
-        db,
-        currentOrder.vendor_id
-      );
-
-
-    const status =
-      findStatus(
-        db,
-        currentOrder.status_id
-      );
-
-
-    if (orderId) {
-
-      orderId.textContent =
-        currentOrder.order_id;
-    }
-
-
-    if (orderVendor) {
-
-      orderVendor.textContent =
-        vendor
-          ? vendor.vendor_name
-          : "Unknown Vendor";
-    }
-
-
-    if (orderStatus) {
-
-      orderStatus.textContent =
-        status
-          ? status.status_name
-          : "Unknown";
-    }
-
-
-    const canCancel =
-      status &&
-      (
-        status.status_name ===
-          "Pending" ||
-
-        status.status_name ===
-          "Approved"
-      );
-
-
-    if (cancelOrderBtn) {
-
-      cancelOrderBtn.style.display =
-        canCancel
-          ? "inline-block"
-          : "none";
-    }
-  }
-
-
-  /* =======================================================
-     ADD FUNDS
-     ======================================================= */
-
-  if (
-    addFundsBtn &&
-    fundAmount
-  ) {
-
-    addFundsBtn.addEventListener(
-      "click",
-      () => {
-
-        const amount =
-          Number(
-            fundAmount.value
-          );
-
-
-        if (
-          !Number.isFinite(amount) ||
-          amount <= 0
-        ) {
-
-          accountMessage.textContent =
-            "Please enter a valid amount greater than $0.00.";
-
-
-          fundAmount.focus();
-
-
-          return;
-        }
-
-
-        /* UPDATE STUDENT BALANCE */
-
-        student.balance =
-          Number(
-            (
-              Number(
-                student.balance
-              ) +
-              amount
-            ).toFixed(2)
-          );
-
-
-        /* CREATE DEPOSIT TRANSACTION */
-
-        db.Transactions.push({
-
-          transaction_id:
-            Date.now(),
-
-          order_id:
-            null,
-
-          student_id:
-            student.student_id,
-
-          transaction_type:
-            "DEPOSIT",
-
-          amount:
-            amount,
-
-          transaction_status:
-            "COMPLETE",
-
-          transaction_date:
-            new Date().toISOString()
-        });
-
-
-        saveDB(db);
-
-
-        displayStudent();
-
-
-        fundAmount.value = "";
-
-
-        accountMessage.textContent =
-          `$${amount.toFixed(2)} was added. ` +
-          `New balance: $${student.balance.toFixed(2)}.`;
-      }
+  const vendor =
+    byId(
+      db.Vendors,
+      "vendor_id",
+      order.vendor_id
     );
-  }
 
 
-  /* =======================================================
+  const status =
+    latestStatus(
+      db,
+      order.order_id
+    );
+
+
+  document.getElementById(
+    "orderId"
+  ).textContent =
+    order.order_id;
+
+
+  document.getElementById(
+    "orderVendor"
+  ).textContent =
+    vendor
+      ? vendor.vendor_name
+      : "Unknown";
+
+
+  document.getElementById(
+    "orderStatus"
+  ).textContent =
+    status
+      ? status.status_name
+      : "Pending";
+
+
+  document.getElementById(
+    "statusUpdated"
+  ).textContent =
+    status
+      ? new Date(
+          status.updated_at
+        ).toLocaleString()
+      : "-";
+
+
+  /* ========================================================
      CANCEL ORDER
-     ======================================================= */
+     ======================================================== */
 
-  if (cancelOrderBtn) {
-
-    cancelOrderBtn.addEventListener(
-      "click",
-      () => {
-
-        const currentOrder =
-          getCurrentOrder();
-
-
-        if (!currentOrder) {
-          return;
-        }
+  cancelButton.hidden =
+    !status ||
+    ![
+      "Pending",
+      "Approved"
+    ].includes(
+      status.status_name
+    );
 
 
-        const currentStatus =
-          findStatus(
-            db,
-            currentOrder.status_id
-          );
+  cancelButton.addEventListener(
+    "click",
+    () => {
 
-
-        /*
-           Only Pending and Approved
-           orders can be canceled.
-        */
-
-        if (
-          !currentStatus ||
-          ![
-            "Pending",
-            "Approved"
-          ].includes(
-            currentStatus.status_name
-          )
-        ) {
-
-          accountMessage.textContent =
-            "This order can no longer be canceled.";
-
-
-          return;
-        }
-
-
-        /*
-           Prevent duplicate refund transactions.
-        */
-
-        const existingRefund =
-          db.Transactions.find(
-            transaction =>
-              transaction.order_id ===
-                currentOrder.order_id &&
-              transaction.transaction_type ===
-                "REFUND" &&
-              transaction.transaction_status ===
-                "COMPLETE"
-          );
-
-
-        if (existingRefund) {
-
-          accountMessage.textContent =
-            "This order has already been refunded.";
-
-
-          return;
-        }
-
-
-        const confirmed =
-          confirm(
-            `Cancel Order #${currentOrder.order_id}?`
-          );
-
-
-        if (!confirmed) {
-          return;
-        }
-
-
-        const canceledStatus =
-          findStatusByName(
-            db,
-            "Canceled"
-          );
-
-
-        if (!canceledStatus) {
-
-          accountMessage.textContent =
-            "Canceled order status could not be found.";
-
-
-          return;
-        }
-
-
-        /* -------------------------------------------------
-           UPDATE ORDER STATUS
-           ------------------------------------------------- */
-
-        currentOrder.status_id =
-          canceledStatus.status_id;
-
-
-        /* -------------------------------------------------
-           RESTORE INVENTORY
-           ------------------------------------------------- */
-
-        const canceledItems =
-          db.OrderItems.filter(
-            item =>
-              item.order_id ===
-              currentOrder.order_id
-          );
-
-
-        canceledItems.forEach(
-          orderItem => {
-
-            const menuItem =
-              findMenuItem(
-                db,
-                orderItem.menu_item_id
-              );
-
-
-            if (!menuItem) {
-              return;
-            }
-
-
-            menuItem.inventory_quantity =
-              Number(
-                menuItem.inventory_quantity
-              ) +
-              Number(
-                orderItem.quantity
-              );
-
-
-            /*
-               Restore availability if inventory
-               now exists.
-            */
-
-            if (
-              menuItem.inventory_quantity >
-              0
-            ) {
-
-              menuItem.is_available =
-                true;
-            }
-          }
+      const currentStatus =
+        latestStatus(
+          db,
+          order.order_id
         );
 
 
-        /* -------------------------------------------------
-           REFUND STUDENT
-           ------------------------------------------------- */
-
-        student.balance =
-          Number(
-            (
-              Number(
-                student.balance
-              ) +
-              Number(
-                currentOrder.total_amount
-              )
-            ).toFixed(2)
-          );
-
-
-        /* -------------------------------------------------
-           CREATE REFUND TRANSACTION
-           ------------------------------------------------- */
-
-        db.Transactions.push({
-
-          transaction_id:
-            Date.now(),
-
-          order_id:
-            currentOrder.order_id,
-
-          student_id:
-            student.student_id,
-
-          transaction_type:
-            "REFUND",
-
-          amount:
-            Number(
-              currentOrder.total_amount
-            ),
-
-          transaction_status:
-            "COMPLETE",
-
-          transaction_date:
-            new Date().toISOString()
-        });
-
-
-        saveDB(db);
-
-
-        displayStudent();
-
-        displayOrder();
-
+      if (
+        !currentStatus ||
+        ![
+          "Pending",
+          "Approved"
+        ].includes(
+          currentStatus.status_name
+        )
+      ) {
 
         accountMessage.textContent =
-          `Order #${currentOrder.order_id} was canceled. ` +
-          `$${Number(
-            currentOrder.total_amount
-          ).toFixed(2)} was returned to your balance.`;
+          "This order can no longer be cancelled.";
+
+        return;
       }
-    );
-  }
 
 
-  displayStudent();
+      const confirmed =
+        confirm(
+          `Cancel Order #${order.order_id}?`
+        );
 
-  displayOrder();
+
+      if (!confirmed) {
+        return;
+      }
+
+
+      /* Add status-history record */
+
+      db.OrderStatus.push({
+
+        status_id:
+          next(
+            db.OrderStatus,
+            "status_id"
+          ),
+
+        order_id:
+          order.order_id,
+
+        staff_id:
+          null,
+
+        status_name:
+          "Cancelled",
+
+        status_description:
+          "Cancelled by student",
+
+        updated_at:
+          new Date().toISOString()
+      });
+
+
+      /*
+         Return the meal-plan amount.
+
+         The supplied Transactions schema
+         does not include a separate
+         transaction_type field.
+      */
+
+      student.meal_plan_balance =
+        Number(
+          (
+            Number(
+              student.meal_plan_balance
+            ) +
+            Number(
+              order.total_amount
+            )
+          ).toFixed(2)
+        );
+
+
+      /*
+         Mark the existing transaction
+         as Cancelled.
+      */
+
+      const transaction =
+        db.Transactions.find(
+          item =>
+            Number(item.order_id)
+            === Number(order.order_id)
+        );
+
+
+      if (transaction) {
+
+        transaction.transaction_status =
+          "Cancelled";
+      }
+
+
+      saveDB(db);
+
+      window.location.reload();
+    }
+  );
 }
 
 
-/* =========================================================
-   STUDENT MENU
-   ========================================================= */
+/* ============================================================
+   VENDOR MENU
+   menu.html
+   ============================================================ */
 
 function menuInit(db) {
 
@@ -1379,10 +837,7 @@ function menuInit(db) {
 
 
   const student =
-    findStudent(
-      db,
-      getStudentId()
-    );
+    currentStudent(db);
 
 
   if (!student) {
@@ -1401,18 +856,15 @@ function menuInit(db) {
       "vendorSelect"
     );
 
-
   const menuItems =
     document.getElementById(
       "menuItems"
     );
 
-
   const cartRows =
     document.getElementById(
       "cartRows"
     );
-
 
   const cartTotal =
     document.getElementById(
@@ -1420,77 +872,68 @@ function menuInit(db) {
     );
 
 
-  const pickupTime =
-    document.getElementById(
-      "pickupTime"
-    );
+  document.getElementById(
+    "menuBalance"
+  ).textContent =
+    Number(
+      student.meal_plan_balance
+    ).toFixed(2);
 
 
-  const placeOrder =
-    document.getElementById(
-      "placeOrder"
-    );
+  /* ========================================================
+     LOAD ACTIVE VENDORS
+     ======================================================== */
+
+  db.Vendors
+    .filter(
+      vendor =>
+        vendor.is_active
+    )
+    .forEach(
+      vendor => {
+
+        const option =
+          document.createElement(
+            "option"
+          );
 
 
-  /* =======================================================
-     LOAD VENDORS
-     ======================================================= */
-
-  vendorSelect.innerHTML =
-    '<option value="">Select a Vendor</option>';
+        option.value =
+          vendor.vendor_id;
 
 
-  db.Vendors.forEach(
-    vendor => {
+        option.textContent =
+          vendor.vendor_name;
 
-      const option =
-        document.createElement(
-          "option"
+
+        vendorSelect.appendChild(
+          option
         );
+      }
+    );
 
-
-      option.value =
-        vendor.vendor_id;
-
-
-      option.textContent =
-        vendor.vendor_name;
-
-
-      vendorSelect.appendChild(
-        option
-      );
-    }
-  );
-
-
-  /* =======================================================
-     CHANGE VENDOR
-     ======================================================= */
 
   vendorSelect.addEventListener(
     "change",
     () => {
 
       /*
-         Clear cart when changing vendors so
-         items from different vendors cannot
-         be mixed into one order.
+         An order belongs to one vendor,
+         so switching vendors clears cart.
       */
 
       saveCart([]);
 
-
-      draw();
+      drawMenu();
     }
   );
 
 
-  /* =======================================================
+  /* ========================================================
      DRAW MENU AND CART
-     ======================================================= */
+     ======================================================== */
 
-  function draw() {
+  function drawMenu() {
 
     const vendorId =
       Number(
@@ -1498,1255 +941,108 @@ function menuInit(db) {
       );
 
 
+    const currentCart =
+      cart();
+
+
     if (!vendorId) {
 
       menuItems.innerHTML =
-        "<p>Please select a vendor to view the menu.</p>";
+        "<p>Select a vendor to view the menu.</p>";
 
-
-      cartRows.innerHTML =
-        "";
-
+      cartRows.innerHTML = "";
 
       cartTotal.textContent =
         "0.00";
 
-
       return;
     }
 
 
-    /* ---------------------------------------------------
-       AVAILABLE MENU ITEMS
-       --------------------------------------------------- */
-
-    const vendorMenu =
+    const availableItems =
       db.MenuItems.filter(
         item =>
-          item.vendor_id ===
-            vendorId &&
-
-          item.is_available ===
-            true &&
-
-          Number(
-            item.inventory_quantity
-          ) > 0
+          Number(item.vendor_id)
+            === vendorId &&
+          item.is_available
       );
 
 
-    if (
-      vendorMenu.length ===
-      0
-    ) {
+    menuItems.innerHTML =
+      availableItems
+        .map(
+          item => `
 
-      menuItems.innerHTML =
-        "<p>No menu items are currently available from this vendor.</p>";
+            <div class="menu-item">
 
-    } else {
+              <div>
 
-      menuItems.innerHTML =
-        vendorMenu
-          .map(
-            item => `
+                <strong>
+                  ${item.item_name}
+                </strong>
 
-              <div class="menu-item">
+                <br>
 
-                <div class="food-img"></div>
+                ${item.description || ""}
 
-                <div>
+                <br>
 
-                  <b>
-                    ${item.item_name}
-                  </b>
+                <small>
+                  ${item.category || ""}
+                </small>
 
-                  <br>
+                <br>
 
-                  $${Number(
-                    item.price
-                  ).toFixed(2)}
-
-                  <br>
-
-                  <small>
-                    ${item.inventory_quantity} available
-                  </small>
-
-                </div>
-
-                <button
-                  type="button"
-                  class="add-item"
-                  data-id="${item.menu_item_id}"
-                  aria-label="Add ${item.item_name}"
-                >
-                  +
-                </button>
+                $${Number(
+                  item.price
+                ).toFixed(2)}
 
               </div>
 
-            `
-          )
-          .join("");
+              <button
+                class="add"
+                type="button"
+                data-id="${item.menu_item_id}">
+                Add
+              </button>
+
+            </div>
+
+          `
+        )
+        .join("");
+
+
+    if (!availableItems.length) {
+
+      menuItems.innerHTML =
+        "<p>No menu items are currently available.</p>";
     }
 
 
-    /* ---------------------------------------------------
-       DRAW CART
-       --------------------------------------------------- */
-
-    const cart =
-      getCart();
-
+    /* Cart table */
 
     cartRows.innerHTML =
-      cart
+      currentCart
         .map(
-          cartItem => {
+          row => {
 
-            const menuItem =
-              findMenuItem(
-                db,
-                cartItem.menu_item_id
+            const item =
+              byId(
+                db.MenuItems,
+                "menu_item_id",
+                row.menu_item_id
               );
 
 
-            if (!menuItem) {
+            if (!item) {
               return "";
             }
 
 
-            return `
-
-              <tr>
-
-                <td>
-                  ${cartItem.quantity}
-                </td>
-
-                <td>
-                  ${menuItem.item_name}
-                </td>
-
-                <td>
-
-                  $${(
-                    Number(
-                      menuItem.price
-                    ) *
-                    Number(
-                      cartItem.quantity
-                    )
-                  ).toFixed(2)}
-
-                </td>
-
-                <td>
-
-                  <button
-                    type="button"
-                    class="remove-item"
-                    data-id="${menuItem.menu_item_id}"
-                  >
-                    Remove
-                  </button>
-
-                </td>
-
-              </tr>
-
-            `;
-          }
-        )
-        .join("");
-
-
-    /* ---------------------------------------------------
-       CART TOTAL
-       --------------------------------------------------- */
-
-    const total =
-      cart.reduce(
-        (
-          sum,
-          cartItem
-        ) => {
-
-          const menuItem =
-            findMenuItem(
-              db,
-              cartItem.menu_item_id
-            );
-
-
-          if (!menuItem) {
-            return sum;
-          }
-
-
-          return (
-            sum +
-            Number(
-              menuItem.price
-            ) *
-            Number(
-              cartItem.quantity
-            )
-          );
-        },
-        0
-      );
-
-
-    cartTotal.textContent =
-      total.toFixed(2);
-
-
-    /* =====================================================
-       ADD ITEM
-       ===================================================== */
-
-    document
-      .querySelectorAll(
-        ".add-item"
-      )
-      .forEach(
-        button => {
-
-          button.addEventListener(
-            "click",
-            () => {
-
-              const menuItemId =
-                Number(
-                  button.dataset.id
-                );
-
-
-              const menuItem =
-                findMenuItem(
-                  db,
-                  menuItemId
-                );
-
-
-              if (!menuItem) {
-                return;
-              }
-
-
-              let cart =
-                getCart();
-
-
-              const existing =
-                cart.find(
-                  item =>
-                    item.menu_item_id ===
-                    menuItemId
-                );
-
-
-              const currentQuantity =
-                existing
-                  ? Number(
-                      existing.quantity
-                    )
-                  : 0;
-
-
-              /*
-                 Do not allow the cart quantity
-                 to exceed inventory.
-              */
-
-              if (
-                currentQuantity >=
-                Number(
-                  menuItem.inventory_quantity
-                )
-              ) {
-
-                alert(
-                  `Only ${menuItem.inventory_quantity} ` +
-                  `${menuItem.item_name} are available.`
-                );
-
-
-                return;
-              }
-
-
-              if (existing) {
-
-                existing.quantity += 1;
-
-              } else {
-
-                cart.push({
-
-                  menu_item_id:
-                    menuItemId,
-
-                  quantity:
-                    1
-                });
-              }
-
-
-              saveCart(cart);
-
-
-              draw();
-            }
-          );
-        }
-      );
-
-
-    /* =====================================================
-       REMOVE ITEM
-       ===================================================== */
-
-    document
-      .querySelectorAll(
-        ".remove-item"
-      )
-      .forEach(
-        button => {
-
-          button.addEventListener(
-            "click",
-            () => {
-
-              const menuItemId =
-                Number(
-                  button.dataset.id
-                );
-
-
-              let cart =
-                getCart();
-
-
-              const existing =
-                cart.find(
-                  item =>
-                    item.menu_item_id ===
-                    menuItemId
-                );
-
-
-              if (!existing) {
-                return;
-              }
-
-
-              if (
-                existing.quantity >
-                1
-              ) {
-
-                existing.quantity -= 1;
-
-              } else {
-
-                cart =
-                  cart.filter(
-                    item =>
-                      item.menu_item_id !==
-                      menuItemId
-                  );
-              }
-
-
-              saveCart(cart);
-
-
-              draw();
-            }
-          );
-        }
-      );
-  }
-
-
-  /* =======================================================
-     PLACE ORDER
-     ======================================================= */
-
-  placeOrder.addEventListener(
-    "click",
-    () => {
-
-      const vendorId =
-        Number(
-          vendorSelect.value
-        );
-
-
-      const cart =
-        getCart();
-
-
-      /* VALIDATE VENDOR */
-
-      if (!vendorId) {
-
-        alert(
-          "Please select a vendor."
-        );
-
-        return;
-      }
-
-
-      /* VALIDATE CART */
-
-      if (
-        cart.length ===
-        0
-      ) {
-
-        alert(
-          "Please add at least one item."
-        );
-
-        return;
-      }
-
-
-      /* VALIDATE INVENTORY */
-
-      for (
-        const cartItem of cart
-      ) {
-
-        const menuItem =
-          findMenuItem(
-            db,
-            cartItem.menu_item_id
-          );
-
-
-        if (!menuItem) {
-
-          alert(
-            "One of the selected menu items could not be found."
-          );
-
-          return;
-        }
-
-
-        if (
-          menuItem.vendor_id !==
-          vendorId
-        ) {
-
-          alert(
-            "The cart contains an item from another vendor."
-          );
-
-          return;
-        }
-
-
-        if (
-          menuItem.is_available !==
-          true
-        ) {
-
-          alert(
-            `${menuItem.item_name} is no longer available.`
-          );
-
-          return;
-        }
-
-
-        if (
-          Number(
-            cartItem.quantity
-          ) >
-          Number(
-            menuItem.inventory_quantity
-          )
-        ) {
-
-          alert(
-            `Only ${menuItem.inventory_quantity} ` +
-            `${menuItem.item_name} are currently available.`
-          );
-
-          return;
-        }
-      }
-
-
-      /* CALCULATE TOTAL */
-
-      let total = 0;
-
-
-      for (
-        const cartItem of cart
-      ) {
-
-        const menuItem =
-          findMenuItem(
-            db,
-            cartItem.menu_item_id
-          );
-
-
-        total +=
-          Number(
-            menuItem.price
-          ) *
-          Number(
-            cartItem.quantity
-          );
-      }
-
-
-      total =
-        Number(
-          total.toFixed(2)
-        );
-
-
-      /* VALIDATE BALANCE */
-
-      if (
-        total >
-        Number(
-          student.balance
-        )
-      ) {
-
-        alert(
-          "Insufficient balance. Please add funds to your account."
-        );
-
-        return;
-      }
-
-
-      const pendingStatus =
-        findStatusByName(
-          db,
-          "Pending"
-        );
-
-
-      if (!pendingStatus) {
-
-        alert(
-          "Pending order status could not be found."
-        );
-
-        return;
-      }
-
-
-      /* ---------------------------------------------------
-         CREATE UNIQUE ORDER ID
-         --------------------------------------------------- */
-
-      let orderId =
-        Number(
-          Date.now()
-            .toString()
-            .slice(-8)
-        );
-
-
-      while (
-        db.Orders.some(
-          order =>
-            order.order_id ===
-            orderId
-        )
-      ) {
-
-        orderId += 1;
-      }
-
-
-      /* ===================================================
-         CREATE ORDER
-         =================================================== */
-
-      db.Orders.push({
-
-        order_id:
-          orderId,
-
-        student_id:
-          student.student_id,
-
-        vendor_id:
-          vendorId,
-
-        status_id:
-          pendingStatus.status_id,
-
-        handled_by:
-          null,
-
-        order_date:
-          new Date().toISOString(),
-
-        pickup_time:
-          pickupTime.value,
-
-        notes:
-          "",
-
-        total_amount:
-          total
-      });
-
-
-      /* ===================================================
-         CREATE ORDER ITEMS AND REDUCE INVENTORY
-         =================================================== */
-
-      cart.forEach(
-        (
-          cartItem,
-          index
-        ) => {
-
-          const menuItem =
-            findMenuItem(
-              db,
-              cartItem.menu_item_id
-            );
-
-
-          if (!menuItem) {
-            return;
-          }
-
-
-          /* CREATE ORDER ITEM */
-
-          db.OrderItems.push({
-
-            order_item_id:
-              Number(
-                `${orderId}${index + 1}`
-              ),
-
-            order_id:
-              orderId,
-
-            menu_item_id:
-              menuItem.menu_item_id,
-
-            quantity:
-              Number(
-                cartItem.quantity
-              ),
-
-            unit_price:
-              Number(
-                menuItem.price
-              )
-          });
-
-
-          /* REDUCE INVENTORY */
-
-          menuItem.inventory_quantity =
-            Number(
-              menuItem.inventory_quantity
-            ) -
-            Number(
-              cartItem.quantity
-            );
-
-
-          /* AUTO MARK OUT OF STOCK */
-
-          if (
-            menuItem.inventory_quantity <=
-            0
-          ) {
-
-            menuItem.inventory_quantity =
-              0;
-
-
-            menuItem.is_available =
-              false;
-          }
-        }
-      );
-
-
-      /* ===================================================
-         DEDUCT STUDENT BALANCE
-         =================================================== */
-
-      student.balance =
-        Number(
-          (
-            Number(
-              student.balance
-            ) -
-            total
-          ).toFixed(2)
-        );
-
-
-      /* ===================================================
-         CREATE PURCHASE TRANSACTION
-         =================================================== */
-
-      db.Transactions.push({
-
-        transaction_id:
-          Date.now(),
-
-        order_id:
-          orderId,
-
-        student_id:
-          student.student_id,
-
-        transaction_type:
-          "PURCHASE",
-
-        amount:
-          total,
-
-        transaction_status:
-          "COMPLETE",
-
-        transaction_date:
-          new Date().toISOString()
-      });
-
-
-      /* SAVE DATABASE */
-
-      saveDB(db);
-
-
-      /* CLEAR CART */
-
-      saveCart([]);
-
-
-      /* REMEMBER ORDER */
-
-      sessionStorage.setItem(
-        "cflLastOrderId",
-        orderId
-      );
-
-
-      /* OPEN CONFIRMATION */
-
-      window.location.href =
-        "confirmation.html";
-    }
-  );
-
-
-  draw();
-}
-
-
-/* =========================================================
-   ORDER CONFIRMATION
-   ========================================================= */
-
-function confirmationInit(db) {
-
-  if (!guard("student")) {
-    return;
-  }
-
-
-  const orderId =
-    Number(
-      sessionStorage.getItem(
-        "cflLastOrderId"
-      )
-    );
-
-
-  const currentOrder =
-    db.Orders.find(
-      order =>
-        order.order_id ===
-          orderId &&
-
-        order.student_id ===
-          getStudentId()
-    );
-
-
-  if (!currentOrder) {
-
-    window.location.href =
-      "account.html";
-
-    return;
-  }
-
-
-  const status =
-    findStatus(
-      db,
-      currentOrder.status_id
-    );
-
-
-  const confirmOrder =
-    document.getElementById(
-      "confirmOrder"
-    );
-
-
-  const confirmStatus =
-    document.getElementById(
-      "confirmStatus"
-    );
-
-
-  const confirmPickup =
-    document.getElementById(
-      "confirmPickup"
-    );
-
-
-  const logoutBtn =
-    document.getElementById(
-      "logoutBtn"
-    );
-
-
-  if (confirmOrder) {
-
-    confirmOrder.textContent =
-      currentOrder.order_id;
-  }
-
-
-  if (confirmStatus) {
-
-    confirmStatus.textContent =
-      status
-        ? `${status.status_name.toLowerCase()}!`
-        : "unknown";
-  }
-
-
-  if (confirmPickup) {
-
-    confirmPickup.textContent =
-      currentOrder.pickup_time;
-  }
-
-
-  if (logoutBtn) {
-
-    logoutBtn.addEventListener(
-      "click",
-      () => {
-
-        sessionStorage.clear();
-
-
-        localStorage.removeItem(
-          CART_KEY
-        );
-
-
-        window.location.href =
-          "index.html";
-      }
-    );
-  }
-}
-
-
-/* =========================================================
-   STAFF DASHBOARD
-   ========================================================= */
-
-function ordersInit(db) {
-
-  if (!guard("staff")) {
-    return;
-  }
-
-
-  const staff =
-    findStaff(
-      db,
-      getStaffId()
-    );
-
-
-  if (!staff) {
-
-    sessionStorage.clear();
-
-    window.location.href =
-      "index.html";
-
-    return;
-  }
-
-
-  const staffName =
-    document.getElementById(
-      "staffName"
-    );
-
-
-  const staffVendor =
-    document.getElementById(
-      "staffVendor"
-    );
-
-
-  const ordersBody =
-    document.getElementById(
-      "ordersBody"
-    );
-
-
-  const saveMessage =
-    document.getElementById(
-      "saveMessage"
-    );
-
-
-  const inventoryBody =
-    document.getElementById(
-      "inventoryBody"
-    );
-
-
-  const inventoryMessage =
-    document.getElementById(
-      "inventoryMessage"
-    );
-
-
-  const ordersSection =
-    document.getElementById(
-      "ordersSection"
-    );
-
-
-  const inventorySection =
-    document.getElementById(
-      "inventorySection"
-    );
-
-
-  const showOrdersBtn =
-    document.getElementById(
-      "showOrdersBtn"
-    );
-
-
-  const showInventoryBtn =
-    document.getElementById(
-      "showInventoryBtn"
-    );
-
-
-  const studentDemoBtn =
-    document.getElementById(
-      "studentDemoBtn"
-    );
-
-
-  const exportDataBtn =
-    document.getElementById(
-      "exportDataBtn"
-    );
-
-
-  const staffLogoutBtn =
-    document.getElementById(
-      "staffLogoutBtn"
-    );
-
-
-  /* =======================================================
-     STAFF INFORMATION
-     ======================================================= */
-
-  if (staffName) {
-
-    staffName.textContent =
-      `${staff.first_name} ${staff.last_name}`;
-  }
-
-
-  if (staffVendor) {
-
-    staffVendor.textContent =
-      "Campus FoodLink+";
-  }
-
-
-  /* =======================================================
-     PROFESSOR DEMO ACCESS
-     ======================================================= */
-
-  if (
-    staff.role ===
-      "PROFESSOR DEMO" &&
-    studentDemoBtn
-  ) {
-
-    studentDemoBtn.hidden =
-      false;
-
-
-    studentDemoBtn.addEventListener(
-      "click",
-      () => {
-
-        /*
-           Preserve the professor's actual
-           Staff primary key.
-        */
-
-        sessionStorage.setItem(
-          "cflProfessorDemo",
-          "true"
-        );
-
-
-        sessionStorage.setItem(
-          "cflProfessorStaffId",
-          staff.staff_id
-        );
-
-
-        /*
-           Switch to Ale Leon for the
-           student demonstration.
-        */
-
-        sessionStorage.setItem(
-          "cflRole",
-          "student"
-        );
-
-
-        sessionStorage.setItem(
-          "cflStudentId",
-          101
-        );
-
-
-        localStorage.removeItem(
-          CART_KEY
-        );
-
-
-        window.location.href =
-          "account.html";
-      }
-    );
-  }
-
-
-  /* =======================================================
-     EXPORT GRADING DATA
-     ======================================================= */
-
-  if (exportDataBtn) {
-
-    exportDataBtn.addEventListener(
-      "click",
-      () => {
-
-        const confirmed =
-          confirm(
-            "Export the current Campus FoodLink+ " +
-            "database as a JSON file for grading?"
-          );
-
-
-        if (!confirmed) {
-          return;
-        }
-
-
-        exportDatabase();
-      }
-    );
-  }
-
-
-  /* =======================================================
-     STAFF LOGOUT
-     ======================================================= */
-
-  if (staffLogoutBtn) {
-
-    staffLogoutBtn.addEventListener(
-      "click",
-      () => {
-
-        sessionStorage.clear();
-
-
-        localStorage.removeItem(
-          CART_KEY
-        );
-
-
-        window.location.href =
-          "index.html";
-      }
-    );
-  }
-
-
-  /* =======================================================
-     STAFF DASHBOARD NAVIGATION
-     ======================================================= */
-
-  if (
-    showOrdersBtn &&
-    showInventoryBtn &&
-    ordersSection &&
-    inventorySection
-  ) {
-
-    showOrdersBtn.addEventListener(
-      "click",
-      () => {
-
-        ordersSection.hidden =
-          false;
-
-
-        inventorySection.hidden =
-          true;
-
-
-        showOrdersBtn.classList.add(
-          "active"
-        );
-
-
-        showInventoryBtn.classList.remove(
-          "active"
-        );
-
-
-        drawOrders();
-      }
-    );
-
-
-    showInventoryBtn.addEventListener(
-      "click",
-      () => {
-
-        ordersSection.hidden =
-          true;
-
-
-        inventorySection.hidden =
-          false;
-
-
-        showInventoryBtn.classList.add(
-          "active"
-        );
-
-
-        showOrdersBtn.classList.remove(
-          "active"
-        );
-
-
-        drawInventory();
-      }
-    );
-  }
-
-
-  /* =======================================================
-     DRAW ORDERS
-     ======================================================= */
-
-  function drawOrders() {
-
-    if (!ordersBody) {
-      return;
-    }
-
-
-    if (
-      db.Orders.length ===
-      0
-    ) {
-
-      ordersBody.innerHTML = `
-
-        <tr>
-          <td colspan="7">
-            No current orders.
-          </td>
-        </tr>
-
-      `;
-
-
-      return;
-    }
-
-
-    ordersBody.innerHTML =
-      db.Orders
-        .map(
-          order => {
-
-            const vendor =
-              findVendor(
-                db,
-                order.vendor_id
-              );
-
-
-            const statusOptions =
-              db.OrderStatus
-                .map(
-                  option => `
-
-                    <option
-                      value="${option.status_id}"
-                      ${
-                        option.status_id ===
-                        order.status_id
-                          ? "selected"
-                          : ""
-                      }
-                    >
-                      ${option.status_name}
-                    </option>
-
-                  `
-                )
-                .join("");
+            const lineTotal =
+              Number(item.price) *
+              Number(row.quantity);
 
 
             return `
@@ -2754,423 +1050,7 @@ function ordersInit(db) {
               <tr>
 
                 <td>
-                  ${order.order_id}
-                </td>
-
-                <td>
-                  ${
-                    vendor
-                      ? vendor.vendor_name
-                      : "Unknown"
-                  }
-                </td>
-
-                <td>
-
-                  <select
-                    class="status-select"
-                    data-order-id="${order.order_id}"
-                  >
-                    ${statusOptions}
-                  </select>
-
-                </td>
-
-                <td>
-                  ${new Date(
-                    order.order_date
-                  ).toLocaleDateString()}
-                </td>
-
-                <td>
-                  ${order.pickup_time}
-                </td>
-
-                <td>
-
-                  <textarea
-                    class="order-notes"
-                    data-order-id="${order.order_id}"
-                  >${order.notes || ""}</textarea>
-
-                </td>
-
-                <td>
-
-                  <button
-                    type="button"
-                    class="view-order"
-                    data-order-id="${order.order_id}"
-                  >
-                    View Order
-                  </button>
-
-                </td>
-
-              </tr>
-
-            `;
-          }
-        )
-        .join("");
-
-
-    /* =====================================================
-       UPDATE ORDER STATUS
-       ===================================================== */
-
-    document
-      .querySelectorAll(
-        ".status-select"
-      )
-      .forEach(
-        select => {
-
-          select.addEventListener(
-            "change",
-            () => {
-
-              const selectedOrderId =
-                Number(
-                  select.dataset.orderId
-                );
-
-
-              const order =
-                db.Orders.find(
-                  record =>
-                    record.order_id ===
-                    selectedOrderId
-                );
-
-
-              if (!order) {
-                return;
-              }
-
-
-              const oldStatus =
-                findStatus(
-                  db,
-                  order.status_id
-                );
-
-
-              const newStatus =
-                findStatus(
-                  db,
-                  Number(
-                    select.value
-                  )
-                );
-
-
-              /*
-                 Prevent a canceled order from
-                 being reopened. This also helps
-                 prevent duplicate refunds.
-              */
-
-              if (
-                oldStatus &&
-                oldStatus.status_name ===
-                  "Canceled"
-              ) {
-
-                alert(
-                  "Canceled orders cannot be reopened."
-                );
-
-
-                select.value =
-                  order.status_id;
-
-
-                return;
-              }
-
-
-              order.status_id =
-                Number(
-                  select.value
-                );
-
-
-              order.handled_by =
-                staff.staff_id;
-
-
-              saveDB(db);
-
-
-              if (saveMessage) {
-
-                saveMessage.textContent =
-                  `Order #${order.order_id} updated to ` +
-                  `${newStatus
-                    ? newStatus.status_name
-                    : "Unknown"}.`;
-              }
-            }
-          );
-        }
-      );
-
-
-    /* =====================================================
-       SAVE ORDER NOTES
-       ===================================================== */
-
-    document
-      .querySelectorAll(
-        ".order-notes"
-      )
-      .forEach(
-        textarea => {
-
-          textarea.addEventListener(
-            "change",
-            () => {
-
-              const selectedOrderId =
-                Number(
-                  textarea.dataset.orderId
-                );
-
-
-              const order =
-                db.Orders.find(
-                  record =>
-                    record.order_id ===
-                    selectedOrderId
-                );
-
-
-              if (!order) {
-                return;
-              }
-
-
-              order.notes =
-                textarea.value;
-
-
-              order.handled_by =
-                staff.staff_id;
-
-
-              saveDB(db);
-
-
-              if (saveMessage) {
-
-                saveMessage.textContent =
-                  `Notes saved for Order #${order.order_id}.`;
-              }
-            }
-          );
-        }
-      );
-
-
-    /* =====================================================
-       VIEW ORDER DETAILS
-       ===================================================== */
-
-    document
-      .querySelectorAll(
-        ".view-order"
-      )
-      .forEach(
-        button => {
-
-          button.addEventListener(
-            "click",
-            () => {
-
-              const selectedOrderId =
-                Number(
-                  button.dataset.orderId
-                );
-
-
-              const order =
-                db.Orders.find(
-                  record =>
-                    record.order_id ===
-                    selectedOrderId
-                );
-
-
-              if (!order) {
-                return;
-              }
-
-
-              const student =
-                findStudent(
-                  db,
-                  order.student_id
-                );
-
-
-              const vendor =
-                findVendor(
-                  db,
-                  order.vendor_id
-                );
-
-
-              const status =
-                findStatus(
-                  db,
-                  order.status_id
-                );
-
-
-              const orderItems =
-                db.OrderItems.filter(
-                  item =>
-                    item.order_id ===
-                    order.order_id
-                );
-
-
-              const itemText =
-                orderItems
-                  .map(
-                    orderItem => {
-
-                      const menuItem =
-                        findMenuItem(
-                          db,
-                          orderItem.menu_item_id
-                        );
-
-
-                      return (
-                        `${orderItem.quantity} x ` +
-                        `${menuItem
-                          ? menuItem.item_name
-                          : "Unknown Item"} - ` +
-                        `$${(
-                          Number(
-                            orderItem.unit_price
-                          ) *
-                          Number(
-                            orderItem.quantity
-                          )
-                        ).toFixed(2)}`
-                      );
-                    }
-                  )
-                  .join("\n");
-
-
-              alert(
-
-                `Order #${order.order_id}\n\n` +
-
-                `Student: ${
-                  student
-                    ? student.first_name +
-                      " " +
-                      student.last_name
-                    : "Unknown"
-                }\n` +
-
-                `Vendor: ${
-                  vendor
-                    ? vendor.vendor_name
-                    : "Unknown"
-                }\n` +
-
-                `Pickup: ${order.pickup_time}\n` +
-
-                `Status: ${
-                  status
-                    ? status.status_name
-                    : "Unknown"
-                }\n\n` +
-
-                `Items:\n${itemText}\n\n` +
-
-                `Total: $${Number(
-                  order.total_amount
-                ).toFixed(2)}`
-              );
-            }
-          );
-        }
-      );
-  }
-
-
-  /* =======================================================
-     DRAW INVENTORY
-     ======================================================= */
-
-  function drawInventory() {
-
-    if (!inventoryBody) {
-      return;
-    }
-
-
-    if (
-      db.MenuItems.length ===
-      0
-    ) {
-
-      inventoryBody.innerHTML = `
-
-        <tr>
-          <td colspan="7">
-            No menu items found.
-          </td>
-        </tr>
-
-      `;
-
-
-      return;
-    }
-
-
-    inventoryBody.innerHTML =
-      db.MenuItems
-        .map(
-          item => {
-
-            const vendor =
-              findVendor(
-                db,
-                item.vendor_id
-              );
-
-
-            const actualAvailable =
-              item.is_available ===
-                true &&
-              Number(
-                item.inventory_quantity
-              ) > 0;
-
-
-            return `
-
-              <tr>
-
-                <td>
-                  ${item.menu_item_id}
-                </td>
-
-                <td>
-                  ${
-                    vendor
-                      ? vendor.vendor_name
-                      : "Unknown"
-                  }
+                  ${row.quantity}
                 </td>
 
                 <td>
@@ -3184,88 +1064,64 @@ function ordersInit(db) {
                 </td>
 
                 <td>
-
-                  <input
-                    type="number"
-                    class="inventory-quantity"
-                    data-item-id="${item.menu_item_id}"
-                    min="0"
-                    step="1"
-                    value="${item.inventory_quantity}"
-                  >
-
-                </td>
-
-                <td>
-
-                  <select
-                    class="availability-select"
-                    data-item-id="${item.menu_item_id}"
-                  >
-
-                    <option
-                      value="true"
-                      ${
-                        item.is_available
-                          ? "selected"
-                          : ""
-                      }
-                    >
-                      Yes
-                    </option>
-
-                    <option
-                      value="false"
-                      ${
-                        !item.is_available
-                          ? "selected"
-                          : ""
-                      }
-                    >
-                      No
-                    </option>
-
-                  </select>
-
-                  <small>
-                    Currently:
-                    ${
-                      actualAvailable
-                        ? "Available"
-                        : "Unavailable"
-                    }
-                  </small>
-
+                  $${lineTotal.toFixed(2)}
                 </td>
 
                 <td>
 
                   <button
+                    class="remove"
                     type="button"
-                    class="save-inventory"
-                    data-item-id="${item.menu_item_id}"
-                  >
-                    Save
+                    data-id="${item.menu_item_id}">
+                    Remove
                   </button>
 
                 </td>
 
               </tr>
-
             `;
           }
         )
         .join("");
 
 
-    /* =====================================================
-       SAVE INVENTORY
-       ===================================================== */
+    /* Cart total */
+
+    const total =
+      currentCart.reduce(
+        (sum, row) => {
+
+          const item =
+            byId(
+              db.MenuItems,
+              "menu_item_id",
+              row.menu_item_id
+            );
+
+
+          if (!item) {
+            return sum;
+          }
+
+
+          return (
+            sum +
+            Number(item.price) *
+            Number(row.quantity)
+          );
+        },
+        0
+      );
+
+
+    cartTotal.textContent =
+      total.toFixed(2);
+
+
+    /* Add item */
 
     document
-      .querySelectorAll(
-        ".save-inventory"
-      )
+      .querySelectorAll(".add")
       .forEach(
         button => {
 
@@ -3275,108 +1131,111 @@ function ordersInit(db) {
 
               const itemId =
                 Number(
-                  button.dataset.itemId
+                  button.dataset.id
                 );
 
 
-              const menuItem =
-                findMenuItem(
-                  db,
-                  itemId
+              const currentCart =
+                cart();
+
+
+              const existing =
+                currentCart.find(
+                  row =>
+                    Number(
+                      row.menu_item_id
+                    ) === itemId
                 );
 
 
-              if (!menuItem) {
-                return;
+              if (existing) {
+
+                existing.quantity++;
+
+              } else {
+
+                currentCart.push({
+
+                  menu_item_id:
+                    itemId,
+
+                  quantity:
+                    1
+                });
               }
 
 
-              const quantityInput =
-                document.querySelector(
-                  `.inventory-quantity[data-item-id="${itemId}"]`
-                );
+              saveCart(
+                currentCart
+              );
 
 
-              const availabilityInput =
-                document.querySelector(
-                  `.availability-select[data-item-id="${itemId}"]`
-                );
+              drawMenu();
+            }
+          );
+        }
+      );
 
 
-              if (
-                !quantityInput ||
-                !availabilityInput
-              ) {
+    /* Remove item */
 
-                return;
-              }
+    document
+      .querySelectorAll(".remove")
+      .forEach(
+        button => {
 
+          button.addEventListener(
+            "click",
+            () => {
 
-              const quantity =
+              const itemId =
                 Number(
-                  quantityInput.value
+                  button.dataset.id
                 );
 
 
-              /* VALIDATE QUANTITY */
-
-              if (
-                !Number.isInteger(
-                  quantity
-                ) ||
-                quantity < 0
-              ) {
-
-                if (inventoryMessage) {
-
-                  inventoryMessage.textContent =
-                    "Inventory must be a whole number of 0 or greater.";
-                }
+              let currentCart =
+                cart();
 
 
+              const existing =
+                currentCart.find(
+                  row =>
+                    Number(
+                      row.menu_item_id
+                    ) === itemId
+                );
+
+
+              if (!existing) {
                 return;
               }
 
 
-              /* UPDATE INVENTORY */
-
-              menuItem.inventory_quantity =
-                quantity;
-
-
-              /* UPDATE AVAILABILITY */
-
-              menuItem.is_available =
-                availabilityInput.value ===
-                "true";
-
-
-              /*
-                 Zero inventory always means
-                 unavailable.
-              */
-
               if (
-                menuItem.inventory_quantity ===
-                0
+                existing.quantity > 1
               ) {
 
-                menuItem.is_available =
-                  false;
+                existing.quantity--;
+
+              } else {
+
+                currentCart =
+                  currentCart.filter(
+                    row =>
+                      Number(
+                        row.menu_item_id
+                      ) !== itemId
+                  );
               }
 
 
-              saveDB(db);
+              saveCart(
+                currentCart
+              );
 
 
-              if (inventoryMessage) {
-
-                inventoryMessage.textContent =
-                  `${menuItem.item_name} inventory updated successfully.`;
-              }
-
-
-              drawInventory();
+              drawMenu();
             }
           );
         }
@@ -3384,24 +1243,1167 @@ function ordersInit(db) {
   }
 
 
-  /* =======================================================
-     INITIAL STAFF VIEW
-     ======================================================= */
+  /* ========================================================
+     PLACE ORDER
+     ======================================================== */
+
+  document
+    .getElementById(
+      "placeOrder"
+    )
+    .addEventListener(
+      "click",
+      () => {
+
+        const vendorId =
+          Number(
+            vendorSelect.value
+          );
+
+
+        const currentCart =
+          cart();
+
+
+        const pickupTime =
+          document.getElementById(
+            "pickupTime"
+          ).value;
+
+
+        const specialInstructions =
+          document.getElementById(
+            "specialInstructions"
+          ).value.trim();
+
+
+        /* Validation */
+
+        if (
+          !vendorId ||
+          !currentCart.length
+        ) {
+
+          alert(
+            "Select a vendor and add at least one item."
+          );
+
+          return;
+        }
+
+
+        if (!pickupTime) {
+
+          alert(
+            "Select a pickup date and time."
+          );
+
+          return;
+        }
+
+
+        /*
+           Confirm every item is still
+           available and belongs to the
+           selected vendor.
+        */
+
+        for (
+          const row
+          of currentCart
+        ) {
+
+          const item =
+            byId(
+              db.MenuItems,
+              "menu_item_id",
+              row.menu_item_id
+            );
+
+
+          if (
+            !item ||
+            !item.is_available ||
+            Number(item.vendor_id)
+              !== vendorId
+          ) {
+
+            alert(
+              "A selected menu item is no longer available."
+            );
+
+            return;
+          }
+        }
+
+
+        /* Calculate order total */
+
+        const total =
+          Number(
+            currentCart
+              .reduce(
+                (sum, row) => {
+
+                  const item =
+                    byId(
+                      db.MenuItems,
+                      "menu_item_id",
+                      row.menu_item_id
+                    );
+
+
+                  return (
+                    sum +
+                    Number(item.price) *
+                    Number(row.quantity)
+                  );
+                },
+                0
+              )
+              .toFixed(2)
+          );
+
+
+        /* Meal-plan validation */
+
+        if (
+          total >
+          Number(
+            student.meal_plan_balance
+          )
+        ) {
+
+          alert(
+            "Insufficient meal-plan balance."
+          );
+
+          return;
+        }
+
+
+        /* Generate IDs */
+
+        const orderId =
+          next(
+            db.Orders,
+            "order_id",
+            15559
+          );
+
+
+        const now =
+          new Date().toISOString();
+
+
+        /* ==================================================
+           CREATE ORDERS RECORD
+           ================================================== */
+
+        db.Orders.push({
+
+          order_id:
+            orderId,
+
+          vendor_id:
+            vendorId,
+
+          student_id:
+            student.student_id,
+
+          order_date:
+            now,
+
+          total_amount:
+            total,
+
+          pickup_time:
+            new Date(
+              pickupTime
+            ).toISOString(),
+
+          special_instructions:
+            specialInstructions
+        });
+
+
+        /* ==================================================
+           CREATE ORDERITEMS RECORDS
+           ================================================== */
+
+        currentCart.forEach(
+          row => {
+
+            const item =
+              byId(
+                db.MenuItems,
+                "menu_item_id",
+                row.menu_item_id
+              );
+
+
+            const lineTotal =
+              Number(
+                (
+                  Number(item.price) *
+                  Number(row.quantity)
+                ).toFixed(2)
+              );
+
+
+            db.OrderItems.push({
+
+              order_item_id:
+                next(
+                  db.OrderItems,
+                  "order_item_id"
+                ),
+
+              order_id:
+                orderId,
+
+              menu_item_id:
+                item.menu_item_id,
+
+              quantity:
+                row.quantity,
+
+              unit_price:
+                Number(
+                  item.price
+                ),
+
+              total_price:
+                lineTotal
+            });
+          }
+        );
+
+
+        /* ==================================================
+           CREATE INITIAL ORDERSTATUS RECORD
+           ================================================== */
+
+        db.OrderStatus.push({
+
+          status_id:
+            next(
+              db.OrderStatus,
+              "status_id"
+            ),
+
+          order_id:
+            orderId,
+
+          staff_id:
+            null,
+
+          status_name:
+            "Pending",
+
+          status_description:
+            "Order submitted by student",
+
+          updated_at:
+            now
+        });
+
+
+        /* ==================================================
+           CREATE TRANSACTION RECORD
+           ================================================== */
+
+        db.Transactions.push({
+
+          transaction_id:
+            next(
+              db.Transactions,
+              "transaction_id"
+            ),
+
+          order_id:
+            orderId,
+
+          student_id:
+            student.student_id,
+
+          transaction_date:
+            now,
+
+          amount:
+            total,
+
+          payment_method:
+            "Meal Plan",
+
+          meal_plan_used:
+            total,
+
+          transaction_status:
+            "Complete"
+        });
+
+
+        /* ==================================================
+           UPDATE STUDENT MEAL-PLAN BALANCE
+           ================================================== */
+
+        student.meal_plan_balance =
+          Number(
+            (
+              Number(
+                student.meal_plan_balance
+              ) -
+              total
+            ).toFixed(2)
+          );
+
+
+        saveDB(db);
+
+        saveCart([]);
+
+
+        sessionStorage.setItem(
+          "cflLastOrderId",
+          orderId
+        );
+
+
+        window.location.href =
+          "confirmation.html";
+      }
+    );
+
+
+  drawMenu();
+}
+
+
+/* ============================================================
+   ORDER CONFIRMATION
+   confirmation.html
+   ============================================================ */
+
+function confirmationInit(db) {
+
+  if (!guard("student")) {
+    return;
+  }
+
+
+  const orderId =
+    sessionStorage.getItem(
+      "cflLastOrderId"
+    );
+
+
+  const order =
+    byId(
+      db.Orders,
+      "order_id",
+      orderId
+    );
+
+
+  if (!order) {
+
+    window.location.href =
+      "account.html";
+
+    return;
+  }
+
+
+  const vendor =
+    byId(
+      db.Vendors,
+      "vendor_id",
+      order.vendor_id
+    );
+
+
+  const status =
+    latestStatus(
+      db,
+      order.order_id
+    );
+
+
+  document.getElementById(
+    "confirmOrder"
+  ).textContent =
+    order.order_id;
+
+
+  document.getElementById(
+    "confirmVendor"
+  ).textContent =
+    vendor
+      ? vendor.vendor_name
+      : "Unknown";
+
+
+  document.getElementById(
+    "confirmStatus"
+  ).textContent =
+    status
+      ? status.status_name
+      : "Pending";
+
+
+  document.getElementById(
+    "confirmPickup"
+  ).textContent =
+    new Date(
+      order.pickup_time
+    ).toLocaleString();
+
+
+  document.getElementById(
+    "confirmTotal"
+  ).textContent =
+    Number(
+      order.total_amount
+    ).toFixed(2);
+
+
+  /* Logout */
+
+  document.getElementById(
+    "logoutBtn"
+  ).addEventListener(
+    "click",
+    () => {
+
+      sessionStorage.clear();
+
+      window.location.href =
+        "index.html";
+    }
+  );
+}
+
+
+/* ============================================================
+   STAFF DASHBOARD
+   orders.html
+   ============================================================ */
+
+function ordersInit(db) {
+
+  if (!guard("staff")) {
+    return;
+  }
+
+
+  const staff =
+    currentStaff(db);
+
+
+  if (
+    !staff ||
+    !staff.is_active
+  ) {
+
+    sessionStorage.clear();
+
+    window.location.href =
+      "index.html";
+
+    return;
+  }
+
+
+  document.getElementById(
+    "staffName"
+  ).textContent =
+    `${staff.first_name} ${staff.last_name}`;
+
+
+  document.getElementById(
+    "staffRole"
+  ).textContent =
+    staff.role;
+
+
+  const ordersSection =
+    document.getElementById(
+      "ordersSection"
+    );
+
+  const menuSection =
+    document.getElementById(
+      "menuSection"
+    );
+
+
+  /* ========================================================
+     PROFESSOR STUDENT DEMO
+     ======================================================== */
+
+  const studentDemoButton =
+    document.getElementById(
+      "studentDemoBtn"
+    );
+
+
+  if (
+    sessionStorage.getItem(
+      "cflProfessorDemo"
+    ) === "true"
+  ) {
+
+    studentDemoButton.hidden =
+      false;
+
+
+    studentDemoButton.addEventListener(
+      "click",
+      () => {
+
+        /*
+           Preserve staff identity before
+           entering student demonstration.
+        */
+
+        sessionStorage.setItem(
+          "cflProfessorStaffId",
+          staff.staff_id
+        );
+
+
+        sessionStorage.setItem(
+          "cflRole",
+          "student"
+        );
+
+
+        sessionStorage.setItem(
+          "cflStudentId",
+          101
+        );
+
+
+        window.location.href =
+          "account.html";
+      }
+    );
+  }
+
+
+  /* ========================================================
+     EXPORT
+     ======================================================== */
+
+  document.getElementById(
+    "exportDataBtn"
+  ).addEventListener(
+    "click",
+    exportJSON
+  );
+
+
+  /* ========================================================
+     STAFF LOGOUT
+     ======================================================== */
+
+  document.getElementById(
+    "staffLogoutBtn"
+  ).addEventListener(
+    "click",
+    () => {
+
+      sessionStorage.clear();
+
+      window.location.href =
+        "index.html";
+    }
+  );
+
+
+  /* ========================================================
+     PAGE NAVIGATION
+     ======================================================== */
+
+  document.getElementById(
+    "showOrdersBtn"
+  ).addEventListener(
+    "click",
+    () => {
+
+      ordersSection.hidden =
+        false;
+
+      menuSection.hidden =
+        true;
+
+      drawOrders();
+    }
+  );
+
+
+  document.getElementById(
+    "showMenuBtn"
+  ).addEventListener(
+    "click",
+    () => {
+
+      ordersSection.hidden =
+        true;
+
+      menuSection.hidden =
+        false;
+
+      drawMenuAdmin();
+    }
+  );
+
+
+  /* ========================================================
+     STAFF ROLE PERMISSIONS
+     ======================================================== */
+
+  const canProcessOrders =
+    staff.role ===
+      "Dietary Associate" ||
+    staff.role ===
+      "Dietary Manager";
+
+
+  const canManageMenu =
+    staff.role ===
+    "Dietary Manager";
+
+
+  /*
+     Only Dietary Managers can change
+     menu availability.
+  */
+
+  if (!canManageMenu) {
+
+    document.getElementById(
+      "showMenuBtn"
+    ).hidden = true;
+  }
+
+
+  /* ========================================================
+     DRAW ORDERS
+     ======================================================== */
+
+  function drawOrders() {
+
+    const ordersBody =
+      document.getElementById(
+        "ordersBody"
+      );
+
+
+    if (!db.Orders.length) {
+
+      ordersBody.innerHTML = `
+
+        <tr>
+
+          <td colspan="7">
+            No current orders.
+          </td>
+
+        </tr>
+      `;
+
+      return;
+    }
+
+
+    ordersBody.innerHTML =
+      db.Orders
+        .map(
+          order => {
+
+            const student =
+              byId(
+                db.Students,
+                "student_id",
+                order.student_id
+              );
+
+
+            const vendor =
+              byId(
+                db.Vendors,
+                "vendor_id",
+                order.vendor_id
+              );
+
+
+            const status =
+              latestStatus(
+                db,
+                order.order_id
+              );
+
+
+            const statusControl =
+              canProcessOrders
+                ? `
+
+                  <select
+                    class="new-status"
+                    data-id="${order.order_id}">
+
+                    <option value="">
+                      Select
+                    </option>
+
+                    <option value="Approved">
+                      Approved
+                    </option>
+
+                    <option value="Preparing">
+                      Preparing
+                    </option>
+
+                    <option value="Ready">
+                      Ready
+                    </option>
+
+                    <option value="Cancelled">
+                      Cancelled
+                    </option>
+
+                  </select>
+
+                `
+                : "View Only";
+
+
+            return `
+
+              <tr>
+
+                <td>
+                  ${order.order_id}
+                </td>
+
+                <td>
+                  ${student
+                    ? `${student.first_name} ${student.last_name}`
+                    : "Unknown"}
+                </td>
+
+                <td>
+                  ${vendor
+                    ? vendor.vendor_name
+                    : "Unknown"}
+                </td>
+
+                <td>
+                  ${status
+                    ? status.status_name
+                    : "-"}
+                </td>
+
+                <td>
+                  ${new Date(
+                    order.pickup_time
+                  ).toLocaleString()}
+                </td>
+
+                <td>
+                  ${statusControl}
+                </td>
+
+                <td>
+
+                  <button
+                    class="details"
+                    type="button"
+                    data-id="${order.order_id}">
+                    View
+                  </button>
+
+                </td>
+
+              </tr>
+            `;
+          }
+        )
+        .join("");
+
+
+    /* ======================================================
+       UPDATE ORDER STATUS
+       ====================================================== */
+
+    if (canProcessOrders) {
+
+      document
+        .querySelectorAll(
+          ".new-status"
+        )
+        .forEach(
+          select => {
+
+            select.addEventListener(
+              "change",
+              () => {
+
+                if (!select.value) {
+                  return;
+                }
+
+
+                const orderId =
+                  Number(
+                    select.dataset.id
+                  );
+
+
+                const currentStatus =
+                  latestStatus(
+                    db,
+                    orderId
+                  );
+
+
+                /*
+                   Cancelled orders remain
+                   cancelled.
+                */
+
+                if (
+                  currentStatus &&
+                  currentStatus.status_name
+                    === "Cancelled"
+                ) {
+
+                  alert(
+                    "Cancelled orders cannot be reopened."
+                  );
+
+                  select.value = "";
+
+                  return;
+                }
+
+
+                /*
+                   Add a NEW history record.
+                   Do not overwrite the
+                   previous status.
+                */
+
+                db.OrderStatus.push({
+
+                  status_id:
+                    next(
+                      db.OrderStatus,
+                      "status_id"
+                    ),
+
+                  order_id:
+                    orderId,
+
+                  staff_id:
+                    staff.staff_id,
+
+                  status_name:
+                    select.value,
+
+                  status_description:
+                    `Status updated by ${staff.first_name} ${staff.last_name}`,
+
+                  updated_at:
+                    new Date().toISOString()
+                });
+
+
+                saveDB(db);
+
+
+                document.getElementById(
+                  "saveMessage"
+                ).textContent =
+                  `Order #${orderId} status updated.`;
+
+
+                drawOrders();
+              }
+            );
+          }
+        );
+    }
+
+
+    /* ======================================================
+       VIEW ORDER DETAILS
+       ====================================================== */
+
+    document
+      .querySelectorAll(
+        ".details"
+      )
+      .forEach(
+        button => {
+
+          button.addEventListener(
+            "click",
+            () => {
+
+              const order =
+                byId(
+                  db.Orders,
+                  "order_id",
+                  button.dataset.id
+                );
+
+
+              if (!order) {
+                return;
+              }
+
+
+              const student =
+                byId(
+                  db.Students,
+                  "student_id",
+                  order.student_id
+                );
+
+
+              const orderItems =
+                db.OrderItems.filter(
+                  item =>
+                    Number(
+                      item.order_id
+                    ) ===
+                    Number(
+                      order.order_id
+                    )
+                );
+
+
+              const itemLines =
+                orderItems
+                  .map(
+                    row => {
+
+                      const menuItem =
+                        byId(
+                          db.MenuItems,
+                          "menu_item_id",
+                          row.menu_item_id
+                        );
+
+
+                      return (
+                        `${row.quantity} x ` +
+                        `${menuItem
+                          ? menuItem.item_name
+                          : "Unknown Item"} ` +
+                        `= $${Number(
+                          row.total_price
+                        ).toFixed(2)}`
+                      );
+                    }
+                  )
+                  .join("\n");
+
+
+              alert(
+
+                `Order #${order.order_id}\n` +
+
+                `Student: ${
+                  student
+                    ? `${student.first_name} ${student.last_name}`
+                    : "Unknown"
+                }\n` +
+
+                `Special Instructions: ${
+                  order.special_instructions
+                    || "None"
+                }\n\n` +
+
+                `${itemLines}\n\n` +
+
+                `Total: $${Number(
+                  order.total_amount
+                ).toFixed(2)}`
+              );
+            }
+          );
+        }
+      );
+  }
+
+
+  /* ========================================================
+     MENU AVAILABILITY
+     Dietary Manager Only
+     ======================================================== */
+
+  function drawMenuAdmin() {
+
+    if (!canManageMenu) {
+      return;
+    }
+
+
+    const menuAdminBody =
+      document.getElementById(
+        "menuAdminBody"
+      );
+
+
+    menuAdminBody.innerHTML =
+      db.MenuItems
+        .map(
+          item => {
+
+            const vendor =
+              byId(
+                db.Vendors,
+                "vendor_id",
+                item.vendor_id
+              );
+
+
+            return `
+
+              <tr>
+
+                <td>
+                  ${item.menu_item_id}
+                </td>
+
+                <td>
+                  ${vendor
+                    ? vendor.vendor_name
+                    : "Unknown"}
+                </td>
+
+                <td>
+                  ${item.item_name}
+                </td>
+
+                <td>
+                  ${item.category || ""}
+                </td>
+
+                <td>
+                  $${Number(
+                    item.price
+                  ).toFixed(2)}
+                </td>
+
+                <td>
+
+                  <select
+                    class="avail"
+                    data-id="${item.menu_item_id}">
+
+                    <option
+                      value="true"
+                      ${item.is_available
+                        ? "selected"
+                        : ""}>
+                      Yes
+                    </option>
+
+                    <option
+                      value="false"
+                      ${!item.is_available
+                        ? "selected"
+                        : ""}>
+                      No
+                    </option>
+
+                  </select>
+
+                </td>
+
+                <td>
+
+                  <button
+                    class="save-menu"
+                    type="button"
+                    data-id="${item.menu_item_id}">
+                    Save
+                  </button>
+
+                </td>
+
+              </tr>
+            `;
+          }
+        )
+        .join("");
+
+
+    /* Save availability */
+
+    document
+      .querySelectorAll(
+        ".save-menu"
+      )
+      .forEach(
+        button => {
+
+          button.addEventListener(
+            "click",
+            () => {
+
+              const menuItem =
+                byId(
+                  db.MenuItems,
+                  "menu_item_id",
+                  button.dataset.id
+                );
+
+
+              const availability =
+                document.querySelector(
+                  `.avail[data-id="${menuItem.menu_item_id}"]`
+                );
+
+
+              menuItem.is_available =
+                availability.value
+                === "true";
+
+
+              saveDB(db);
+
+
+              document.getElementById(
+                "menuMessage"
+              ).textContent =
+                `${menuItem.item_name} availability updated.`;
+            }
+          );
+        }
+      );
+  }
+
 
   drawOrders();
 }
 
 
-/* =========================================================
+/* ============================================================
    START APPLICATION
-   ========================================================= */
+   ============================================================ */
 
 document.addEventListener(
   "DOMContentLoaded",
   async () => {
 
     const db =
-      await initializeDatabase();
+      await initDB();
 
 
     if (!db) {
@@ -3413,49 +2415,28 @@ document.addEventListener(
       document.body.dataset.page;
 
 
-    switch (page) {
+    const pages = {
 
-      case "login":
+      login:
+        loginInit,
 
-        loginInit(db);
+      account:
+        accountInit,
 
-        break;
+      menu:
+        menuInit,
 
+      confirmation:
+        confirmationInit,
 
-      case "account":
-
-        accountInit(db);
-
-        break;
-
-
-      case "menu":
-
-        menuInit(db);
-
-        break;
+      orders:
+        ordersInit
+    };
 
 
-      case "confirmation":
+    if (pages[page]) {
 
-        confirmationInit(db);
-
-        break;
-
-
-      case "orders":
-
-        ordersInit(db);
-
-        break;
-
-
-      default:
-
-        console.warn(
-          "Unknown Campus FoodLink+ page:",
-          page
-        );
+      pages[page](db);
     }
   }
 );
