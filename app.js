@@ -77,6 +77,150 @@ function saveCart(cart) {
     cart
   );
 }
+/* =========================================================
+   EXPORT DATABASE FOR GRADING
+   ========================================================= */
+
+function exportDatabase() {
+
+  const db =
+    getDB();
+
+
+  if (!db) {
+
+    alert(
+      "No Campus FoodLink+ data is available to export."
+    );
+
+    return;
+  }
+
+
+  /*
+     Make a copy so removing passwords does not
+     change the working prototype database.
+  */
+
+  const cleanDatabase =
+    JSON.parse(
+      JSON.stringify(db)
+    );
+
+
+  /* REMOVE STUDENT PASSWORDS */
+
+  if (
+    Array.isArray(
+      cleanDatabase.Students
+    )
+  ) {
+
+    cleanDatabase.Students.forEach(
+      student => {
+
+        delete student.password;
+
+      }
+    );
+  }
+
+
+  /* REMOVE STAFF PASSWORDS */
+
+  if (
+    Array.isArray(
+      cleanDatabase.Staff
+    )
+  ) {
+
+    cleanDatabase.Staff.forEach(
+      staff => {
+
+        delete staff.password;
+
+      }
+    );
+  }
+
+
+  const exportData = {
+
+    project:
+      "Campus FoodLink+",
+
+    export_type:
+      "Prototype Data",
+
+    exported_at:
+      new Date().toISOString(),
+
+    database:
+      cleanDatabase
+  };
+
+
+  const json =
+    JSON.stringify(
+      exportData,
+      null,
+      2
+    );
+
+
+  const blob =
+    new Blob(
+      [json],
+      {
+        type:
+          "application/json"
+      }
+    );
+
+
+  const url =
+    URL.createObjectURL(
+      blob
+    );
+
+
+  const link =
+    document.createElement(
+      "a"
+    );
+
+
+  const date =
+    new Date()
+      .toISOString()
+      .slice(0, 10);
+
+
+  link.href =
+    url;
+
+
+  link.download =
+    `CampusFoodLink_Data_${date}.json`;
+
+
+  document.body.appendChild(
+    link
+  );
+
+
+  link.click();
+
+
+  document.body.removeChild(
+    link
+  );
+
+
+  URL.revokeObjectURL(
+    url
+  );
+}
 
 
 /* =========================================================
