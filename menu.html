@@ -1,1 +1,202 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vendor Menu</title><link rel="stylesheet" href="style.css"></head><body data-page="menu"><main class="wireframe"><header class="menu-head"><span class="school-logo">School Logo</span><b>MENU</b><span class="search">⌕</span></header><div class="vendor-select"><label>Vendor:</label><select><option>Frenchies</option></select></div><section id="menuItems" class="menu-items"></section><aside class="cart-panel"><table><thead><tr><th>Qty</th><th>Item</th><th>Price</th></tr></thead><tbody id="cartRows"></tbody></table><div class="pickup"><small>Pickup Time</small><select id="pickupTime"><option>12:30 PM</option><option>12:45 PM</option><option>1:00 PM</option></select></div><p class="cart-total">Total: $<span id="cartTotal">0.00</span> 🛒</p><button id="placeOrder">Place Order</button></aside></main><script src="app.js"></script></body></html>
+<!doctype html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>Vendor Menu</title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
+</head>
+
+
+<body data-page="menu">
+
+  <main class="wireframe">
+
+
+    <!-- =====================================================
+         MENU HEADER
+         ===================================================== -->
+
+    <header class="menu-head">
+
+      <span class="school-logo">
+        School Logo
+      </span>
+
+      <b>
+        MENU
+      </b>
+
+      <span class="search">
+        ⌕
+      </span>
+
+    </header>
+
+
+    <!-- =====================================================
+         VENDOR SELECTION
+         ===================================================== -->
+
+    <div class="vendor-select">
+
+      <label for="vendorSelect">
+        Vendor:
+      </label>
+
+      <select id="vendorSelect">
+
+        <option value="">
+          Select a Vendor
+        </option>
+
+        <!-- Vendors are loaded from apps.json by app.js -->
+
+      </select>
+
+    </div>
+
+
+    <!-- =====================================================
+         VENDOR MENU ITEMS
+         ===================================================== -->
+
+    <section
+      id="menuItems"
+      class="menu-items"
+    >
+
+      <!-- Menu items are loaded by app.js -->
+
+    </section>
+
+
+    <!-- =====================================================
+         SHOPPING CART
+         ===================================================== -->
+
+    <aside class="cart-panel">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>
+              Qty
+            </th>
+
+            <th>
+              Item
+            </th>
+
+            <th>
+              Price
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody id="cartRows">
+
+          <!-- Cart items are loaded by app.js -->
+
+        </tbody>
+
+      </table>
+
+
+      <!-- ===================================================
+           PICKUP TIME
+           =================================================== -->
+
+      <div class="pickup">
+
+        <label for="pickupTime">
+
+          <small>
+            Pickup Time
+          </small>
+
+        </label>
+
+        <select id="pickupTime">
+
+          <option value="12:30 PM">
+            12:30 PM
+          </option>
+
+          <option value="12:45 PM">
+            12:45 PM
+          </option>
+
+          <option value="1:00 PM">
+            1:00 PM
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- ===================================================
+           ORDER TOTAL
+           =================================================== -->
+
+      <p class="cart-total">
+
+        Total: $
+
+        <span id="cartTotal">
+          0.00
+        </span>
+
+        🛒
+
+      </p>
+
+
+      <!-- ===================================================
+           PLACE ORDER
+           =================================================== -->
+
+      <button
+        id="placeOrder"
+        type="button"
+      >
+        Place Order
+      </button>
+
+
+    </aside>
+
+
+  </main>
+
+
+  <!-- =======================================================
+       CAMPUS FOODLINK+ JAVASCRIPT
+       ======================================================= -->
+
+  <script src="app.js"></script>
+
+
+</body>
+
+</html>
