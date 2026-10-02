@@ -3,70 +3,52 @@
 
 <head>
   <meta charset="utf-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Staff Dashboard</title>
 
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body data-page="orders">
 
-  <main class="wireframe staff-dashboard">
+  <main class="wireframe">
 
-    <header class="staff-head">
+    <!-- Header -->
+    <header>
 
-      <span id="staffVendor">
-        Campus FoodLink+
-      </span>
+      <b>Campus FoodLink+</b>
 
       <nav>
 
         <button
           id="showOrdersBtn"
-          class="staff-nav active"
-          type="button"
-        >
+          type="button">
           Orders
         </button>
 
         <button
-          id="showInventoryBtn"
-          class="staff-nav"
-          type="button"
-        >
-          Inventory
+          id="showMenuBtn"
+          type="button">
+          Menu Availability
         </button>
 
         <button
           id="studentDemoBtn"
-          class="staff-nav"
           type="button"
-          hidden
-        >
+          hidden>
           Student Demo
         </button>
 
         <button
           id="exportDataBtn"
-          class="staff-nav"
-          type="button"
-        >
-          Export Data
+          type="button">
+          Export JSON
         </button>
 
         <button
           id="staffLogoutBtn"
-          class="staff-nav"
-          type="button"
-        >
+          type="button">
           Logout
         </button>
 
@@ -75,71 +57,75 @@
     </header>
 
 
-    <p class="staff-welcome">
+    <!-- Staff Information -->
+    <section class="panel">
 
-      Hello,
+      <h2>Staff Dashboard</h2>
 
-      <b id="staffName">
-        [DATA NEEDED HERE]
-      </b>,
+      <p>
+        Welcome,
+        <strong id="staffName"></strong>
+      </p>
 
-      welcome to the staff dashboard.
+      <p>
+        <strong>Role:</strong>
+        <span id="staffRole"></span>
+      </p>
 
-    </p>
+    </section>
 
 
-    <!-- ORDERS -->
+    <!-- Orders -->
+    <section
+      id="ordersSection"
+      class="panel">
 
-    <section id="ordersSection">
+      <h2>Orders</h2>
 
-      <h2 class="staff-section-title">
-        Recent Orders
-      </h2>
-
-      <table class="orders-table">
+      <table>
 
         <thead>
 
           <tr>
             <th>Order #</th>
+            <th>Student</th>
             <th>Vendor</th>
-            <th>Status</th>
-            <th>Date</th>
+            <th>Latest Status</th>
             <th>Pickup Time</th>
-            <th>Notes</th>
-            <th>Action</th>
+            <th>Update Status</th>
+            <th>Details</th>
           </tr>
 
         </thead>
 
-        <tbody id="ordersBody"></tbody>
+        <tbody id="ordersBody">
+          <!-- Orders are loaded by app.js -->
+        </tbody>
 
       </table>
 
       <p
         id="saveMessage"
-        aria-live="polite"
-      ></p>
+        aria-live="polite">
+      </p>
 
     </section>
 
 
-    <!-- INVENTORY -->
-
+    <!-- Menu Availability -->
     <section
-      id="inventorySection"
-      hidden
-    >
+      id="menuSection"
+      class="panel"
+      hidden>
 
-      <h2 class="staff-section-title">
-        Menu Inventory
-      </h2>
+      <h2>Menu Availability</h2>
 
-      <p class="inventory-description">
-        View available menu items and update inventory quantities.
+      <p>
+        Update which menu items are currently available
+        for students to order.
       </p>
 
-      <table class="orders-table inventory-table">
+      <table>
 
         <thead>
 
@@ -147,22 +133,24 @@
             <th>Item ID</th>
             <th>Vendor</th>
             <th>Menu Item</th>
+            <th>Category</th>
             <th>Price</th>
-            <th>Inventory</th>
             <th>Available</th>
             <th>Action</th>
           </tr>
 
         </thead>
 
-        <tbody id="inventoryBody"></tbody>
+        <tbody id="menuAdminBody">
+          <!-- Menu items are loaded by app.js -->
+        </tbody>
 
       </table>
 
       <p
-        id="inventoryMessage"
-        aria-live="polite"
-      ></p>
+        id="menuMessage"
+        aria-live="polite">
+      </p>
 
     </section>
 
@@ -171,4 +159,5 @@
   <script src="app.js"></script>
 
 </body>
+
 </html>
