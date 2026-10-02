@@ -3,161 +3,94 @@
 
 <head>
   <meta charset="utf-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Student Dashboard</title>
 
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body data-page="account">
 
   <main class="wireframe">
 
-    <header class="student-head">
+    <!-- Header -->
+    <header>
+      <b>Campus FoodLink+</b>
 
-      <button
-        class="hamburger"
-        type="button"
-        aria-label="Menu"
-      >
-        ☰
-      </button>
-
-      <span class="school-logo">
-        Campus FoodLink+
-      </span>
-
-      <span class="search">
-        ⌕
-      </span>
-
+      <nav>
+        <a href="menu.html">Place Order</a>
+        <a href="index.html" id="studentLogout">Logout</a>
+      </nav>
     </header>
 
 
-    <section class="profile-row">
+    <!-- Student Account -->
+    <section class="panel">
 
-      <div class="avatar">
-        ●
-      </div>
+      <h2>Student Account</h2>
 
-      <div class="student-details">
+      <p>
+        <strong>Name:</strong>
+        <span id="studentName"></span>
+      </p>
 
-        <p>
-          <b>Name:</b>
+      <p>
+        <strong>Email:</strong>
+        <span id="studentEmail"></span>
+      </p>
 
-          <span id="studentName">
-            [DATA NEEDED HERE]
-          </span>
-        </p>
+      <p>
+        <strong>Meal Plan Balance:</strong>
+        $<span id="balance">0.00</span>
+      </p>
 
-        <p>
-          <b>Balance:</b>
-
-          $<span id="balance">
-            0.00
-          </span>
-        </p>
-
-        <div class="add-funds">
-
-          <label for="fundAmount">
-            Add Funds:
-          </label>
-
-          <input
-            id="fundAmount"
-            type="number"
-            min="1"
-            step="0.01"
-            placeholder="Amount"
-          >
-
-          <button
-            id="addFundsBtn"
-            type="button"
-            class="small-button"
-          >
-            Add Funds
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <div class="student-actions">
-
-        <a
-          class="small-button"
-          href="menu.html"
-        >
-          Place Order
-        </a>
-
-        <button
-          id="returnStaffBtn"
-          type="button"
-          class="small-button"
-          hidden
-        >
-          Return to Staff
-        </button>
-
-      </div>
+      <!-- Only displayed during Professor Demo mode -->
+      <button
+        id="returnStaffBtn"
+        type="button"
+        hidden>
+        Return to Staff Dashboard
+      </button>
 
     </section>
 
 
-    <section class="current-order">
+    <!-- Latest Order -->
+    <section class="panel">
 
-      <h2>
-        Current Order
-      </h2>
+      <h2>Latest Order</h2>
 
       <p>
-        <b>Order #:</b>
-
-        <span id="orderId">
-          No Current Order
-        </span>
+        <strong>Order #:</strong>
+        <span id="orderId">No Current Order</span>
       </p>
 
       <p>
-        <b>Vendor:</b>
-
-        <span id="orderVendor">
-          -
-        </span>
+        <strong>Vendor:</strong>
+        <span id="orderVendor">-</span>
       </p>
 
       <p>
-        <b>Status:</b>
+        <strong>Status:</strong>
+        <span id="orderStatus">-</span>
+      </p>
 
-        <span id="orderStatus">
-          -
-        </span>
+      <p>
+        <strong>Last Updated:</strong>
+        <span id="statusUpdated">-</span>
       </p>
 
       <button
         id="cancelOrderBtn"
-        type="button"
-        class="small-button"
-      >
+        type="button">
         Cancel Order
       </button>
 
       <p
         id="accountMessage"
-        aria-live="polite"
-      ></p>
+        aria-live="polite">
+      </p>
 
     </section>
 
@@ -166,4 +99,5 @@
   <script src="app.js"></script>
 
 </body>
+
 </html>
