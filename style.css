@@ -8,17 +8,18 @@
 
 body {
   margin: 0;
-  background: #242424;
+  background: #263238;
   font-family: Arial, Helvetica, sans-serif;
-  color: #111;
+  color: #263238;
 }
 
 .wireframe {
   width: min(920px, 96vw);
   min-height: 455px;
   margin: 36px auto;
-  background: #f7f7f7;
-  border: 1px solid #888;
+  background: #ffffff;
+  border: 1px solid #90a4ae;
+  border-radius: 6px;
   position: relative;
   overflow: hidden;
 }
@@ -30,12 +31,13 @@ body {
 
 .mini-logo {
   text-align: center;
-  font-size: 13px;
+  font-size: 20px;
+  color: #1565c0;
   margin: 48px 0 35px;
 }
 
 .login-rule {
-  border-top: 1px solid #777;
+  border-top: 2px solid #42a5f5;
 }
 
 .login-form {
@@ -48,23 +50,31 @@ body {
   width: 30%;
   font-size: 14px;
   margin: 9px 0;
+  color: #37474f;
 }
 
 .login-form input {
   width: 65%;
   height: 32px;
-  border: 0;
-  background: #d8d8d8;
+  border: 1px solid #b0bec5;
+  border-radius: 4px;
+  background: #f5f8fa;
   padding: 5px;
 }
 
+.login-form input:focus {
+  outline: 2px solid #42a5f5;
+  background: #ffffff;
+}
+
 .error {
-  background: #111;
-  color: #fff;
+  background: #c62828;
+  color: #ffffff;
   text-align: center;
   min-height: 20px;
   font-size: 12px;
   padding: 3px;
+  border-radius: 3px;
 }
 
 .login-actions {
@@ -82,11 +92,20 @@ body {
 .small-button,
 .button,
 .confirm-actions button {
-  border: 1px solid #999;
-  background: #ddd;
-  color: #111;
+  border: 1px solid #1565c0;
+  border-radius: 4px;
+  background: #1976d2;
+  color: #ffffff;
   padding: 8px 22px;
   text-decoration: none;
+  cursor: pointer;
+}
+
+.login-actions button:hover,
+.small-button:hover,
+.button:hover,
+.confirm-actions button:hover {
+  background: #1565c0;
 }
 
 
@@ -97,7 +116,8 @@ body {
 .student-head,
 .menu-head {
   height: 42px;
-  border-bottom: 1px solid #777;
+  border-bottom: 1px solid #1565c0;
+  background: #e3f2fd;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -108,17 +128,23 @@ body {
   font-size: 26px;
   border: 0;
   background: none;
+  color: #1565c0;
+  cursor: pointer;
 }
 
 .school-logo {
-  border: 1px solid #999;
-  background: #eee;
+  border: 1px solid #64b5f6;
+  border-radius: 3px;
+  background: #ffffff;
+  color: #1565c0;
   padding: 2px 8px;
   font-size: 12px;
+  font-weight: bold;
 }
 
 .search {
   font-size: 28px;
+  color: #1565c0;
 }
 
 
@@ -132,16 +158,19 @@ body {
   grid-template-columns: 110px 1fr auto;
   align-items: center;
   padding: 12px 20px;
+  background: #ffffff;
 }
 
 .avatar {
   width: 82px;
   height: 82px;
   border-radius: 50%;
-  background: #ddd;
+  background: #bbdefb;
+  color: #1565c0;
   font-size: 56px;
   text-align: center;
   line-height: 68px;
+  border: 2px solid #64b5f6;
 }
 
 .profile-row p {
@@ -159,15 +188,16 @@ body {
    ========================================================= */
 
 .current-order {
-  background: #d7d7d7;
-  border-top: 2px solid #999;
+  background: #e8f5e9;
+  border-top: 2px solid #66bb6a;
   min-height: 260px;
   padding: 24px;
 }
 
 .current-order h2 {
-  font-size: 15px;
-  font-weight: normal;
+  font-size: 16px;
+  color: #2e7d32;
+  font-weight: bold;
 }
 
 
@@ -177,12 +207,22 @@ body {
 
 .vendor-select {
   padding: 10px;
-  border-bottom: 1px solid #aaa;
+  border-bottom: 1px solid #90caf9;
+  background: #e3f2fd;
+}
+
+.vendor-select label {
+  color: #1565c0;
+  font-weight: bold;
 }
 
 .vendor-select select {
   margin-left: 10px;
   width: 250px;
+  padding: 5px;
+  border: 1px solid #90a4ae;
+  border-radius: 4px;
+  background: #ffffff;
 }
 
 
@@ -193,6 +233,7 @@ body {
 .menu-items {
   width: 62%;
   padding: 5px 12px;
+  background: #ffffff;
 }
 
 .menu-item {
@@ -200,26 +241,37 @@ body {
   grid-template-columns: 85px 1fr 30px;
   gap: 10px;
   align-items: center;
-  border-bottom: 1px solid #aaa;
+  border-bottom: 1px solid #cfd8dc;
   padding: 12px 0;
+}
+
+.menu-item:hover {
+  background: #f5faff;
 }
 
 .food-img {
   height: 70px;
-  border: 1px solid #aaa;
+  border: 1px solid #90caf9;
   background: linear-gradient(
     135deg,
-    #eee 48%,
-    #bbb 49%,
-    #eee 51%
+    #e3f2fd 48%,
+    #90caf9 49%,
+    #e3f2fd 51%
   );
 }
 
 .menu-item button {
   width: 28px;
   height: 28px;
-  background: #fff;
-  border: 1px solid #555;
+  background: #43a047;
+  color: #ffffff;
+  border: 1px solid #2e7d32;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.menu-item button:hover {
+  background: #2e7d32;
 }
 
 
@@ -233,8 +285,8 @@ body {
   top: 42px;
   width: 38%;
   height: 413px;
-  border-left: 1px solid #777;
-  background: #fafafa;
+  border-left: 2px solid #90caf9;
+  background: #f5f8fa;
   padding: 4px;
 }
 
@@ -244,10 +296,34 @@ body {
   font-size: 11px;
 }
 
-.cart-panel th,
-.cart-panel td {
-  border: 1px solid #aaa;
+.cart-panel th {
+  border: 1px solid #90a4ae;
+  background: #bbdefb;
+  color: #0d47a1;
   padding: 5px;
+}
+
+.cart-panel td {
+  border: 1px solid #cfd8dc;
+  background: #ffffff;
+  padding: 5px;
+}
+
+
+/* REMOVE ITEM BUTTON */
+
+.remove-item {
+  border: 1px solid #c62828;
+  border-radius: 3px;
+  background: #ef5350;
+  color: #ffffff;
+  padding: 4px 6px;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.remove-item:hover {
+  background: #c62828;
 }
 
 .pickup {
@@ -256,16 +332,35 @@ body {
   left: 5px;
 }
 
+.pickup select {
+  border: 1px solid #90a4ae;
+  border-radius: 3px;
+  background: #ffffff;
+  padding: 3px;
+}
+
 .cart-total {
   position: absolute;
   bottom: 8px;
   left: 5px;
+  font-weight: bold;
+  color: #2e7d32;
 }
 
 .cart-panel > button {
   position: absolute;
   bottom: 10px;
   right: 8px;
+  border: 1px solid #2e7d32;
+  border-radius: 4px;
+  background: #43a047;
+  color: #ffffff;
+  padding: 7px 12px;
+  cursor: pointer;
+}
+
+.cart-panel > button:hover {
+  background: #2e7d32;
 }
 
 
@@ -275,6 +370,7 @@ body {
 
 .confirmation {
   text-align: center;
+  background: #ffffff;
 }
 
 .confirmation > .school-logo {
@@ -291,6 +387,10 @@ body {
   margin: 25px;
 }
 
+.confirmation-copy b {
+  color: #2e7d32;
+}
+
 .confirm-actions {
   margin-top: 75px;
   display: flex;
@@ -305,7 +405,9 @@ body {
 
 .staff-head {
   height: 42px;
-  border-bottom: 1px solid #777;
+  border-bottom: 1px solid #1565c0;
+  background: #1565c0;
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -319,17 +421,24 @@ body {
 }
 
 .staff-head a {
-  color: #111;
+  color: #e3f2fd;
   text-decoration: none;
 }
 
+.staff-head a:hover {
+  color: #ffffff;
+}
+
 .staff-head .active {
+  color: #ffffff;
   font-weight: bold;
+  border-bottom: 2px solid #ffffff;
 }
 
 .staff-welcome {
   font-size: 17px;
   padding: 20px;
+  color: #37474f;
 }
 
 
@@ -344,28 +453,64 @@ body {
 }
 
 .orders-table th {
-  background: #999;
+  background: #90caf9;
+  color: #0d47a1;
+  border: 1px solid #64b5f6;
   padding: 9px;
 }
 
 .orders-table td {
-  border: 1px solid #888;
-  background: #d0d0d0;
+  border: 1px solid #b0bec5;
+  background: #f5f8fa;
   padding: 6px;
+}
+
+.orders-table tr:nth-child(even) td {
+  background: #e3f2fd;
 }
 
 .orders-table select,
 .orders-table textarea {
   width: 100%;
   font: inherit;
+  border: 1px solid #90a4ae;
+  border-radius: 3px;
+  background: #ffffff;
 }
 
 .orders-table textarea {
   height: 44px;
 }
 
+.orders-table button {
+  border: 1px solid #1565c0;
+  border-radius: 4px;
+  background: #1976d2;
+  color: #ffffff;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.orders-table button:hover {
+  background: #1565c0;
+}
+
 #saveMessage {
   padding: 10px;
+  color: #2e7d32;
+  font-weight: bold;
+}
+
+
+/* =========================================================
+   STATUS / ACCOUNT MESSAGES
+   ========================================================= */
+
+#accountMessage {
+  color: #2e7d32;
+  font-size: 13px;
+  font-weight: bold;
+  margin-top: 15px;
 }
 
 
