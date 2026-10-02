@@ -1,1 +1,149 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>View Orders</title><link rel="stylesheet" href="style.css"></head><body data-page="orders"><main class="wireframe"><header class="staff-head"><span>Vendor Name</span><nav><a href="orders.html">Dashboard</a><a class="active" href="orders.html">Orders</a><a href="#">Inventory</a><a href="#">Inbox</a></nav></header><p class="staff-welcome">Hello, <b id="staffName">[DATA NEEDED HERE]</b>, here are the recent orders.</p><table class="orders-table"><thead><tr><th>Order #</th><th>Status</th><th>Date</th><th>Pickup Time</th><th>Notes</th></tr></thead><tbody id="ordersBody"></tbody></table><p id="saveMessage"></p></main><script src="app.js"></script></body></html>
+<!doctype html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>View Orders</title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
+</head>
+
+
+<body data-page="orders">
+
+  <main class="wireframe">
+
+
+    <!-- =====================================================
+         DIETARY ASSOCIATE HEADER
+         ===================================================== -->
+
+    <header class="staff-head">
+
+      <span>
+        Vendor Name
+      </span>
+
+
+      <nav>
+
+        <a href="orders.html">
+          Dashboard
+        </a>
+
+        <a
+          class="active"
+          href="orders.html"
+        >
+          Orders
+        </a>
+
+        <a href="#">
+          Inventory
+        </a>
+
+        <a href="#">
+          Inbox
+        </a>
+
+      </nav>
+
+    </header>
+
+
+    <!-- =====================================================
+         STAFF WELCOME
+         ===================================================== -->
+
+    <p class="staff-welcome">
+
+      Hello,
+
+      <b id="staffName">
+        [DATA NEEDED HERE]
+      </b>,
+
+      here are the recent orders.
+
+    </p>
+
+
+    <!-- =====================================================
+         ORDERS TABLE
+         ===================================================== -->
+
+    <table class="orders-table">
+
+      <thead>
+
+        <tr>
+
+          <th>
+            Order #
+          </th>
+
+          <th>
+            Status
+          </th>
+
+          <th>
+            Date
+          </th>
+
+          <th>
+            Pickup Time
+          </th>
+
+          <th>
+            Notes
+          </th>
+
+        </tr>
+
+      </thead>
+
+
+      <tbody id="ordersBody">
+
+        <!-- Order information is loaded by app.js -->
+
+      </tbody>
+
+    </table>
+
+
+    <!-- =====================================================
+         SAVE / STATUS MESSAGE
+         ===================================================== -->
+
+    <p
+      id="saveMessage"
+      aria-live="polite"
+    ></p>
+
+
+  </main>
+
+
+  <!-- =======================================================
+       CAMPUS FOODLINK+ JAVASCRIPT
+       ======================================================= -->
+
+  <script src="app.js"></script>
+
+
+</body>
+
+</html>
