@@ -1,9 +1,7 @@
 <!doctype html>
-
 <html lang="en">
 
 <head>
-
   <meta charset="utf-8">
 
   <meta
@@ -11,26 +9,17 @@
     content="width=device-width, initial-scale=1"
   >
 
-  <title>
-    Dietary Associate Orders
-  </title>
+  <title>Staff Orders</title>
 
   <link
     rel="stylesheet"
     href="style.css"
   >
-
 </head>
-
 
 <body data-page="orders">
 
   <main class="wireframe">
-
-
-    <!-- =====================================================
-         STAFF HEADER
-         ===================================================== -->
 
     <header class="staff-head">
 
@@ -38,13 +27,11 @@
         Vendor Orders
       </span>
 
-
       <nav>
 
         <a href="orders.html">
           Dashboard
         </a>
-
 
         <a
           class="active"
@@ -53,11 +40,9 @@
           Orders
         </a>
 
-
         <a href="#">
           Inventory
         </a>
-
 
         <a href="#">
           Inbox
@@ -67,10 +52,6 @@
 
     </header>
 
-
-    <!-- =====================================================
-         STAFF INFORMATION
-         ===================================================== -->
 
     <p class="staff-welcome">
 
@@ -85,73 +66,35 @@
     </p>
 
 
-    <!-- =====================================================
-         ORDERS
-         ===================================================== -->
-
     <table class="orders-table">
 
       <thead>
 
         <tr>
-
-          <th>
-            Order #
-          </th>
-
-          <th>
-            Vendor
-          </th>
-
-          <th>
-            Status
-          </th>
-
-          <th>
-            Date
-          </th>
-
-          <th>
-            Pickup Time
-          </th>
-
-          <th>
-            Notes
-          </th>
-
-          <th>
-            Action
-          </th>
-
+          <th>Order #</th>
+          <th>Vendor</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Pickup Time</th>
+          <th>Notes</th>
+          <th>Action</th>
         </tr>
 
       </thead>
 
-
-      <tbody id="ordersBody">
-
-        <!-- Loaded by app.js -->
-
-      </tbody>
+      <tbody id="ordersBody"></tbody>
 
     </table>
 
-
-    <!-- =====================================================
-         SAVE MESSAGE
-         ===================================================== -->
 
     <p
       id="saveMessage"
       aria-live="polite"
     ></p>
 
-
   </main>
-
 
   <script src="app.js"></script>
 
 </body>
-
 </html>
