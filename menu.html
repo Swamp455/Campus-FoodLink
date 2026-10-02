@@ -21,13 +21,19 @@
 
   <main class="wireframe">
 
+    <!-- =================================================
+         HEADER
+         ================================================= -->
+
     <header class="menu-head">
 
       <span class="school-logo">
         Campus FoodLink+
       </span>
 
-      <b>MENU</b>
+      <b>
+        MENU
+      </b>
 
       <a
         class="small-button"
@@ -38,6 +44,10 @@
 
     </header>
 
+
+    <!-- =================================================
+         VENDOR SELECTION
+         ================================================= -->
 
     <div class="vendor-select">
 
@@ -56,6 +66,13 @@
     </div>
 
 
+    <!-- =================================================
+         MENU ITEMS
+
+         Populated from:
+         Vendors -> MenuItems
+         ================================================= -->
+
     <section
       id="menuItems"
       class="menu-items"
@@ -68,6 +85,10 @@
     </section>
 
 
+    <!-- =================================================
+         SHOPPING CART
+         ================================================= -->
+
     <aside class="cart-panel">
 
       <table>
@@ -75,23 +96,46 @@
         <thead>
 
           <tr>
-            <th>Qty</th>
-            <th>Item</th>
-            <th>Price</th>
-            <th>Remove</th>
+
+            <th>
+              Qty
+            </th>
+
+            <th>
+              Item
+            </th>
+
+            <th>
+              Price
+            </th>
+
+            <th>
+              Remove
+            </th>
+
           </tr>
 
         </thead>
 
-        <tbody id="cartRows"></tbody>
+
+        <tbody id="cartRows">
+        </tbody>
 
       </table>
 
 
+      <!-- ===============================================
+           PICKUP TIME
+           =============================================== -->
+
       <div class="pickup">
 
         <label for="pickupTime">
-          <small>Pickup Time</small>
+
+          <small>
+            Pickup Time
+          </small>
+
         </label>
 
         <select id="pickupTime">
@@ -108,20 +152,39 @@
             1:00 PM
           </option>
 
+          <option value="1:15 PM">
+            1:15 PM
+          </option>
+
+          <option value="1:30 PM">
+            1:30 PM
+          </option>
+
         </select>
 
       </div>
 
 
+      <!-- ===============================================
+           CART TOTAL
+           =============================================== -->
+
       <p class="cart-total">
 
         Total:
-        $<span id="cartTotal">0.00</span>
+
+        $<span id="cartTotal">
+          0.00
+        </span>
 
         🛒
 
       </p>
 
+
+      <!-- ===============================================
+           CREATE ORDER
+           =============================================== -->
 
       <button
         id="placeOrder"
