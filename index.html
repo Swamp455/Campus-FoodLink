@@ -1,41 +1,21 @@
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Campus FoodLink+ Login</title>
-
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body data-page="login">
 
-  <main class="wireframe login-page">
+  <main class="wireframe">
 
-    <h1 class="mini-logo">
-      Campus FoodLink+
-    </h1>
+    <h1 class="mini-logo">Campus FoodLink+</h1>
 
-    <div class="login-rule"></div>
+    <form id="loginForm" class="login-form">
 
-    <form
-      id="loginForm"
-      class="login-form"
-    >
-
-      <label for="userId">
-        Username:
-      </label>
-
+      <label for="userId">Username</label>
       <input
         id="userId"
         name="userId"
@@ -44,10 +24,7 @@
         required
       >
 
-      <label for="password">
-        Password:
-      </label>
-
+      <label for="password">Password</label>
       <input
         id="password"
         name="password"
@@ -56,41 +33,18 @@
         required
       >
 
-      <p
-        id="loginError"
-        class="error"
-        aria-live="polite"
-      ></p>
+      <p id="loginError" class="error" aria-live="polite"></p>
 
-      <div class="login-actions">
-
-        <button type="submit">
-          Login
-        </button>
-
-      </div>
+      <button type="submit">Login</button>
 
     </form>
 
-
-    <!-- =================================================
-         DEMO RESET
-         ================================================= -->
-
     <div class="demo-reset">
-
-      <button
-        id="resetDemoBtn"
-        type="button"
-      >
+      <button id="resetDemoBtn" type="button">
         Reset Demo Data
       </button>
 
-      <p
-        id="resetMessage"
-        aria-live="polite"
-      ></p>
-
+      <p id="resetMessage" aria-live="polite"></p>
     </div>
 
   </main>
