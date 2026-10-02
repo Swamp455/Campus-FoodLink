@@ -1,1 +1,409 @@
-*{box-sizing:border-box}body{margin:0;background:#242424;font-family:Arial,Helvetica,sans-serif;color:#111}.wireframe{width:min(920px,96vw);min-height:455px;margin:36px auto;background:#f7f7f7;border:1px solid #888;position:relative;overflow:hidden}.mini-logo{text-align:center;font-size:13px;margin:48px 0 35px}.login-rule{border-top:1px solid #777}.login-form{width:60%;margin:55px auto}.login-form label{display:inline-block;width:30%;font-size:14px;margin:9px 0}.login-form input{width:65%;height:32px;border:0;background:#d8d8d8;padding:5px}.error{background:#111;color:#fff;text-align:center;min-height:20px;font-size:12px;padding:3px}.login-actions{display:flex;justify-content:space-between;margin-top:20px}.login-actions button,.small-button,.button,.confirm-actions button{border:1px solid #999;background:#ddd;color:#111;padding:8px 22px;text-decoration:none}.student-head,.menu-head{height:42px;border-bottom:1px solid #777;display:flex;align-items:center;justify-content:space-between;padding:0 10px}.hamburger{font-size:26px;border:0;background:none}.school-logo{border:1px solid #999;background:#eee;padding:2px 8px;font-size:12px}.search{font-size:28px}.profile-row{height:145px;display:grid;grid-template-columns:110px 1fr auto;align-items:center;padding:12px 20px}.avatar{width:82px;height:82px;border-radius:50%;background:#ddd;font-size:56px;text-align:center;line-height:68px}.profile-row p{margin:13px 0}.small-button{align-self:center;padding:6px 14px}.current-order{background:#d7d7d7;border-top:2px solid #999;min-height:260px;padding:24px}.current-order h2{font-size:15px;font-weight:normal}.vendor-select{padding:10px;border-bottom:1px solid #aaa}.vendor-select select{margin-left:10px;width:250px}.menu-items{width:62%;padding:5px 12px}.menu-item{display:grid;grid-template-columns:85px 1fr 30px;gap:10px;align-items:center;border-bottom:1px solid #aaa;padding:12px 0}.food-img{height:70px;border:1px solid #aaa;background:linear-gradient(135deg,#eee 48%,#bbb 49%,#eee 51%)}.menu-item button{width:28px;height:28px;background:#fff;border:1px solid #555}.cart-panel{position:absolute;right:0;top:42px;width:38%;height:413px;border-left:1px solid #777;background:#fafafa;padding:4px}.cart-panel table{width:100%;border-collapse:collapse;font-size:11px}.cart-panel th,.cart-panel td{border:1px solid #aaa;padding:5px}.pickup{position:absolute;bottom:55px;left:5px}.cart-total{position:absolute;bottom:8px;left:5px}.cart-panel>button{position:absolute;bottom:10px;right:8px}.confirmation{text-align:center}.confirmation>.school-logo{display:inline-block;margin-top:28px}.confirmation-copy{margin-top:120px;font-size:14px}.confirmation-copy p{margin:25px}.confirm-actions{margin-top:75px;display:flex;justify-content:center;gap:80px}.staff-head{height:42px;border-bottom:1px solid #777;display:flex;align-items:center;justify-content:space-between;padding:0 8px;font-size:12px}.staff-head nav{display:flex;gap:30px}.staff-head a{color:#111;text-decoration:none}.staff-head .active{font-weight:bold}.staff-welcome{font-size:17px;padding:20px}.orders-table{width:100%;border-collapse:collapse;font-size:12px}.orders-table th{background:#999;padding:9px}.orders-table td{border:1px solid #888;background:#d0d0d0;padding:6px}.orders-table select,.orders-table textarea{width:100%;font:inherit}.orders-table textarea{height:44px}#saveMessage{padding:10px}@media(max-width:700px){.wireframe{margin:8px auto}.login-form{width:90%}.profile-row{grid-template-columns:80px 1fr}.profile-row .small-button{grid-column:2}.menu-items{width:58%}.cart-panel{width:42%}.staff-head nav{gap:8px}.orders-table{font-size:10px}}
+/* =========================================================
+   GLOBAL
+   ========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #242424;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #111;
+}
+
+.wireframe {
+  width: min(920px, 96vw);
+  min-height: 455px;
+  margin: 36px auto;
+  background: #f7f7f7;
+  border: 1px solid #888;
+  position: relative;
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   LOGIN PAGE
+   ========================================================= */
+
+.mini-logo {
+  text-align: center;
+  font-size: 13px;
+  margin: 48px 0 35px;
+}
+
+.login-rule {
+  border-top: 1px solid #777;
+}
+
+.login-form {
+  width: 60%;
+  margin: 55px auto;
+}
+
+.login-form label {
+  display: inline-block;
+  width: 30%;
+  font-size: 14px;
+  margin: 9px 0;
+}
+
+.login-form input {
+  width: 65%;
+  height: 32px;
+  border: 0;
+  background: #d8d8d8;
+  padding: 5px;
+}
+
+.error {
+  background: #111;
+  color: #fff;
+  text-align: center;
+  min-height: 20px;
+  font-size: 12px;
+  padding: 3px;
+}
+
+.login-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.login-actions button,
+.small-button,
+.button,
+.confirm-actions button {
+  border: 1px solid #999;
+  background: #ddd;
+  color: #111;
+  padding: 8px 22px;
+  text-decoration: none;
+}
+
+
+/* =========================================================
+   STUDENT HEADER / MENU HEADER
+   ========================================================= */
+
+.student-head,
+.menu-head {
+  height: 42px;
+  border-bottom: 1px solid #777;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.hamburger {
+  font-size: 26px;
+  border: 0;
+  background: none;
+}
+
+.school-logo {
+  border: 1px solid #999;
+  background: #eee;
+  padding: 2px 8px;
+  font-size: 12px;
+}
+
+.search {
+  font-size: 28px;
+}
+
+
+/* =========================================================
+   STUDENT PROFILE
+   ========================================================= */
+
+.profile-row {
+  height: 145px;
+  display: grid;
+  grid-template-columns: 110px 1fr auto;
+  align-items: center;
+  padding: 12px 20px;
+}
+
+.avatar {
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  background: #ddd;
+  font-size: 56px;
+  text-align: center;
+  line-height: 68px;
+}
+
+.profile-row p {
+  margin: 13px 0;
+}
+
+.small-button {
+  align-self: center;
+  padding: 6px 14px;
+}
+
+
+/* =========================================================
+   CURRENT ORDER
+   ========================================================= */
+
+.current-order {
+  background: #d7d7d7;
+  border-top: 2px solid #999;
+  min-height: 260px;
+  padding: 24px;
+}
+
+.current-order h2 {
+  font-size: 15px;
+  font-weight: normal;
+}
+
+
+/* =========================================================
+   VENDOR SELECTION
+   ========================================================= */
+
+.vendor-select {
+  padding: 10px;
+  border-bottom: 1px solid #aaa;
+}
+
+.vendor-select select {
+  margin-left: 10px;
+  width: 250px;
+}
+
+
+/* =========================================================
+   VENDOR MENU
+   ========================================================= */
+
+.menu-items {
+  width: 62%;
+  padding: 5px 12px;
+}
+
+.menu-item {
+  display: grid;
+  grid-template-columns: 85px 1fr 30px;
+  gap: 10px;
+  align-items: center;
+  border-bottom: 1px solid #aaa;
+  padding: 12px 0;
+}
+
+.food-img {
+  height: 70px;
+  border: 1px solid #aaa;
+  background: linear-gradient(
+    135deg,
+    #eee 48%,
+    #bbb 49%,
+    #eee 51%
+  );
+}
+
+.menu-item button {
+  width: 28px;
+  height: 28px;
+  background: #fff;
+  border: 1px solid #555;
+}
+
+
+/* =========================================================
+   SHOPPING CART
+   ========================================================= */
+
+.cart-panel {
+  position: absolute;
+  right: 0;
+  top: 42px;
+  width: 38%;
+  height: 413px;
+  border-left: 1px solid #777;
+  background: #fafafa;
+  padding: 4px;
+}
+
+.cart-panel table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.cart-panel th,
+.cart-panel td {
+  border: 1px solid #aaa;
+  padding: 5px;
+}
+
+.pickup {
+  position: absolute;
+  bottom: 55px;
+  left: 5px;
+}
+
+.cart-total {
+  position: absolute;
+  bottom: 8px;
+  left: 5px;
+}
+
+.cart-panel > button {
+  position: absolute;
+  bottom: 10px;
+  right: 8px;
+}
+
+
+/* =========================================================
+   ORDER CONFIRMATION
+   ========================================================= */
+
+.confirmation {
+  text-align: center;
+}
+
+.confirmation > .school-logo {
+  display: inline-block;
+  margin-top: 28px;
+}
+
+.confirmation-copy {
+  margin-top: 120px;
+  font-size: 14px;
+}
+
+.confirmation-copy p {
+  margin: 25px;
+}
+
+.confirm-actions {
+  margin-top: 75px;
+  display: flex;
+  justify-content: center;
+  gap: 80px;
+}
+
+
+/* =========================================================
+   DIETARY ASSOCIATE HEADER
+   ========================================================= */
+
+.staff-head {
+  height: 42px;
+  border-bottom: 1px solid #777;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  font-size: 12px;
+}
+
+.staff-head nav {
+  display: flex;
+  gap: 30px;
+}
+
+.staff-head a {
+  color: #111;
+  text-decoration: none;
+}
+
+.staff-head .active {
+  font-weight: bold;
+}
+
+.staff-welcome {
+  font-size: 17px;
+  padding: 20px;
+}
+
+
+/* =========================================================
+   ORDERS TABLE
+   ========================================================= */
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.orders-table th {
+  background: #999;
+  padding: 9px;
+}
+
+.orders-table td {
+  border: 1px solid #888;
+  background: #d0d0d0;
+  padding: 6px;
+}
+
+.orders-table select,
+.orders-table textarea {
+  width: 100%;
+  font: inherit;
+}
+
+.orders-table textarea {
+  height: 44px;
+}
+
+#saveMessage {
+  padding: 10px;
+}
+
+
+/* =========================================================
+   RESPONSIVE / MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .wireframe {
+    margin: 8px auto;
+  }
+
+  .login-form {
+    width: 90%;
+  }
+
+  .profile-row {
+    grid-template-columns: 80px 1fr;
+  }
+
+  .profile-row .small-button {
+    grid-column: 2;
+  }
+
+  .menu-items {
+    width: 58%;
+  }
+
+  .cart-panel {
+    width: 42%;
+  }
+
+  .staff-head nav {
+    gap: 8px;
+  }
+
+  .orders-table {
+    font-size: 10px;
+  }
+}
