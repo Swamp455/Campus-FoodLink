@@ -1,9 +1,7 @@
 <!doctype html>
-
 <html lang="en">
 
 <head>
-
   <meta charset="utf-8">
 
   <meta
@@ -11,26 +9,17 @@
     content="width=device-width, initial-scale=1"
   >
 
-  <title>
-    Student Dashboard
-  </title>
+  <title>Student Dashboard</title>
 
   <link
     rel="stylesheet"
     href="style.css"
   >
-
 </head>
-
 
 <body data-page="account">
 
   <main class="wireframe">
-
-
-    <!-- =====================================================
-         STUDENT HEADER
-         ===================================================== -->
 
     <header class="student-head">
 
@@ -42,11 +31,9 @@
         ☰
       </button>
 
-
       <span class="school-logo">
         Campus FoodLink+
       </span>
-
 
       <span class="search">
         ⌕
@@ -55,66 +42,56 @@
     </header>
 
 
-    <!-- =====================================================
-         STUDENT PROFILE
-         ===================================================== -->
-
     <section class="profile-row">
-
-
-      <!-- AVATAR -->
 
       <div class="avatar">
         ●
       </div>
 
-
-      <!-- STUDENT INFORMATION -->
-
       <div>
 
         <p>
-
-          <b>
-            Name:
-          </b>
+          <b>Name:</b>
 
           <span id="studentName">
             [DATA NEEDED HERE]
           </span>
-
         </p>
 
-
         <p>
-
-          <b>
-            Balance:
-          </b>
-
-          $
-
-          <span id="balance">
-            [DATA NEEDED HERE]
-          </span>
-
+          <b>Balance:</b>
+          $<span id="balance">0.00</span>
         </p>
 
 
         <!-- ADD FUNDS -->
 
-        <button
-          id="addFundsBtn"
-          type="button"
-          class="small-button"
-        >
-          Add Funds
-        </button>
+        <div class="add-funds">
+
+          <label for="fundAmount">
+            Add Funds:
+          </label>
+
+          <input
+            id="fundAmount"
+            type="number"
+            min="1"
+            step="0.01"
+            placeholder="Amount"
+          >
+
+          <button
+            id="addFundsBtn"
+            type="button"
+            class="small-button"
+          >
+            Add Funds
+          </button>
+
+        </div>
 
       </div>
 
-
-      <!-- PLACE ORDER -->
 
       <a
         class="small-button"
@@ -123,13 +100,8 @@
         Place Order
       </a>
 
-
     </section>
 
-
-    <!-- =====================================================
-         CURRENT ORDER
-         ===================================================== -->
 
     <section class="current-order">
 
@@ -137,47 +109,29 @@
         Current Order
       </h2>
 
-
       <p>
-
-        <b>
-          Order #:
-        </b>
+        <b>Order #:</b>
 
         <span id="orderId">
           No Current Order
         </span>
-
       </p>
 
-
       <p>
-
-        <b>
-          Vendor:
-        </b>
+        <b>Vendor:</b>
 
         <span id="orderVendor">
           -
         </span>
-
       </p>
 
-
       <p>
-
-        <b>
-          Status:
-        </b>
+        <b>Status:</b>
 
         <span id="orderStatus">
           -
         </span>
-
       </p>
-
-
-      <!-- CANCEL ORDER -->
 
       <button
         id="cancelOrderBtn"
@@ -187,23 +141,16 @@
         Cancel Order
       </button>
 
-
-      <!-- STATUS MESSAGE -->
-
       <p
         id="accountMessage"
         aria-live="polite"
       ></p>
 
-
     </section>
 
-
   </main>
-
 
   <script src="app.js"></script>
 
 </body>
-
 </html>
