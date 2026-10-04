@@ -128,6 +128,33 @@
       "category": "Sandwich",
       "price": 9.0,
       "is_available": true
+    },
+    {
+      "menu_item_id": 997,
+      "vendor_id": 3,
+      "item_name": "Turkey Club Sandwich",
+      "description": "Turkey, bacon, lettuce, tomato, and cheese",
+      "category": "Sandwich",
+      "price": 9.5,
+      "is_available": true
+    },
+    {
+      "menu_item_id": 998,
+      "vendor_id": 3,
+      "item_name": "Chicken Caesar Salad",
+      "description": "Grilled chicken, romaine lettuce, parmesan cheese, and Caesar dressing",
+      "category": "Salad",
+      "price": 8.5,
+      "is_available": true
+    },
+    {
+      "menu_item_id": 999,
+      "vendor_id": 3,
+      "item_name": "Iced Coffee",
+      "description": "Fresh brewed coffee served over ice",
+      "category": "Beverage",
+      "price": 3.5,
+      "is_available": true
     }
   ],
   "Orders": [],
