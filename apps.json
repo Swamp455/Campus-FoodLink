@@ -16,14 +16,6 @@
       "phone_number": "987-654-5432",
       "meal_plan_balance": 75.0
     }
-    {
-      "staff_id": 116,
-      "first_name": "Professor",
-      "last_name": "",
-      "email_address": "professor@campus.edu",
-      "role": "IT Staff",
-      "is_active": true
-    }
   ],
   "Staff": [
     {
@@ -47,6 +39,14 @@
       "first_name": "Emmett",
       "last_name": "Brown",
       "email_address": "ebrown@campus.edu",
+      "role": "IT Staff",
+      "is_active": true
+    }
+    {
+      "staff_id": 116,
+      "first_name": "Professor",
+      "last_name": "",
+      "email_address": "professor@campus.edu",
       "role": "IT Staff",
       "is_active": true
     }
