@@ -45,7 +45,7 @@
     {
       "staff_id": 116,
       "first_name": "Professor",
-      "last_name": "",
+      "last_name": "demo",
       "email_address": "professor@campus.edu",
       "role": "IT Staff",
       "is_active": true
