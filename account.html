@@ -18,7 +18,7 @@
 
       <b>Campus FoodLink+</b>
 
-      <nav class="student-nav">
+      <nav class="student-nav" aria-label="Student navigation">
 
         <a
           href="menu.html"
@@ -57,69 +57,44 @@
         $<span id="balance"></span>
       </p>
 
+
       <!-- =====================================================
-     ADD FUNDS
-     ===================================================== -->
+           ADD FUNDS
+           ===================================================== -->
 
-<div class="funds-section">
+      <div class="funds-section">
 
-  <h3>Add Funds</h3>
+        <h3>Add Funds</h3>
 
-  <p>Add funds to your meal-plan balance.</p>
+        <p>
+          Add funds to your meal-plan balance.
+        </p>
 
-  <label for="fundAmount">
-    Amount:
-  </label>
+        <label for="fundAmount">
+          Amount:
+        </label>
 
-  <input
-    type="number"
-    id="fundAmount"
-    min="1"
-    max="500"
-    step="1"
-    placeholder="Enter amount">
+        <input
+          type="number"
+          id="fundAmount"
+          min="0.01"
+          max="500"
+          step="0.01"
+          placeholder="Amount">
 
-  <button
-    id="addFundsBtn"
-    type="button">
-    Add Funds
-  </button>
+        <button
+          id="addFundsBtn"
+          type="button">
+          Add Funds
+        </button>
 
-  <p
-    id="fundMessage"
-    aria-live="polite">
-  </p>
+        <p
+          id="fundMessage"
+          aria-live="polite">
+        </p>
 
-</div>
+      </div>
 
-      <p>
-  Meal Plan Balance:
-  $<span id="balance"></span>
-</p>
-
-<div class="funds-section">
-  <label for="fundAmount">Add Funds:</label>
-
-  <input
-    type="number"
-    id="fundAmount"
-    min="1"
-    max="500"
-    step="1"
-    placeholder="Amount"
-  >
-
-  <button
-    id="addFundsBtn"
-    type="button">
-    Add Funds
-  </button>
-
-  <p
-    id="fundMessage"
-    aria-live="polite">
-  </p>
-</div>
 
       <button
         id="returnStaffBtn"
