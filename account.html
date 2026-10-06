@@ -20,37 +20,34 @@
 
       <nav>
         <a href="menu.html">Place Order</a>
-        <a href="index.html" id="studentLogout">Logout</a>
+        <button id="studentLogoutBtn" type="button">Logout</button>
       </nav>
     </header>
 
 
-    <!-- Student Account -->
+    <!-- Student Account Information -->
     <section class="panel">
 
       <h2>Student Account</h2>
 
       <p>
-        <strong>Name:</strong>
-        <span id="studentName"></span>
+        Name:
+        <b id="studentName"></b>
       </p>
 
       <p>
-        <strong>Email:</strong>
+        Email:
         <span id="studentEmail"></span>
       </p>
 
       <p>
-        <strong>Meal Plan Balance:</strong>
-        $<span id="balance">0.00</span>
+        Meal Plan Balance:
+        $<b id="balance"></b>
       </p>
 
-      <!-- Only displayed during Professor Demo mode -->
-      <button
-        id="returnStaffBtn"
-        type="button"
-        hidden>
-        Return to Staff Dashboard
+      <!-- Only displayed during Professor Demo -->
+      <button id="returnStaffBtn" type="button" hidden>
+        Return to Staff
       </button>
 
     </section>
@@ -62,35 +59,30 @@
       <h2>Latest Order</h2>
 
       <p>
-        <strong>Order #:</strong>
-        <span id="orderId">No Current Order</span>
+        Order #:
+        <b id="orderId">No Current Order</b>
       </p>
 
       <p>
-        <strong>Vendor:</strong>
+        Vendor:
         <span id="orderVendor">-</span>
       </p>
 
       <p>
-        <strong>Status:</strong>
+        Status:
         <span id="orderStatus">-</span>
       </p>
 
       <p>
-        <strong>Last Updated:</strong>
+        Updated:
         <span id="statusUpdated">-</span>
       </p>
 
-      <button
-        id="cancelOrderBtn"
-        type="button">
+      <button id="cancelOrderBtn" type="button">
         Cancel Order
       </button>
 
-      <p
-        id="accountMessage"
-        aria-live="polite">
-      </p>
+      <p id="accountMessage" aria-live="polite"></p>
 
     </section>
 
@@ -99,5 +91,4 @@
   <script src="app.js"></script>
 
 </body>
-
 </html>
