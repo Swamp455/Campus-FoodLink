@@ -22,7 +22,7 @@
       "staff_id": 113,
       "first_name": "Dominic",
       "last_name": "Toretto",
-      "email_address": "domt@frenchies.com",
+      "email_address": "domt@campusbites.com",
       "role": "Dietary Associate",
       "is_active": true
     },
@@ -39,14 +39,6 @@
       "first_name": "Emmett",
       "last_name": "Brown",
       "email_address": "ebrown@campus.edu",
-      "role": "IT Staff",
-      "is_active": true
-    },
-    {
-      "staff_id": 116,
-      "first_name": "Professor",
-      "last_name": "demo",
-      "email_address": "professor@campus.edu",
       "role": "IT Staff",
       "is_active": true
     }
@@ -196,7 +188,7 @@
       "login": "professor",
       "password": "demo",
       "account_type": "Professor Demo",
-      "record_id": 116
+      "record_id": 113
     }
   ]
 }
