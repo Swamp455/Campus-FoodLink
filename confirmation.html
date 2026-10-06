@@ -12,72 +12,55 @@
 
 <body data-page="confirmation">
 
-  <main class="wireframe">
+  <main class="wireframe confirmation">
 
-    <!-- Header -->
-    <header>
-      <b>Campus FoodLink+</b>
-    </header>
+    <h1>Campus FoodLink+</h1>
 
+    <h2>Order Confirmation</h2>
 
-    <!-- Order Confirmation -->
-    <section class="panel confirmation">
+    <p>
+      Order #<b id="confirmOrder"></b> was successfully submitted.
+    </p>
 
-      <h2>Order Confirmation</h2>
+    <div class="order-summary">
 
       <p>
-        Your order has been successfully submitted.
+        Vendor:
+        <b id="confirmVendor"></b>
       </p>
 
       <p>
-        <strong>Order #:</strong>
-        <span id="confirmOrder"></span>
+        Status:
+        <b id="confirmStatus"></b>
       </p>
 
       <p>
-        <strong>Vendor:</strong>
-        <span id="confirmVendor"></span>
+        Pickup:
+        <b id="confirmPickup"></b>
       </p>
 
       <p>
-        <strong>Status:</strong>
-        <span id="confirmStatus"></span>
+        Total:
+        $<b id="confirmTotal"></b>
       </p>
 
-      <p>
-        <strong>Pickup Time:</strong>
-        <span id="confirmPickup"></span>
-      </p>
+    </div>
 
-      <p>
-        <strong>Order Total:</strong>
-        $<span id="confirmTotal">0.00</span>
-      </p>
+    <div class="confirm-actions">
 
+      <a class="button" href="account.html">
+        Return to Dashboard
+      </a>
 
-      <!-- Navigation -->
-      <div class="confirm-actions">
+      <button id="logoutBtn" type="button">
+        Logout
+      </button>
 
-        <a
-          class="button"
-          href="account.html">
-          Return to Dashboard
-        </a>
-
-        <button
-          id="logoutBtn"
-          type="button">
-          Logout
-        </button>
-
-      </div>
-
-    </section>
+    </div>
 
   </main>
 
   <script src="app.js"></script>
 
 </body>
-
 </html>
