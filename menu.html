@@ -1,125 +1,48 @@
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Vendor Menu</title>
-
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body data-page="menu">
+<main class="wireframe">
+  <header>
+    <b>Campus FoodLink+</b>
+    <a href="account.html">Dashboard</a>
+  </header>
 
-  <main class="wireframe">
+  <section class="panel">
+    <label for="vendorSelect">Active Vendor:</label>
+    <select id="vendorSelect">
+      <option value="">Select a Vendor</option>
+    </select>
+    <div id="menuItems"></div>
+  </section>
 
-    <!-- Header -->
-    <header>
-      <b>Campus FoodLink+</b>
+  <section class="panel">
+    <h2>Order</h2>
+    <table>
+      <thead>
+        <tr><th>Qty</th><th>Item</th><th>Unit Price</th><th>Total Price</th><th></th></tr>
+      </thead>
+      <tbody id="cartRows"></tbody>
+    </table>
 
-      <nav>
-        <a href="account.html">Dashboard</a>
-      </nav>
-    </header>
+    <label for="specialInstructions">Special Instructions</label>
+    <textarea id="specialInstructions" maxlength="255"></textarea>
 
+    <label for="pickupTime">Pickup Time</label>
+    <input id="pickupTime" type="datetime-local">
 
-    <!-- Vendor and Menu -->
-    <section class="panel">
+    <p>Order Total: $<b id="cartTotal">0.00</b></p>
+    <p>Meal Plan Balance: $<b id="menuBalance"></b></p>
+    <p id="orderMessage" aria-live="polite"></p>
 
-      <h2>Vendor Menu</h2>
-
-      <label for="vendorSelect">
-        <strong>Select Vendor:</strong>
-      </label>
-
-      <select id="vendorSelect">
-        <option value="">Select a Vendor</option>
-      </select>
-
-      <!-- MenuItems are loaded here by app.js -->
-      <div id="menuItems"></div>
-
-    </section>
-
-
-    <!-- Current Order -->
-    <section class="panel">
-
-      <h2>Your Order</h2>
-
-      <table>
-
-        <thead>
-          <tr>
-            <th>Qty</th>
-            <th>Item</th>
-            <th>Unit Price</th>
-            <th>Total Price</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-
-        <tbody id="cartRows">
-          <!-- Cart items are loaded by app.js -->
-        </tbody>
-
-      </table>
-
-
-      <!-- Special Instructions -->
-      <label for="specialInstructions">
-        <strong>Special Instructions:</strong>
-      </label>
-
-      <textarea
-        id="specialInstructions"
-        maxlength="255"
-        placeholder="Enter any special instructions">
-      </textarea>
-
-
-      <!-- Pickup Time -->
-      <label for="pickupTime">
-        <strong>Pickup Time:</strong>
-      </label>
-
-      <input
-        id="pickupTime"
-        type="datetime-local"
-        required
-      >
-
-
-      <!-- Order Summary -->
-      <div class="order-summary">
-
-        <p>
-          <strong>Order Total:</strong>
-          $<span id="cartTotal">0.00</span>
-        </p>
-
-        <p>
-          <strong>Meal Plan Balance:</strong>
-          $<span id="menuBalance">0.00</span>
-        </p>
-
-      </div>
-
-
-      <!-- Submit Order -->
-      <button
-        id="placeOrder"
-        type="button">
-        Confirm Order
-      </button>
-
-    </section>
-
-  </main>
-
-  <script src="app.js"></script>
-
+    <button id="placeOrder" type="button">Confirm Order</button>
+  </section>
+</main>
+<script src="app.js"></script>
 </body>
-
 </html>
