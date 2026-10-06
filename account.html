@@ -57,6 +57,35 @@
         $<span id="balance"></span>
       </p>
 
+      <p>
+  Meal Plan Balance:
+  $<span id="balance"></span>
+</p>
+
+<div class="funds-section">
+  <label for="fundAmount">Add Funds:</label>
+
+  <input
+    type="number"
+    id="fundAmount"
+    min="1"
+    max="500"
+    step="1"
+    placeholder="Amount"
+  >
+
+  <button
+    id="addFundsBtn"
+    type="button">
+    Add Funds
+  </button>
+
+  <p
+    id="fundMessage"
+    aria-live="polite">
+  </p>
+</div>
+
       <button
         id="returnStaffBtn"
         type="button"
