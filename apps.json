@@ -35,6 +35,14 @@
       "is_active": true
     },
     {
+      "staff_id": 116,
+      "first_name": "Professor",
+      "last_name": "Demo",
+      "email_address": "pdemo@campus.edu",
+      "role": "IT Staff",
+      "is_active": true
+    }, 
+    {
       "staff_id": 115,
       "first_name": "Emmett",
       "last_name": "Brown",
@@ -188,7 +196,7 @@
       "login": "professor",
       "password": "demo",
       "account_type": "Professor Demo",
-      "record_id": 113
+      "record_id": 116
     }
   ]
 }
