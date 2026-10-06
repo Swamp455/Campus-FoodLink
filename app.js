@@ -1220,17 +1220,17 @@ function menuInit(db){
   /* -------------------------------------------------------
      INSUFFICIENT FUNDS VALIDATION
      ------------------------------------------------------- */
-
 if(
- total>
- Number(s.meal_plan_balance)
-){
+  total >
+  Number(s.meal_plan_balance)
+ ){
 
- orderMessage.textContent=
-  `Insufficient meal-plan funds. Order total is $${total.toFixed(2)} and available balance is $${Number(s.meal_plan_balance).toFixed(2)}. Remove an item, reduce the quantity, or return to your account to add funds and try again.`;
+  orderMessage.textContent =
+   `Insufficient meal-plan funds. Order total is $${total.toFixed(2)} and available balance is $${Number(s.meal_plan_balance).toFixed(2)}. Remove an item, reduce the quantity, or return to your account to add funds and try again.`;
 
- return;
-}
+  return;
+ }
+
 
   /* -------------------------------------------------------
      CREATE ORDER
