@@ -1221,15 +1221,13 @@ function menuInit(db){
      INSUFFICIENT FUNDS VALIDATION
      ------------------------------------------------------- */
 
- if(
+if(
  total>
  Number(s.meal_plan_balance)
 ){
 
  orderMessage.textContent=
-  `Insufficient meal-plan funds. Order total is
-total.toFixed(2)andavailablebalanceis
-{Number(s.meal_plan_balance).toFixed(2)}. Remove an item or reduce the quantity and try again.`;
+  `Insufficient meal-plan funds. Order total is $${total.toFixed(2)} and available balance is $${Number(s.meal_plan_balance).toFixed(2)}. Remove an item, reduce the quantity, or return to your account to add funds and try again.`;
 
  return;
 }
