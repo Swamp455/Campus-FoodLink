@@ -48,7 +48,7 @@ nav {
 
 
 /* =========================================================
-   BUTTONS
+   STANDARD BUTTONS
    ========================================================= */
 
 button,
@@ -70,8 +70,59 @@ button:hover,
   opacity: 0.9;
 }
 
+
+/* =========================================================
+   STUDENT HEADER BUTTONS
+   ========================================================= */
+
+.student-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 36px;
+  padding: 8px 14px;
+
+  background: #ffffff;
+  color: #1565c0;
+
+  border: 1px solid #ffffff;
+  border-radius: 4px;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+
+  line-height: 1;
+  text-decoration: none;
+
+  cursor: pointer;
+}
+
+header .header-button {
+  color: #1565c0;
+}
+
+.header-button:hover {
+  background: #eceff1;
+  color: #1565c0;
+  opacity: 1;
+}
+
+
+/* =========================================================
+   ACCESSIBILITY / FOCUS
+   ========================================================= */
+
 button:focus-visible,
 .button:focus-visible,
+.header-button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible,
@@ -228,12 +279,10 @@ td select {
 
 #accountMessage {
   font-weight: bold;
+  min-height: 20px;
 }
 
-#cancelOrderBtn {
-  margin-top: 8px;
-}
-
+#cancelOrderBtn,
 #returnStaffBtn {
   margin-top: 8px;
 }
@@ -248,10 +297,7 @@ td select {
   padding: 45px;
 }
 
-.confirmation h1 {
-  color: #1565c0;
-}
-
+.confirmation h1,
 .confirmation h2 {
   color: #1565c0;
 }
@@ -296,7 +342,7 @@ td select {
 
 
 /* =========================================================
-   STATUS AND FEEDBACK MESSAGES
+   STATUS MESSAGES
    ========================================================= */
 
 #saveMessage,
@@ -309,12 +355,11 @@ td select {
 
 #accountMessage {
   color: #c62828;
-  min-height: 20px;
 }
 
 
 /* =========================================================
-   ACCESSIBILITY
+   OTHER
    ========================================================= */
 
 [hidden] {
@@ -344,8 +389,13 @@ code {
     flex-direction: column;
   }
 
-  nav {
+  nav,
+  .student-nav {
     width: 100%;
+  }
+
+  .student-nav .header-button {
+    flex: 1;
   }
 
   .panel {
