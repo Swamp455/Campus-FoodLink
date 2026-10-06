@@ -340,6 +340,100 @@ function accountInit(db){
   };
  }
 
+    /* ---------------------------------------------------------
+    ADD FUNDS TO MEAL PLAN
+    --------------------------------------------------------- */
+
+ const fundAmount=
+  document.getElementById("fundAmount");
+
+ const addFundsBtn=
+  document.getElementById("addFundsBtn");
+
+ const fundMessage=
+  document.getElementById("fundMessage");
+
+
+ if(addFundsBtn){
+
+  addFundsBtn.onclick=()=>{
+
+   fundMessage.textContent="";
+
+   const amount=
+    Number(fundAmount.value);
+
+
+   /* Validate the amount */
+
+   if(
+    !Number.isFinite(amount) ||
+    amount<=0
+   ){
+
+    fundMessage.textContent=
+     "Enter a valid amount greater than $0.";
+
+    return;
+   }
+
+
+   /* Maximum amount that can be added at one time */
+
+   if(amount>500){
+
+    fundMessage.textContent=
+     "A maximum of $500 can be added at one time.";
+
+    return;
+   }
+
+
+   /* Add funds to the student's meal-plan balance */
+
+   s.meal_plan_balance=
+    Number(
+     (
+      Number(s.meal_plan_balance)+
+      amount
+     ).toFixed(2)
+    );
+
+
+   /* Save the updated database */
+
+   saveDB(db);
+
+
+   /* Update the balance displayed on the page */
+
+   document
+   .getElementById("balance")
+   .textContent=
+    Number(s.meal_plan_balance).toFixed(2);
+
+
+   /* Clear the amount field */
+
+   fundAmount.value="";
+
+
+   /* Tell the student the funds were added */
+
+   fundMessage.textContent=
+    `$${amount.toFixed(2)} was added to your meal-plan balance.`;
+  };
+ }
+
+
+ /* ---------------------------------------------------------
+    PROFESSOR DEMO
+    --------------------------------------------------------- */
+
+ const back=
+  document.getElementById("returnStaffBtn");
+   
+
 
  /* ---------------------------------------------------------
     PROFESSOR DEMO
