@@ -36,3 +36,13 @@ Export JSON:
 Use Export JSON on the Staff Dashboard. The downloaded file contains only the eight MySQL-shaped tables and omits DemoAccounts.
 
 Run through a local web server or GitHub Pages because apps.json is loaded with fetch().
+
+Peer-review fixes added:
+- Dynamic menu/order table data is rendered with textContent/createElement where practical.
+- Changing vendors warns before clearing a non-empty cart.
+- Pickup time must be in the future.
+- Per-item quantity is limited to 10 and validated again at order submission.
+- Insufficient-funds and unavailable-item failures keep the cart so the student can recover.
+- Special instructions are validated against the 255-character schema limit.
+- Staff cancellation restores meal-plan funds once and marks the existing transaction Cancelled.
+- Client-side demo authentication remains prototype-only; production authentication is later work.
