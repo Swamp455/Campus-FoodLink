@@ -429,3 +429,105 @@ code {
     width: 100%;
   }
 }
+/* =========================================================
+   STUDENT HEADER NAVIGATION
+   ========================================================= */
+
+.student-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 8px 14px;
+
+  background: #ffffff;
+  color: #1565c0;
+
+  border: 1px solid #ffffff;
+  border-radius: 4px;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1;
+
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.header-button:hover {
+  background: #eceff1;
+  color: #1565c0;
+}
+
+.header-button:focus-visible {
+  outline: 3px solid #ffb300;
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   ADD FUNDS SECTION
+   ========================================================= */
+
+.funds-section {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #ccc;
+}
+
+.funds-section h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.funds-section label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.funds-section input {
+  width: 160px;
+  padding: 8px;
+  margin-right: 8px;
+
+  border: 1px solid #999;
+  border-radius: 4px;
+
+  font-size: 14px;
+}
+
+.funds-section button {
+  padding: 8px 14px;
+
+  border: 1px solid #777;
+  border-radius: 4px;
+
+  font-size: 14px;
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+.funds-section button:hover {
+  background: #eceff1;
+}
+
+.funds-section button:focus-visible,
+.funds-section input:focus-visible {
+  outline: 3px solid #ffb300;
+  outline-offset: 2px;
+}
+
+#fundMessage {
+  min-height: 20px;
+  margin-top: 10px;
+  font-weight: bold;
+}
