@@ -423,17 +423,7 @@ function accountInit(db){
    fundMessage.textContent=
     `$${amount.toFixed(2)} was added to your meal-plan balance.`;
   };
- }
-
-
- /* ---------------------------------------------------------
-    PROFESSOR DEMO
-    --------------------------------------------------------- */
-
- const back=
-  document.getElementById("returnStaffBtn");
-   
-
+ } 
 
  /* ---------------------------------------------------------
     PROFESSOR DEMO
