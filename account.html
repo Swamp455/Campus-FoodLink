@@ -14,23 +14,30 @@
 
   <main class="wireframe">
 
-    <!-- Header -->
-   <header>
-  <b>Campus FoodLink+</b>
+    <header>
 
-  <nav class="student-nav">
-    <a href="menu.html" class="header-button">
-      Place Order
-    </a>
+      <b>Campus FoodLink+</b>
 
-    <button id="studentLogoutBtn" class="header-button" type="button">
-      Logout
-    </button>
-  </nav>
-</header>
+      <nav class="student-nav">
+
+        <a
+          href="menu.html"
+          class="header-button">
+          Place Order
+        </a>
+
+        <button
+          id="studentLogoutBtn"
+          class="header-button"
+          type="button">
+          Logout
+        </button>
+
+      </nav>
+
+    </header>
 
 
-    <!-- Student Account Information -->
     <section class="panel">
 
       <h2>Student Account</h2>
@@ -47,25 +54,26 @@
 
       <p>
         Meal Plan Balance:
-        $<b id="balance"></b>
+        $<span id="balance"></span>
       </p>
 
-      <!-- Only displayed during Professor Demo -->
-      <button id="returnStaffBtn" type="button" hidden>
-        Return to Staff
+      <button
+        id="returnStaffBtn"
+        type="button"
+        hidden>
+        Return to Staff Dashboard
       </button>
 
     </section>
 
 
-    <!-- Latest Order -->
     <section class="panel">
 
       <h2>Latest Order</h2>
 
       <p>
         Order #:
-        <b id="orderId">No Current Order</b>
+        <b id="orderId">-</b>
       </p>
 
       <p>
@@ -75,19 +83,24 @@
 
       <p>
         Status:
-        <span id="orderStatus">-</span>
+        <b id="orderStatus">-</b>
       </p>
 
       <p>
-        Updated:
+        Last Updated:
         <span id="statusUpdated">-</span>
       </p>
 
-      <button id="cancelOrderBtn" type="button">
+      <button
+        id="cancelOrderBtn"
+        type="button">
         Cancel Order
       </button>
 
-      <p id="accountMessage" aria-live="polite"></p>
+      <p
+        id="accountMessage"
+        aria-live="polite">
+      </p>
 
     </section>
 
