@@ -39,8 +39,13 @@
     <p>Order Total: $<b id="cartTotal">0.00</b></p>
     <p>Meal Plan Balance: $<b id="menuBalance"></b></p>
     <p id="orderMessage" aria-live="polite"></p>
-
-    <button id="placeOrder" type="button">Confirm Order</button>
+    <button type="button" id="cancelCurrentOrder" class="secondary">
+      Cancel Order
+    </button>
+    <button type="button" id="placeOrder">
+      Confirm Order
+    </button>
+  
   </section>
 </main>
 <script src="app.js"></script>
