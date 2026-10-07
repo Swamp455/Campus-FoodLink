@@ -423,7 +423,7 @@ function accountInit(db){
    fundMessage.textContent=
     `$${amount.toFixed(2)} was added to your meal-plan balance.`;
   };
- } 
+ }
 
  /* ---------------------------------------------------------
     PROFESSOR DEMO
@@ -1210,16 +1210,28 @@ function menuInit(db){
   /* -------------------------------------------------------
      INSUFFICIENT FUNDS VALIDATION
      ------------------------------------------------------- */
-if(
-  total >
-  Number(s.meal_plan_balance)
- ){
 
+if (
+  total > Number(s.meal_plan_balance)
+) {
   orderMessage.textContent =
-   `Insufficient meal-plan funds. Order total is $${total.toFixed(2)} and available balance is $${Number(s.meal_plan_balance).toFixed(2)}. Remove an item, reduce the quantity, or return to your account to add funds and try again.`;
+    `Insufficient meal-plan funds. Order total is
+total.toFixed(2)andavailablebalanceis
+{Number(s.meal_plan_balance).toFixed(2)}. Remove an item, reduce the quantity, or return to your account to add funds and try again.`;
 
   return;
- }
+}
+
+
+// Generate the next order ID
+const oid = next(
+  db.Orders,
+  "order_id",
+  15559
+);
+
+// Record the order creation time
+const now = new Date().toISOString();
 
 
   /* -------------------------------------------------------
