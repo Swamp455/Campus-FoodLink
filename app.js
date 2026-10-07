@@ -8,6 +8,7 @@
    ========================================================= */
 
 const DB_KEY="CampusFoodLinkDB",CART_KEY="CampusFoodLinkCart";
+const ORDER_SEQUENCE_KEY = "CampusFoodLinkOrderSequence";
 
 const read=(k,d=null)=>{
  try{
@@ -27,6 +28,37 @@ const next=(a,k,s=1)=>
  a.length
  ?Math.max(...a.map(x=>Number(x[k])||0))+1
  :s;
+
+/* Generate a unique order ID */
+function nextOrderId(db) {
+
+  const highestExisting =
+    db.Orders.length
+      ? Math.max(
+          ...db.Orders.map(
+            order => Number(order.order_id) || 0
+          )
+        )
+      : 15558;
+
+  const storedSequence =
+    Number(
+      localStorage.getItem(ORDER_SEQUENCE_KEY)
+    ) || 15558;
+
+  const nextId =
+    Math.max(
+      highestExisting,
+      storedSequence
+    ) + 1;
+
+  localStorage.setItem(
+    ORDER_SEQUENCE_KEY,
+    String(nextId)
+  );
+
+  return nextId;
+}
 
 const byId=(a,k,id)=>
  a.find(x=>Number(x[k])===Number(id));
@@ -1056,7 +1088,53 @@ function menuInit(db){
    }
   );
  }
+     /* ---------------------------------------------------------
+     CANCEL CURRENT ORDER
+     --------------------------------------------------------- */
 
+  const cancelCurrentOrder =
+    document.getElementById("cancelCurrentOrder");
+
+  if (cancelCurrentOrder) {
+
+    cancelCurrentOrder.onclick = () => {
+
+      const currentCart = cart();
+
+      if (!currentCart.length) {
+        orderMessage.textContent =
+          "There is no order to cancel.";
+
+        return;
+      }
+
+      const confirmed = confirm(
+        "Are you sure you want to cancel this order?"
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
+      saveCart([]);
+
+      const instructions =
+        document.getElementById("specialInstructions");
+
+      if (instructions) {
+        instructions.value = "";
+      }
+
+      pickupInput.value = "";
+
+      updatePickupMinimum();
+
+      draw();
+
+      orderMessage.textContent =
+        "Your order has been cancelled.";
+    };
+  }
 
  /* ---------------------------------------------------------
     PLACE ORDER / FINAL VALIDATION
@@ -1215,24 +1293,17 @@ if (
   total > Number(s.meal_plan_balance)
 ) {
   orderMessage.textContent =
-    `Insufficient meal-plan funds. Order total is
-total.toFixed(2)andavailablebalanceis
-{Number(s.meal_plan_balance).toFixed(2)}. Remove an item, reduce the quantity, or return to your account to add funds and try again.`;
+    `Insufficient meal-plan funds. Order total is $${total.toFixed(2)} and available balance is $${Number(s.meal_plan_balance).toFixed(2)}. Remove an item, reduce the quantity, or return to your account to add funds and try again.`;
 
   return;
 }
 
 
-// Generate the next order ID
-const oid = next(
-  db.Orders,
-  "order_id",
-  15559
-);
+// Generate the next unique order ID
+const oid = nextOrderId(db);
 
 // Record the order creation time
 const now = new Date().toISOString();
-
 
   /* -------------------------------------------------------
      CREATE ORDER
