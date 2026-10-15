@@ -1,563 +1,203 @@
-/* =========================================================
-   GLOBAL
-   ========================================================= */
-
-* {
-  box-sizing: border-box;
+{
+  "Students": [
+    {
+      "student_id": 101,
+      "first_name": "Ale",
+      "last_name": "Leon",
+      "email_address": "aleon@campus.edu",
+      "phone_number": "123-345-6789",
+      "meal_plan_balance": 100.0
+    },
+    {
+      "student_id": 102,
+      "first_name": "Peter",
+      "last_name": "Parker",
+      "email_address": "pparker@campus.edu",
+      "phone_number": "987-654-5432",
+      "meal_plan_balance": 75.0
+    }
+  ],
+  "Staff": [
+    {
+      "staff_id": 113,
+      "first_name": "Dominic",
+      "last_name": "Toretto",
+      "email_address": "domt@frenchies.com",
+      "role": "Dietary Associate",
+      "is_active": true
+    },
+    {
+      "staff_id": 114,
+      "first_name": "Luke",
+      "last_name": "Hobbs",
+      "email_address": "lukeh@campus.edu",
+      "role": "Dietary Manager",
+      "is_active": true
+    },
+    {
+      "staff_id": 115,
+      "first_name": "Emmett",
+      "last_name": "Brown",
+      "email_address": "ebrown@campus.edu",
+      "role": "IT Staff",
+      "is_active": true
+    },
+   {
+      "staff_id": 116,
+      "first_name": "Professor",
+      "last_name": "Demo",
+      "email_address": "pdemo@campus.edu",
+      "role": "IT Staff",
+      "is_active": true
+   }
+  ],
+  "Vendors": [
+    {
+      "vendor_id": 1,
+      "vendor_name": "Frenchies",
+      "location": "Student Union",
+      "contact_email": "frenchies@campus.edu",
+      "is_active": true
+    },
+    {
+      "vendor_id": 2,
+      "vendor_name": "Campus Grill",
+      "location": "Dining Hall",
+      "contact_email": "grill@campus.edu",
+      "is_active": true
+    },
+    {
+      "vendor_id": 3,
+      "vendor_name": "Student Cafe",
+      "location": "Library Commons",
+      "contact_email": "cafe@campus.edu",
+      "is_active": true
+    }
+  ],
+  "MenuItems": [
+    {
+      "menu_item_id": 991,
+      "vendor_id": 1,
+      "item_name": "Tuna Sandwich",
+      "description": "Tuna sandwich",
+      "category": "Sandwich",
+      "price": 10.0,
+      "is_available": true
+    },
+    {
+      "menu_item_id": 992,
+      "vendor_id": 1,
+      "item_name": "Pizza",
+      "description": "Cheese pizza",
+      "category": "Entree",
+      "price": 20.0,
+      "is_available": true
+    },
+    {
+      "menu_item_id": 993,
+      "vendor_id": 1,
+      "item_name": "Roasted Green Beans",
+      "description": "Roasted green beans",
+      "category": "Side",
+      "price": 6.0,
+      "is_available": true
+    },
+    {
+      "menu_item_id": 994,
+      "vendor_id": 2,
+      "item_name": "Classic Cheeseburger",
+      "description": "Classic cheeseburger",
+      "category": "Entree",
+      "price": 8.5,
+      "is_available": true
+    },
+    {
+      "menu_item_id": 995,
+      "vendor_id": 2,
+      "item_name": "Seasoned Fries",
+      "description": "Seasoned french fries",
+      "category": "Side",
+      "price": 3.5,
+      "is_available": true
+    },
+    {
+      "menu_item_id": 996,
+      "vendor_id": 2,
+      "item_name": "Grilled Chicken Sandwich",
+      "description": "Grilled chicken sandwich",
+      "category": "Sandwich",
+      "price": 9.0,
+      "is_available": true
+    },
+    {
+      "menu_item_id": 997,
+      "vendor_id": 3,
+      "item_name": "Turkey Club Sandwich",
+      "description": "Turkey, bacon, lettuce, tomato, and cheese",
+      "category": "Sandwich",
+      "price": 9.5,
+      "is_available": true
+    },
+    {
+      "menu_item_id": 998,
+      "vendor_id": 3,
+      "item_name": "Chicken Caesar Salad",
+      "description": "Grilled chicken, romaine lettuce, parmesan cheese, and Caesar dressing",
+      "category": "Salad",
+      "price": 8.5,
+      "is_available": true
+    },
+    {
+      "menu_item_id": 999,
+      "vendor_id": 3,
+      "item_name": "Iced Coffee",
+      "description": "Fresh brewed coffee served over ice",
+      "category": "Beverage",
+      "price": 3.5,
+      "is_available": true
+    }
+  ],
+  "Orders": [],
+  "OrderItems": [],
+  "OrderStatus": [],
+  "Transactions": [],
+  "DemoAccounts": [
+    {
+      "login": "aleon",
+      "password": "password",
+      "account_type": "Student",
+      "record_id": 101
+    },
+    {
+      "login": "pparker",
+      "password": "password",
+      "account_type": "Student",
+      "record_id": 102
+    },
+    {
+      "login": "dtoretto",
+      "password": "password",
+      "account_type": "Staff",
+      "record_id": 113
+    },
+    {
+      "login": "lhobbs",
+      "password": "password",
+      "account_type": "Staff",
+      "record_id": 114
+    },
+    {
+      "login": "ebrown",
+      "password": "password",
+      "account_type": "Staff",
+      "record_id": 115
+    },
+    {
+      "login": "professor",
+      "password": "demo",
+      "account_type": "Professor Demo",
+      "record_id": 116
+    }
+  ]
 }
 
-body {
-  margin: 0;
-  background: #263238;
-  font-family: Arial, Helvetica, sans-serif;
-  color: #172026;
-}
-
-.wireframe {
-  width: min(980px, 96vw);
-  min-height: 460px;
-  margin: 32px auto;
-  background: #f7f7f7;
-  border: 1px solid #78909c;
-}
-
-
-/* =========================================================
-   HEADER AND NAVIGATION
-   ========================================================= */
-
-header {
-  background: #1565c0;
-  color: #fff;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 18px;
-  gap: 12px;
-}
-
-header a {
-  color: #fff;
-}
-
-nav {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-
-/* =========================================================
-   STANDARD BUTTONS
-   ========================================================= */
-
-button,
-.button {
-  display: inline-block;
-  background: #1565c0;
-  color: #fff;
-  border: 0;
-  border-radius: 4px;
-  padding: 8px 12px;
-  cursor: pointer;
-  text-decoration: none;
-  font-family: inherit;
-  font-size: 14px;
-}
-
-button:hover,
-.button:hover {
-  opacity: 0.9;
-}
-
-
-/* =========================================================
-   STUDENT HEADER BUTTONS
-   ========================================================= */
-
-.student-nav {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.header-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  min-height: 36px;
-  padding: 8px 14px;
-
-  background: #ffffff;
-  color: #1565c0;
-
-  border: 1px solid #ffffff;
-  border-radius: 4px;
-
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 14px;
-  font-weight: bold;
-
-  line-height: 1;
-  text-decoration: none;
-
-  cursor: pointer;
-}
-
-header .header-button {
-  color: #1565c0;
-}
-
-.header-button:hover {
-  background: #eceff1;
-  color: #1565c0;
-  opacity: 1;
-}
-
-
-/* =========================================================
-   ACCESSIBILITY / FOCUS
-   ========================================================= */
-
-button:focus-visible,
-.button:focus-visible,
-.header-button:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible,
-a:focus-visible {
-  outline: 3px solid #ffb300;
-  outline-offset: 2px;
-}
-
-
-/* =========================================================
-   LOGIN PAGE
-   ========================================================= */
-
-.mini-logo {
-  text-align: center;
-  color: #1565c0;
-  margin-top: 45px;
-}
-
-.login-form,
-.demo-reset {
-  width: min(520px, 88%);
-  margin: 30px auto;
-}
-
-.login-form label {
-  display: block;
-  margin-top: 12px;
-}
-
-.login-form input {
-  width: 100%;
-}
-
-.hint {
-  font-size: 12px;
-  color: #546e7a;
-}
-
-.error {
-  color: #c62828;
-  font-weight: bold;
-}
-
-.demo-reset {
-  text-align: center;
-}
-
-
-/* =========================================================
-   FORMS
-   ========================================================= */
-
-input,
-textarea,
-select {
-  padding: 7px;
-  border: 1px solid #90a4ae;
-  border-radius: 3px;
-  font-family: inherit;
-}
-
-textarea {
-  display: block;
-  width: 100%;
-  min-height: 65px;
-  margin: 6px 0 12px;
-}
-
-#pickupTime {
-  margin: 6px 0 12px;
-}
-
-
-/* =========================================================
-   PANELS
-   ========================================================= */
-
-.panel {
-  margin: 20px;
-  padding: 18px;
-  background: #fff;
-  border: 1px solid #cfd8dc;
-}
-
-.panel h2 {
-  color: #1565c0;
-  margin-top: 0;
-}
-
-
-/* =========================================================
-   MENU
-   ========================================================= */
-
-.menu-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 15px;
-  padding: 12px;
-  margin: 10px 0;
-  border: 1px solid #cfd8dc;
-  background: #f8fbfc;
-}
-
-#vendorSelect {
-  margin-left: 6px;
-}
-
-#orderMessage {
-  color: #c62828;
-  font-weight: bold;
-  min-height: 20px;
-}
-
-
-/* =========================================================
-   TABLES
-   ========================================================= */
-
-.table-wrapper {
-  width: 100%;
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 10px 0;
-}
-
-th,
-td {
-  border: 1px solid #b0bec5;
-  padding: 7px;
-  text-align: left;
-  font-size: 12px;
-}
-
-th {
-  background: #eceff1;
-}
-
-td select {
-  width: 100%;
-  min-width: 105px;
-}
-
-
-/* =========================================================
-   STUDENT ACCOUNT
-   ========================================================= */
-
-#accountMessage {
-  font-weight: bold;
-  min-height: 20px;
-}
-
-#cancelOrderBtn,
-#returnStaffBtn {
-  margin-top: 8px;
-}
-
-
-/* =========================================================
-   ORDER CONFIRMATION
-   ========================================================= */
-
-.confirmation {
-  text-align: center;
-  padding: 45px;
-}
-
-.confirmation h1,
-.confirmation h2 {
-  color: #1565c0;
-}
-
-.confirmation p {
-  font-size: 17px;
-}
-
-.order-summary {
-  width: min(500px, 90%);
-  margin: 25px auto;
-  padding: 18px;
-  background: #fff;
-  border: 1px solid #cfd8dc;
-  text-align: left;
-}
-
-.confirm-actions {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 25px;
-}
-
-
-/* =========================================================
-   STAFF DASHBOARD
-   ========================================================= */
-
-.staff-welcome {
-  font-size: 15px;
-}
-
-.staff-nav {
-  background: transparent;
-}
-
-.staff-nav:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-
-/* =========================================================
-   STATUS MESSAGES
-   ========================================================= */
-
-#saveMessage,
-#menuMessage,
-#resetMessage {
-  color: #2e7d32;
-  font-weight: bold;
-  min-height: 20px;
-}
-
-#accountMessage {
-  color: #c62828;
-}
-
-
-/* =========================================================
-   OTHER
-   ========================================================= */
-
-[hidden] {
-  display: none !important;
-}
-
-code {
-  background: #eceff1;
-  padding: 2px 4px;
-  border-radius: 3px;
-}
-
-
-/* =========================================================
-   RESPONSIVE DESIGN
-   ========================================================= */
-
-@media (max-width: 700px) {
-
-  .wireframe {
-    width: 98vw;
-    margin: 10px auto;
-  }
-
-  header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  nav,
-  .student-nav {
-    width: 100%;
-  }
-
-  .student-nav .header-button {
-    flex: 1;
-  }
-
-  .panel {
-    margin: 10px;
-    padding: 12px;
-  }
-
-  .menu-item {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .menu-item button {
-    width: 100%;
-  }
-
-  table {
-    white-space: nowrap;
-  }
-
-  .confirmation {
-    padding: 25px 15px;
-  }
-
-  .confirm-actions {
-    flex-direction: column;
-  }
-
-  .confirm-actions .button,
-  .confirm-actions button {
-    width: 100%;
-  }
-}
-/* =========================================================
-   STUDENT HEADER NAVIGATION
-   ========================================================= */
-
-.student-nav {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.header-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 36px;
-  padding: 8px 14px;
-
-  background: #ffffff;
-  color: #1565c0;
-
-  border: 1px solid #ffffff;
-  border-radius: 4px;
-
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 14px;
-  font-weight: bold;
-  line-height: 1;
-
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.header-button:hover {
-  background: #eceff1;
-  color: #1565c0;
-}
-
-.header-button:focus-visible {
-  outline: 3px solid #ffb300;
-  outline-offset: 2px;
-}
-
-
-/* =========================================================
-   ADD FUNDS SECTION
-   ========================================================= */
-
-.funds-section {
-  margin-top: 20px;
-  padding-top: 15px;
-  border-top: 1px solid #ccc;
-}
-
-.funds-section h3 {
-  margin-top: 0;
-  margin-bottom: 8px;
-}
-
-.funds-section label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: bold;
-}
-
-.funds-section input {
-  width: 160px;
-  padding: 8px;
-  margin-right: 8px;
-
-  border: 1px solid #999;
-  border-radius: 4px;
-
-  font-size: 14px;
-}
-
-.funds-section button {
-  padding: 8px 14px;
-
-  border: 1px solid #777;
-  border-radius: 4px;
-
-  font-size: 14px;
-  font-weight: bold;
-
-  cursor: pointer;
-}
-
-.funds-section button:hover {
-  background: #eceff1;
-}
-
-.funds-section button:focus-visible,
-.funds-section input:focus-visible {
-  outline: 3px solid #ffb300;
-  outline-offset: 2px;
-}
-
-#fundMessage {
-  min-height: 20px;
-  margin-top: 10px;
-  font-weight: bold;
-}
-
-
-/* Student order history */
-#studentOrderStatusFilter { margin: 8px 0 12px; min-width: 180px; }
-#studentOrderCount { color: #455a64; }
-#studentAllOrdersBody td { white-space: nowrap; }
-
-.report-controls{display:flex;flex-wrap:wrap;align-items:end;gap:12px;margin:16px 0}.report-controls label{display:flex;flex-direction:column;gap:4px}.report-controls input,.report-controls button{padding:8px}.report-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;margin:18px 0}.report-cards>div{background:#f1f4f5;border:1px solid #d6dfe2;border-radius:6px;padding:16px;display:flex;flex-direction:column;gap:8px}.report-cards strong{font-size:1.5rem}.report-cards span{font-size:.9rem}#reportsSection h3{margin-top:20px}
-
-/* IT administration portal */
-.admin-page{width:min(1150px,96vw);padding:24px;min-height:80vh}
-.admin-header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-.admin-page .panel{padding:20px;margin:18px 0;background:#fff;border:1px solid #d6dfe2;border-radius:8px}
-.admin-page .table-wrapper{overflow-x:auto;margin-top:12px}
-.admin-page table{width:100%;border-collapse:collapse}
-.admin-page th,.admin-page td{text-align:left;border-bottom:1px solid #d6dfe2;padding:10px}
-.admin-page .admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
-.admin-page .admin-grid label{display:flex;flex-direction:column;gap:6px}
-.admin-page input:not([type=checkbox]),.admin-page select{max-width:100%;padding:9px;border:1px solid #9ca7b0;border-radius:4px}
-.admin-page button{padding:9px 13px;cursor:pointer}
-.admin-page .admin-check{display:flex;gap:8px;align-items:center;margin:16px 0}
-
-.admin-page .admin-remove{background:#fff2f2;border:1px solid #b42318;color:#8b1e16;border-radius:4px}
-
-/* Student vendor menu food photographs */
-#menuItems .menu-item{display:flex;align-items:center;gap:16px;min-height:112px;padding:12px;border-bottom:1px solid #dce1e3}
-#menuItems .menu-item .menu-food-image{width:145px;height:105px;object-fit:cover;border-radius:8px;flex-shrink:0;background:#ecefeb}
-#menuItems .menu-item>div{flex:1;min-width:0}
-#menuItems .menu-item .add{flex-shrink:0}
-@media(max-width:550px){#menuItems .menu-item{flex-wrap:wrap}#menuItems .menu-item .menu-food-image{width:100%;height:160px}#menuItems .menu-item>div{flex-basis:65%}}

@@ -1,203 +1,50 @@
-{
-  "Students": [
-    {
-      "student_id": 101,
-      "first_name": "Ale",
-      "last_name": "Leon",
-      "email_address": "aleon@campus.edu",
-      "phone_number": "123-345-6789",
-      "meal_plan_balance": 100.0
-    },
-    {
-      "student_id": 102,
-      "first_name": "Peter",
-      "last_name": "Parker",
-      "email_address": "pparker@campus.edu",
-      "phone_number": "987-654-5432",
-      "meal_plan_balance": 75.0
-    }
-  ],
-  "Staff": [
-    {
-      "staff_id": 113,
-      "first_name": "Dominic",
-      "last_name": "Toretto",
-      "email_address": "domt@frenchies.com",
-      "role": "Dietary Associate",
-      "is_active": true
-    },
-    {
-      "staff_id": 114,
-      "first_name": "Luke",
-      "last_name": "Hobbs",
-      "email_address": "lukeh@campus.edu",
-      "role": "Dietary Manager",
-      "is_active": true
-    },
-    {
-      "staff_id": 115,
-      "first_name": "Emmett",
-      "last_name": "Brown",
-      "email_address": "ebrown@campus.edu",
-      "role": "IT Staff",
-      "is_active": true
-    },
-   {
-      "staff_id": 116,
-      "first_name": "Professor",
-      "last_name": "Demo",
-      "email_address": "pdemo@campus.edu",
-      "role": "IT Staff",
-      "is_active": true
-   }
-  ],
-  "Vendors": [
-    {
-      "vendor_id": 1,
-      "vendor_name": "Frenchies",
-      "location": "Student Union",
-      "contact_email": "frenchies@campus.edu",
-      "is_active": true
-    },
-    {
-      "vendor_id": 2,
-      "vendor_name": "Campus Grill",
-      "location": "Dining Hall",
-      "contact_email": "grill@campus.edu",
-      "is_active": true
-    },
-    {
-      "vendor_id": 3,
-      "vendor_name": "Student Cafe",
-      "location": "Library Commons",
-      "contact_email": "cafe@campus.edu",
-      "is_active": true
-    }
-  ],
-  "MenuItems": [
-    {
-      "menu_item_id": 991,
-      "vendor_id": 1,
-      "item_name": "Tuna Sandwich",
-      "description": "Tuna sandwich",
-      "category": "Sandwich",
-      "price": 10.0,
-      "is_available": true
-    },
-    {
-      "menu_item_id": 992,
-      "vendor_id": 1,
-      "item_name": "Pizza",
-      "description": "Cheese pizza",
-      "category": "Entree",
-      "price": 20.0,
-      "is_available": true
-    },
-    {
-      "menu_item_id": 993,
-      "vendor_id": 1,
-      "item_name": "Roasted Green Beans",
-      "description": "Roasted green beans",
-      "category": "Side",
-      "price": 6.0,
-      "is_available": true
-    },
-    {
-      "menu_item_id": 994,
-      "vendor_id": 2,
-      "item_name": "Classic Cheeseburger",
-      "description": "Classic cheeseburger",
-      "category": "Entree",
-      "price": 8.5,
-      "is_available": true
-    },
-    {
-      "menu_item_id": 995,
-      "vendor_id": 2,
-      "item_name": "Seasoned Fries",
-      "description": "Seasoned french fries",
-      "category": "Side",
-      "price": 3.5,
-      "is_available": true
-    },
-    {
-      "menu_item_id": 996,
-      "vendor_id": 2,
-      "item_name": "Grilled Chicken Sandwich",
-      "description": "Grilled chicken sandwich",
-      "category": "Sandwich",
-      "price": 9.0,
-      "is_available": true
-    },
-    {
-      "menu_item_id": 997,
-      "vendor_id": 3,
-      "item_name": "Turkey Club Sandwich",
-      "description": "Turkey, bacon, lettuce, tomato, and cheese",
-      "category": "Sandwich",
-      "price": 9.5,
-      "is_available": true
-    },
-    {
-      "menu_item_id": 998,
-      "vendor_id": 3,
-      "item_name": "Chicken Caesar Salad",
-      "description": "Grilled chicken, romaine lettuce, parmesan cheese, and Caesar dressing",
-      "category": "Salad",
-      "price": 8.5,
-      "is_available": true
-    },
-    {
-      "menu_item_id": 999,
-      "vendor_id": 3,
-      "item_name": "Iced Coffee",
-      "description": "Fresh brewed coffee served over ice",
-      "category": "Beverage",
-      "price": 3.5,
-      "is_available": true
-    }
-  ],
-  "Orders": [],
-  "OrderItems": [],
-  "OrderStatus": [],
-  "Transactions": [],
-  "DemoAccounts": [
-    {
-      "login": "aleon",
-      "password": "password",
-      "account_type": "Student",
-      "record_id": 101
-    },
-    {
-      "login": "pparker",
-      "password": "password",
-      "account_type": "Student",
-      "record_id": 102
-    },
-    {
-      "login": "dtoretto",
-      "password": "password",
-      "account_type": "Staff",
-      "record_id": 113
-    },
-    {
-      "login": "lhobbs",
-      "password": "password",
-      "account_type": "Staff",
-      "record_id": 114
-    },
-    {
-      "login": "ebrown",
-      "password": "password",
-      "account_type": "Staff",
-      "record_id": 115
-    },
-    {
-      "login": "professor",
-      "password": "demo",
-      "account_type": "Professor Demo",
-      "record_id": 116
-    }
-  ]
-}
+Campus FoodLink+ — IT Staff Admin Portal (Prototype)
+====================================================
 
+Includes student order history and dietary manager reporting from the previous combined package.
+
+DEPLOYMENT
+Upload all files in this package to the root of your Campus-FoodLink GitHub repository.
+IMPORTANT: Keep any separately installed test-logger.js/test.js and its HTML script references.
+If you have made further customizations, merge rather than blindly overwrite those changes.
+
+IT DEMO LOGIN
+Username: ebrown
+Password: password
+After login the IT Staff account is directed to admin.html.
+
+FEATURES
+- Search and edit existing student/staff demonstration accounts
+- Change username and reset a password (leave blank to keep the existing one)
+- Change staff role between Dietary Associate, Dietary Manager, and IT Staff
+- Activate/deactivate demo accounts; disabled accounts cannot log in
+- Prevent the currently logged-in IT staff account from deactivating itself or losing IT role
+- Export a local audit CSV showing changes without recording passwords
+- Existing order history and manager reporting remain included
+
+TEST STEPS
+1. Log in as ebrown / password and confirm IT portal opens.
+2. Edit a test account's username, save, sign out and try the new username.
+3. Reset a test password (8+ characters) and verify old credentials fail.
+4. Deactivate a test account and confirm login is denied; reactivate it.
+5. Verify Dietary Manager reports remain accessible to lhobbs.
+6. Verify students can still see all orders and filter by status.
+7. Export audit CSV and capture evidence for Unit 8.
+8. Repeat in Chrome and Edge. Changes are local to each browser.
+
+LIMITATIONS / SECURITY
+This is a STATIC GitHub Pages prototype, not secure account administration.
+Credentials are stored as plaintext in browser localStorage; any user with browser
+developer tools can tamper with roles or data. Do not use real credentials or personal
+information. Changes do not synchronize between devices and are lost on demo reset.
+A real production version requires server-side identity management, salted password
+hashing, authenticated sessions, server-enforced RBAC, protected audit logs and MySQL.
+
+ADD AND REMOVE ACCOUNTS
+- IT Staff can create student and staff demo accounts using Add New Account.
+- New students begin with a $0.00 meal-plan balance.
+- Remove requires confirmation. Accounts with related orders or status records cannot
+  be removed; deactivate them to preserve order and transaction history.
+- You cannot remove your own IT account.
+- Account creation and removal are recorded in the local administrative audit log.
+- This remains an insecure browser-only demonstration. Do not use real passwords.
