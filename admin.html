@@ -1,29 +1,54 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Campus FoodLink+ | IT Administration</title><link rel="stylesheet" href="style.css"></head>
-<body data-page="admin"><main class="wireframe admin-page">
-<header class="admin-header"><div><h1>Campus FoodLink+ IT Administration</h1><p>Demonstration account management · Browser-only</p></div><button type="button" id="adminLogout">Log Out</button></header>
-<section class="panel"><h2>Account Directory</h2><label for="adminSearch">Search by name, username or role</label>
-<input id="adminSearch" type="search" placeholder="Search accounts">
-<div class="table-wrapper"><table><thead><tr><th>Username</th><th>Name</th><th>Role</th><th>Status</th><th>Action</th></tr></thead><tbody id="adminAccounts"></tbody></table></div></section>
-<section class="panel"><h2>Add New Account</h2>
-<form id="adminCreateForm"><div class="admin-grid">
-<label>First Name<input id="createFirst" required maxlength="60"></label>
-<label>Last Name<input id="createLast" required maxlength="60"></label>
-<label>Email<input id="createEmail" type="email" required maxlength="150"></label>
-<label>Username<input id="createLogin" required minlength="3" maxlength="32" autocomplete="off"></label>
-<label>Password<input id="createPassword" type="password" required minlength="8" autocomplete="new-password"></label>
-<label>Account Role<select id="createRole"><option>Student</option><option>Dietary Associate</option><option>Dietary Manager</option><option>IT Staff</option></select></label>
-</div><button type="submit">Create Account</button><p id="createMessage" role="status" aria-live="polite"></p></form></section>
-<section class="panel"><h2>Edit Account</h2><p id="adminSelection">Select an account above to edit.</p>
-<form id="adminForm"><input id="adminSelected" type="hidden">
-<div class="admin-grid"><label>Account type<input id="adminType" readonly></label>
-<label>Username<input id="adminLogin" required minlength="3" maxlength="32" autocomplete="off"></label>
-<label>New Password (optional)<input id="adminPassword" type="password" minlength="8" autocomplete="new-password" placeholder="Leave blank to keep existing"></label>
-<label>Role<select id="adminRole"><option>Student</option><option>Dietary Associate</option><option>Dietary Manager</option><option>IT Staff</option></select></label></div>
-<label class="admin-check"><input type="checkbox" id="adminActive"> Account active</label>
-<button type="submit">Save Account Changes</button><p id="adminMessage" role="status" aria-live="polite"></p></form></section>
-<section class="panel"><div class="admin-header"><h2>Administrative Activity</h2><button type="button" id="adminAuditExport">Export Audit CSV</button></div>
-<div class="table-wrapper"><table><thead><tr><th>Time</th><th>Action</th><th>Username</th><th>Changes</th></tr></thead><tbody id="adminAudit"></tbody></table></div></section>
-<p class="hint">Prototype only: passwords and roles are stored in localStorage. This is not a secure production administration system.</p>
-</main><script src="app.js"></script></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Vendor Menu</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="menu">
+<main class="wireframe">
+  <header>
+    <b>Campus FoodLink+</b>
+    <a href="account.html">Dashboard</a>
+  </header>
+
+  <section class="panel">
+    <label for="vendorSelect">Active Vendor:</label>
+    <select id="vendorSelect">
+      <option value="">Select a Vendor</option>
+    </select>
+    <div id="menuItems"></div>
+  </section>
+
+  <section class="panel">
+    <h2>Order</h2>
+    <table>
+      <thead>
+        <tr><th>Qty</th><th>Item</th><th>Unit Price</th><th>Total Price</th><th></th></tr>
+      </thead>
+      <tbody id="cartRows"></tbody>
+    </table>
+
+    <label for="specialInstructions">Special Instructions</label>
+    <textarea id="specialInstructions" maxlength="255"></textarea>
+
+    <label for="pickupTime">Pickup Time</label>
+    <input id="pickupTime" type="datetime-local">
+
+    <p>Order Total: $<b id="cartTotal">0.00</b></p>
+    <p>Meal Plan Balance: $<b id="menuBalance"></b></p>
+    <p id="orderMessage" aria-live="polite"></p>
+    <button type="button" id="cancelCurrentOrder" class="secondary">
+      Cancel Order
+    </button>
+    <button type="button" id="placeOrder">
+      Confirm Order
+    </button>
+  
+  </section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
+

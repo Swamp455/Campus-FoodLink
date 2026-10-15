@@ -1,54 +1,168 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Vendor Menu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Student Dashboard</title>
+
   <link rel="stylesheet" href="style.css">
 </head>
-<body data-page="menu">
-<main class="wireframe">
-  <header>
-    <b>Campus FoodLink+</b>
-    <a href="account.html">Dashboard</a>
-  </header>
 
-  <section class="panel">
-    <label for="vendorSelect">Active Vendor:</label>
-    <select id="vendorSelect">
-      <option value="">Select a Vendor</option>
-    </select>
-    <div id="menuItems"></div>
-  </section>
+<body data-page="account">
 
-  <section class="panel">
-    <h2>Order</h2>
-    <table>
-      <thead>
-        <tr><th>Qty</th><th>Item</th><th>Unit Price</th><th>Total Price</th><th></th></tr>
-      </thead>
-      <tbody id="cartRows"></tbody>
-    </table>
+  <main class="wireframe">
 
-    <label for="specialInstructions">Special Instructions</label>
-    <textarea id="specialInstructions" maxlength="255"></textarea>
+    <header>
 
-    <label for="pickupTime">Pickup Time</label>
-    <input id="pickupTime" type="datetime-local">
+      <b>Campus FoodLink+</b>
 
-    <p>Order Total: $<b id="cartTotal">0.00</b></p>
-    <p>Meal Plan Balance: $<b id="menuBalance"></b></p>
-    <p id="orderMessage" aria-live="polite"></p>
-    <button type="button" id="cancelCurrentOrder" class="secondary">
-      Cancel Order
-    </button>
-    <button type="button" id="placeOrder">
-      Confirm Order
-    </button>
-  
-  </section>
-</main>
-<script src="app.js"></script>
+      <nav class="student-nav" aria-label="Student navigation">
+
+        <a
+          href="menu.html"
+          class="header-button">
+          Place Order
+        </a>
+
+        <button
+          id="studentLogoutBtn"
+          class="header-button"
+          type="button">
+          Logout
+        </button>
+
+      </nav>
+
+    </header>
+
+
+    <section class="panel">
+
+      <h2>Student Account</h2>
+
+      <p>
+        Name:
+        <b id="studentName"></b>
+      </p>
+
+      <p>
+        Email:
+        <span id="studentEmail"></span>
+      </p>
+
+      <p>
+        Meal Plan Balance:
+        $<span id="balance"></span>
+      </p>
+
+
+      <!-- =====================================================
+           ADD FUNDS
+           ===================================================== -->
+
+      <div class="funds-section">
+
+        <h3>Add Funds</h3>
+
+        <p>
+          Add funds to your meal-plan balance.
+        </p>
+
+        <label for="fundAmount">
+          Amount:
+        </label>
+
+        <input
+          type="number"
+          id="fundAmount"
+          min="0.01"
+          max="500"
+          step="0.01"
+          placeholder="Amount">
+
+        <button
+          id="addFundsBtn"
+          type="button">
+          Add Funds
+        </button>
+
+        <p
+          id="fundMessage"
+          aria-live="polite">
+        </p>
+
+      </div>
+
+
+      <button
+        id="returnStaffBtn"
+        type="button"
+        hidden>
+        Return to Staff Dashboard
+      </button>
+
+    </section>
+
+
+    <section class="panel">
+
+      <h2>Latest Order</h2>
+
+      <p>
+        Order #:
+        <b id="orderId">-</b>
+      </p>
+
+      <p>
+        Vendor:
+        <span id="orderVendor">-</span>
+      </p>
+
+      <p>
+        Status:
+        <b id="orderStatus">-</b>
+      </p>
+
+      <p>
+        Last Updated:
+        <span id="statusUpdated">-</span>
+      </p>
+
+      <button
+        id="cancelOrderBtn"
+        type="button">
+        Cancel Order
+      </button>
+
+      <p
+        id="accountMessage"
+        aria-live="polite">
+      </p>
+
+    </section>
+
+    <section class="panel" aria-labelledby="allOrdersHeading">
+      <h2 id="allOrdersHeading">All My Orders</h2>
+      <label for="studentOrderStatusFilter">Filter by status:</label>
+      <select id="studentOrderStatusFilter">
+        <option value="All">All statuses</option>
+      </select>
+      <p id="studentOrderCount" aria-live="polite"></p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Order #</th><th>Placed</th><th>Vendor</th><th>Total</th><th>Pickup</th><th>Status</th><th>Updated</th></tr></thead>
+          <tbody id="studentAllOrdersBody"></tbody>
+        </table>
+      </div>
+      <p id="studentOrdersEmpty" hidden>No orders match this filter.</p>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+
 </body>
 </html>
 
