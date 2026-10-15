@@ -1,67 +1,50 @@
-<!doctype html>
-<html lang="en">
+Campus FoodLink+ — IT Staff Admin Portal (Prototype)
+====================================================
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+Includes student order history and dietary manager reporting from the previous combined package.
 
-  <title>Order Confirmation</title>
+DEPLOYMENT
+Upload all files in this package to the root of your Campus-FoodLink GitHub repository.
+IMPORTANT: Keep any separately installed test-logger.js/test.js and its HTML script references.
+If you have made further customizations, merge rather than blindly overwrite those changes.
 
-  <link rel="stylesheet" href="style.css">
-</head>
+IT DEMO LOGIN
+Username: ebrown
+Password: password
+After login the IT Staff account is directed to admin.html.
 
-<body data-page="confirmation">
+FEATURES
+- Search and edit existing student/staff demonstration accounts
+- Change username and reset a password (leave blank to keep the existing one)
+- Change staff role between Dietary Associate, Dietary Manager, and IT Staff
+- Activate/deactivate demo accounts; disabled accounts cannot log in
+- Prevent the currently logged-in IT staff account from deactivating itself or losing IT role
+- Export a local audit CSV showing changes without recording passwords
+- Existing order history and manager reporting remain included
 
-  <main class="wireframe confirmation">
+TEST STEPS
+1. Log in as ebrown / password and confirm IT portal opens.
+2. Edit a test account's username, save, sign out and try the new username.
+3. Reset a test password (8+ characters) and verify old credentials fail.
+4. Deactivate a test account and confirm login is denied; reactivate it.
+5. Verify Dietary Manager reports remain accessible to lhobbs.
+6. Verify students can still see all orders and filter by status.
+7. Export audit CSV and capture evidence for Unit 8.
+8. Repeat in Chrome and Edge. Changes are local to each browser.
 
-    <h1>Campus FoodLink+</h1>
+LIMITATIONS / SECURITY
+This is a STATIC GitHub Pages prototype, not secure account administration.
+Credentials are stored as plaintext in browser localStorage; any user with browser
+developer tools can tamper with roles or data. Do not use real credentials or personal
+information. Changes do not synchronize between devices and are lost on demo reset.
+A real production version requires server-side identity management, salted password
+hashing, authenticated sessions, server-enforced RBAC, protected audit logs and MySQL.
 
-    <h2>Order Confirmation</h2>
-
-    <p>
-      Order #<b id="confirmOrder"></b> was successfully submitted.
-    </p>
-
-    <div class="order-summary">
-
-      <p>
-        Vendor:
-        <b id="confirmVendor"></b>
-      </p>
-
-      <p>
-        Status:
-        <b id="confirmStatus"></b>
-      </p>
-
-      <p>
-        Pickup:
-        <b id="confirmPickup"></b>
-      </p>
-
-      <p>
-        Total:
-        $<b id="confirmTotal"></b>
-      </p>
-
-    </div>
-
-    <div class="confirm-actions">
-
-      <a class="button" href="account.html">
-        Return to Dashboard
-      </a>
-
-      <button id="logoutBtn" type="button">
-        Logout
-      </button>
-
-    </div>
-
-  </main>
-
-  <script src="app.js"></script>
-
-</body>
-</html>
-
+ADD AND REMOVE ACCOUNTS
+- IT Staff can create student and staff demo accounts using Add New Account.
+- New students begin with a $0.00 meal-plan balance.
+- Remove requires confirmation. Accounts with related orders or status records cannot
+  be removed; deactivate them to preserve order and transaction history.
+- You cannot remove your own IT account.
+- Account creation and removal are recorded in the local administrative audit log.
+- This remains an insecure browser-only demonstration. Do not use real passwords.

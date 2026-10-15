@@ -5,159 +5,58 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Student Dashboard</title>
+  <title>Order Confirmation</title>
 
   <link rel="stylesheet" href="style.css">
 </head>
 
-<body data-page="account">
+<body data-page="confirmation">
 
-  <main class="wireframe">
+  <main class="wireframe confirmation">
 
-    <header>
+    <h1>Campus FoodLink+</h1>
 
-      <b>Campus FoodLink+</b>
+    <h2>Order Confirmation</h2>
 
-      <nav class="student-nav" aria-label="Student navigation">
+    <p>
+      Order #<b id="confirmOrder"></b> was successfully submitted.
+    </p>
 
-        <a
-          href="menu.html"
-          class="header-button">
-          Place Order
-        </a>
-
-        <button
-          id="studentLogoutBtn"
-          class="header-button"
-          type="button">
-          Logout
-        </button>
-
-      </nav>
-
-    </header>
-
-
-    <section class="panel">
-
-      <h2>Student Account</h2>
-
-      <p>
-        Name:
-        <b id="studentName"></b>
-      </p>
-
-      <p>
-        Email:
-        <span id="studentEmail"></span>
-      </p>
-
-      <p>
-        Meal Plan Balance:
-        $<span id="balance"></span>
-      </p>
-
-
-      <!-- =====================================================
-           ADD FUNDS
-           ===================================================== -->
-
-      <div class="funds-section">
-
-        <h3>Add Funds</h3>
-
-        <p>
-          Add funds to your meal-plan balance.
-        </p>
-
-        <label for="fundAmount">
-          Amount:
-        </label>
-
-        <input
-          type="number"
-          id="fundAmount"
-          min="0.01"
-          max="500"
-          step="0.01"
-          placeholder="Amount">
-
-        <button
-          id="addFundsBtn"
-          type="button">
-          Add Funds
-        </button>
-
-        <p
-          id="fundMessage"
-          aria-live="polite">
-        </p>
-
-      </div>
-
-
-      <button
-        id="returnStaffBtn"
-        type="button"
-        hidden>
-        Return to Staff Dashboard
-      </button>
-
-    </section>
-
-
-    <section class="panel">
-
-      <h2>Latest Order</h2>
-
-      <p>
-        Order #:
-        <b id="orderId">-</b>
-      </p>
+    <div class="order-summary">
 
       <p>
         Vendor:
-        <span id="orderVendor">-</span>
+        <b id="confirmVendor"></b>
       </p>
 
       <p>
         Status:
-        <b id="orderStatus">-</b>
+        <b id="confirmStatus"></b>
       </p>
 
       <p>
-        Last Updated:
-        <span id="statusUpdated">-</span>
+        Pickup:
+        <b id="confirmPickup"></b>
       </p>
 
-      <button
-        id="cancelOrderBtn"
-        type="button">
-        Cancel Order
+      <p>
+        Total:
+        $<b id="confirmTotal"></b>
+      </p>
+
+    </div>
+
+    <div class="confirm-actions">
+
+      <a class="button" href="account.html">
+        Return to Dashboard
+      </a>
+
+      <button id="logoutBtn" type="button">
+        Logout
       </button>
 
-      <p
-        id="accountMessage"
-        aria-live="polite">
-      </p>
-
-    </section>
-
-    <section class="panel" aria-labelledby="allOrdersHeading">
-      <h2 id="allOrdersHeading">All My Orders</h2>
-      <label for="studentOrderStatusFilter">Filter by status:</label>
-      <select id="studentOrderStatusFilter">
-        <option value="All">All statuses</option>
-      </select>
-      <p id="studentOrderCount" aria-live="polite"></p>
-      <div class="table-wrapper">
-        <table>
-          <thead><tr><th>Order #</th><th>Placed</th><th>Vendor</th><th>Total</th><th>Pickup</th><th>Status</th><th>Updated</th></tr></thead>
-          <tbody id="studentAllOrdersBody"></tbody>
-        </table>
-      </div>
-      <p id="studentOrdersEmpty" hidden>No orders match this filter.</p>
-    </section>
+    </div>
 
   </main>
 
