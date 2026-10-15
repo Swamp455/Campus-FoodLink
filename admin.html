@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Campus FoodLink+ | IT Administration</title><link rel="stylesheet" href="style.css"></head>
+<body data-page="admin"><main class="wireframe admin-page">
+<header class="admin-header"><div><h1>Campus FoodLink+ IT Administration</h1><p>Demonstration account management · Browser-only</p></div><button type="button" id="adminLogout">Log Out</button></header>
+<section class="panel"><h2>Account Directory</h2><label for="adminSearch">Search by name, username or role</label>
+<input id="adminSearch" type="search" placeholder="Search accounts">
+<div class="table-wrapper"><table><thead><tr><th>Username</th><th>Name</th><th>Role</th><th>Status</th><th>Action</th></tr></thead><tbody id="adminAccounts"></tbody></table></div></section>
+<section class="panel"><h2>Edit Account</h2><p id="adminSelection">Select an account above to edit.</p>
+<form id="adminForm"><input id="adminSelected" type="hidden">
+<div class="admin-grid"><label>Account type<input id="adminType" readonly></label>
+<label>Username<input id="adminLogin" required minlength="3" maxlength="32" autocomplete="off"></label>
+<label>New Password (optional)<input id="adminPassword" type="password" minlength="8" autocomplete="new-password" placeholder="Leave blank to keep existing"></label>
+<label>Role<select id="adminRole"><option>Student</option><option>Dietary Associate</option><option>Dietary Manager</option><option>IT Staff</option></select></label></div>
+<label class="admin-check"><input type="checkbox" id="adminActive"> Account active</label>
+<button type="submit">Save Account Changes</button><p id="adminMessage" role="status" aria-live="polite"></p></form></section>
+<section class="panel"><div class="admin-header"><h2>Administrative Activity</h2><button type="button" id="adminAuditExport">Export Audit CSV</button></div>
+<div class="table-wrapper"><table><thead><tr><th>Time</th><th>Action</th><th>Username</th><th>Changes</th></tr></thead><tbody id="adminAudit"></tbody></table></div></section>
+<p class="hint">Prototype only: passwords and roles are stored in localStorage. This is not a secure production administration system.</p>
+</main><script src="app.js"></script></body></html>

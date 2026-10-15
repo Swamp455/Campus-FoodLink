@@ -268,6 +268,11 @@ function loginInit(db){
      x.password===p
    );
 
+  const linkedStaff=a && a.account_type!=="Student" ? byId(db.Staff,"staff_id",a.record_id) : null;
+  if(a && ((linkedStaff && linkedStaff.is_active===false) || (a.account_type==="Student" && a.is_active===false))){
+   err.textContent="This account is inactive. Contact IT staff.";
+   return;
+  }
   if(!a){
 
    err.textContent=
@@ -318,7 +323,11 @@ function loginInit(db){
   }
 
 
-  location.href="orders.html";
+  if(linkedStaff && String(linkedStaff.role).toLowerCase()==="it staff" && a.account_type!=="Professor Demo"){
+   location.href="admin.html";
+  }else{
+   location.href="orders.html";
+  }
  }
 }
 
@@ -2368,6 +2377,113 @@ function ordersInit(db){
 }
 
 
+
+/* =========================================================
+   IT ADMIN PORTAL (BROWSER-ONLY DEMONSTRATION)
+   ========================================================= */
+function adminInit(db){
+ if(!guard("staff"))return;
+ const staff=currentStaff(db);
+ if(!staff || staff.is_active===false || String(staff.role).trim().toLowerCase()!=="it staff"
+    || sessionStorage.getItem("cflProfessorDemo")==="true"){
+  location.replace("index.html");return;
+ }
+ const tbody=document.getElementById("adminAccounts");
+ const notice=document.getElementById("adminMessage");
+ const audit=document.getElementById("adminAudit");
+ const form=document.getElementById("adminForm");
+ const selected=document.getElementById("adminSelected");
+ const login=document.getElementById("adminLogin");
+ const password=document.getElementById("adminPassword");
+ const role=document.getElementById("adminRole");
+ const active=document.getElementById("adminActive");
+ const type=document.getElementById("adminType");
+ const search=document.getElementById("adminSearch");
+ const accounts=()=>db.DemoAccounts.filter(a=>a.account_type!=="Professor Demo");
+ const person=a=>a.account_type==="Student"
+  ?byId(db.Students,"student_id",a.record_id)
+  :byId(db.Staff,"staff_id",a.record_id);
+ const label=a=>{const x=person(a);return x?`${x.first_name} ${x.last_name}`:"Unknown user";};
+ const status=a=>a.account_type==="Student"?"Student":person(a)?.role||"Staff";
+ const isActive=a=>a.account_type==="Student" ? a.is_active!==false : person(a)?.is_active!==false;
+ const logs=()=>read("CFLAdminAudit",[]);
+ const log=(action,username,detail)=>{
+  const entries=logs();
+  entries.push({timestamp:new Date().toISOString(),actor:staff.staff_id,action,username,detail});
+  localStorage.setItem("CFLAdminAudit",JSON.stringify(entries.slice(-300)));
+  renderAudit();
+ };
+ const message=(txt)=>notice.textContent=txt;
+ function renderAudit(){
+  audit.replaceChildren();
+  logs().slice(-15).reverse().forEach(e=>{
+   const tr=audit.insertRow();
+   [new Date(e.timestamp).toLocaleString(),e.action,e.username,e.detail].forEach(v=>tr.insertCell().textContent=v);
+  });
+ }
+ function render(){
+  tbody.replaceChildren();
+  const q=search.value.trim().toLowerCase();
+  accounts().filter(a=>[a.login,label(a),status(a)].some(v=>String(v).toLowerCase().includes(q))).forEach(a=>{
+   const tr=tbody.insertRow();
+   [a.login,label(a),status(a),isActive(a)?"Active":"Inactive"].forEach(v=>tr.insertCell().textContent=v);
+   const td=tr.insertCell(),button=document.createElement("button");
+   button.type="button";button.textContent="Edit";button.onclick=()=>choose(a);
+   td.append(button);
+  });
+ }
+ function choose(a){
+  selected.value=a.login;
+  login.value=a.login;
+  password.value="";
+  type.value=a.account_type;
+  role.value=a.account_type==="Student"?"Student":status(a);
+  role.disabled=a.account_type==="Student";
+  active.checked=isActive(a);
+  document.getElementById("adminSelection").textContent=`Editing ${label(a)} (${a.login})`;
+  message("Leave New Password blank to keep the current password.");
+ }
+ form.onsubmit=e=>{
+  e.preventDefault();
+  const original=accounts().find(a=>a.login===selected.value);
+  if(!original){message("Select an account first.");return;}
+  const newLogin=login.value.trim().toLowerCase();
+  if(!/^[a-z0-9._-]{3,32}$/.test(newLogin)){message("Username must be 3–32 letters, digits, dots, underscores, or hyphens.");return;}
+  if(db.DemoAccounts.some(a=>a!==original && a.login.toLowerCase()===newLogin)){
+   message("Username is already in use.");return;
+  }
+  if(password.value && password.value.length<8){message("New password must be at least 8 characters.");return;}
+  if(original.record_id===staff.staff_id && original.account_type!=="Student" &&
+      (!active.checked || role.value!=="IT Staff")){
+   message("You cannot deactivate or remove your own IT Staff role.");return;
+  }
+  const before={login:original.login,role:status(original),active:isActive(original)};
+  original.login=newLogin;
+  if(password.value)original.password=password.value;
+  if(original.account_type==="Student"){
+   original.is_active=active.checked;
+  }else{
+   const x=person(original);
+   x.role=role.value;x.is_active=active.checked;
+  }
+  saveDB(db);
+  log("ACCOUNT_UPDATE",newLogin,`Login ${before.login} → ${newLogin}; role ${before.role} → ${status(original)}; active ${before.active} → ${active.checked}; password ${password.value?"reset":"unchanged"}`);
+  password.value="";
+  selected.value=newLogin;
+  render();message("Demo account updated in this browser.");
+ };
+ search.oninput=render;
+ document.getElementById("adminLogout").onclick=()=>{sessionStorage.clear();location.href="index.html";};
+ document.getElementById("adminAuditExport").onclick=()=>{
+  const rows=[["Timestamp","Actor staff ID","Action","Username","Detail"],...logs().map(e=>[e.timestamp,e.actor,e.action,e.username,e.detail])];
+  const csv=rows.map(row=>row.map(x=>'"'+String(x).replaceAll('"','""')+'"').join(",")).join("\r\n");
+  const url=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
+  const a=document.createElement("a");a.href=url;a.download="CampusFoodLink_Admin_Audit.csv";a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+ };
+ render();renderAudit();
+}
+
 /* =========================================================
    APPLICATION STARTUP AND PAGE ROUTING
    ========================================================= */
@@ -2396,7 +2512,10 @@ document.addEventListener(
     confirmationInit,
 
    orders:
-    ordersInit
+    ordersInit,
+
+   admin:
+    adminInit
 
   }[
    document.body.dataset.page

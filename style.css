@@ -539,3 +539,16 @@ code {
 #studentAllOrdersBody td { white-space: nowrap; }
 
 .report-controls{display:flex;flex-wrap:wrap;align-items:end;gap:12px;margin:16px 0}.report-controls label{display:flex;flex-direction:column;gap:4px}.report-controls input,.report-controls button{padding:8px}.report-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;margin:18px 0}.report-cards>div{background:#f1f4f5;border:1px solid #d6dfe2;border-radius:6px;padding:16px;display:flex;flex-direction:column;gap:8px}.report-cards strong{font-size:1.5rem}.report-cards span{font-size:.9rem}#reportsSection h3{margin-top:20px}
+
+/* IT administration portal */
+.admin-page{width:min(1150px,96vw);padding:24px;min-height:80vh}
+.admin-header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.admin-page .panel{padding:20px;margin:18px 0;background:#fff;border:1px solid #d6dfe2;border-radius:8px}
+.admin-page .table-wrapper{overflow-x:auto;margin-top:12px}
+.admin-page table{width:100%;border-collapse:collapse}
+.admin-page th,.admin-page td{text-align:left;border-bottom:1px solid #d6dfe2;padding:10px}
+.admin-page .admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.admin-page .admin-grid label{display:flex;flex-direction:column;gap:6px}
+.admin-page input:not([type=checkbox]),.admin-page select{max-width:100%;padding:9px;border:1px solid #9ca7b0;border-radius:4px}
+.admin-page button{padding:9px 13px;cursor:pointer}
+.admin-page .admin-check{display:flex;gap:8px;align-items:center;margin:16px 0}

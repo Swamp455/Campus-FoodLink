@@ -1,71 +1,41 @@
-Campus FoodLink+ — Student Order History and Dietary Manager Reports
-====================================================================
+Campus FoodLink+ — IT Staff Admin Portal (Prototype)
+====================================================
 
-OVERVIEW
---------
-This README combines the installation notes for the Student Order History
-update and the Dietary Manager Reports dashboard.
+Includes student order history and dietary manager reporting from the previous combined package.
 
-1. STUDENT ORDER HISTORY
-------------------------
-The Student Dashboard displays an "All My Orders" section with a status
-filter. Orders appear newest first and are limited to the signed-in student
-ID. Each order's status is taken from the latest OrderStatus history entry.
+DEPLOYMENT
+Upload all files in this package to the root of your Campus-FoodLink GitHub repository.
+IMPORTANT: Keep any separately installed test-logger.js/test.js and its HTML script references.
+If you have made further customizations, merge rather than blindly overwrite those changes.
 
-The existing Latest Order panel and Cancel Order button remain available.
+IT DEMO LOGIN
+Username: ebrown
+Password: password
+After login the IT Staff account is directed to admin.html.
 
-Files involved:
-- account.html
-- app.js
-- style.css
+FEATURES
+- Search and edit existing student/staff demonstration accounts
+- Change username and reset a password (leave blank to keep the existing one)
+- Change staff role between Dietary Associate, Dietary Manager, and IT Staff
+- Activate/deactivate demo accounts; disabled accounts cannot log in
+- Prevent the currently logged-in IT staff account from deactivating itself or losing IT role
+- Export a local audit CSV showing changes without recording passwords
+- Existing order history and manager reporting remain included
 
-2. DIETARY MANAGER REPORTS
---------------------------
-Dietary managers can open the "Manager Reports" dashboard to view reports
-based on the prototype's stored order data.
+TEST STEPS
+1. Log in as ebrown / password and confirm IT portal opens.
+2. Edit a test account's username, save, sign out and try the new username.
+3. Reset a test password (8+ characters) and verify old credentials fail.
+4. Deactivate a test account and confirm login is denied; reactivate it.
+5. Verify Dietary Manager reports remain accessible to lhobbs.
+6. Verify students can still see all orders and filter by status.
+7. Export audit CSV and capture evidence for Unit 8.
+8. Repeat in Chrome and Edge. Changes are local to each browser.
 
-Demo login: lhobbs / password (demonstration credentials only)
-After logging in, click "Manager Reports".
-
-Create student orders in the same browser to populate the reports. Date
-filtering uses the order creation date. The "Export CSV" feature exports
-the manager report.
-
-Files involved:
-- orders.html
-- app.js
-- style.css
-
-3. DEPLOYMENT TO GITHUB PAGES
------------------------------
-Upload the updated files to the same directory in your GitHub repository:
-- account.html
-- orders.html
-- app.js
-- style.css
-
-IMPORTANT: Both updates modify app.js and style.css. Use versions that
-contain BOTH sets of changes. Do not upload one update's app.js or style.css
-over the other update's versions, as that may remove functionality.
-
-Other application files do not need to be replaced for these two features.
-If you have installed a test logger, preserve its JavaScript file and all
-existing script references in the HTML pages. The original update packages
-were based on the previously uploaded source files, not the logging add-on.
-
-4. PROTOTYPE LIMITATIONS
-------------------------
-- Data is stored in the browser's localStorage, not on a server or in MySQL.
-- Orders from other browsers or devices will not automatically synchronize.
-- Reports reflect orders stored in the same browser environment.
-- Client-side role controls are for demonstration only and do not provide
-  production-level security.
-
-5. SUGGESTED VERIFICATION
--------------------------
-- Sign in as a student and confirm all of that student's orders appear,
-  newest first, with working status filters.
-- Confirm the Latest Order and cancellation functions still work.
-- Sign in as a dietary manager, open Manager Reports, and check the date
-  filter and CSV export.
-- Confirm the existing test logger still loads and records events.
+LIMITATIONS / SECURITY
+This is a STATIC GitHub Pages prototype, not secure account administration.
+Credentials are stored as plaintext in browser localStorage; any user with browser
+developer tools can tamper with roles or data. Do not use real credentials or personal
+information. Changes do not synchronize between devices and are lost on demo reset.
+A real production version requires server-side identity management, salted password
+hashing, authenticated sessions, server-enforced RBAC, protected audit logs and MySQL.
