@@ -29,6 +29,8 @@
           Menu Availability
         </button>
 
+        <button id="showReportsBtn" type="button" hidden>Manager Reports</button>
+
         <button id="studentDemoBtn" type="button" hidden>
           Student Demo
         </button>
@@ -142,10 +144,17 @@
 
     </section>
 
-  </main>
+  <section id="reportsSection" class="panel" hidden>
+<h2>Dietary Manager Reports</h2><p>Reports use orders stored in this browser, not a live MySQL database.</p>
+<div class="report-controls"><label>From <input id="reportFrom" type="date"></label><label>To <input id="reportTo" type="date"></label><button id="reportApplyBtn" type="button">Apply</button><button id="reportClearBtn" type="button">Clear Dates</button><button id="reportExportBtn" type="button">Export CSV</button></div><p id="reportMessage" aria-live="polite"></p>
+<div class="report-cards"><div><strong id="reportOrders">0</strong><span>Total Orders</span></div><div><strong id="reportSales">$0.00</strong><span>Order Value (non-cancelled)</span></div><div><strong id="reportAvg">$0.00</strong><span>Average Order Value</span></div><div><strong id="reportCancelled">0</strong><span>Cancelled Orders</span></div></div>
+<h3>Orders by Status</h3><div class="table-wrapper"><table><thead><tr><th>Status</th><th>Orders</th></tr></thead><tbody id="reportStatusBody"></tbody></table></div>
+<h3>Orders by Vendor</h3><div class="table-wrapper"><table><thead><tr><th>Vendor</th><th>Orders</th><th>Order Value</th></tr></thead><tbody id="reportVendorBody"></tbody></table></div>
+<h3>Popular Menu Items</h3><div class="table-wrapper"><table><thead><tr><th>Item</th><th>Quantity</th><th>Item Value</th></tr></thead><tbody id="reportItemsBody"></tbody></table></div>
+</section>
+</main>
 
   <script src="app.js"></script>
-  <script src="test-logger.js"></script>
 
 </body>
 </html>

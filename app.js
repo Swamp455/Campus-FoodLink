@@ -1666,6 +1666,35 @@ function ordersInit(db){
   st.role;
 
 
+
+ const managerBtn=document.getElementById("showReportsBtn");
+ const reportsSection=document.getElementById("reportsSection");
+ const isManager=String(st.role).trim().toLowerCase()==="dietary manager";
+ if(isManager){
+  managerBtn.hidden=false;
+  managerBtn.onclick=()=>{document.getElementById("ordersSection").hidden=true;document.getElementById("menuSection").hidden=true;reportsSection.hidden=false;drawManagerReports();};
+  document.getElementById("reportApplyBtn").onclick=drawManagerReports;
+  document.getElementById("reportClearBtn").onclick=()=>{document.getElementById("reportFrom").value="";document.getElementById("reportTo").value="";drawManagerReports();};
+  document.getElementById("reportExportBtn").onclick=exportManagerReport;
+ }
+ const money=n=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(n);
+ function managerData(){
+  const from=document.getElementById("reportFrom").value,to=document.getElementById("reportTo").value;
+  const orders=db.Orders.filter(o=>{const raw=o.order_date||o.created_at||o.ordered_at||o.order_datetime;const date=raw?new Date(raw):null;if((from||to)&&(!date||isNaN(date)))return false;const day=date?date.toISOString().slice(0,10):"";return (!from||day>=from)&&(!to||day<=to);});
+  const statuses=new Map(),vendors=new Map(),items=new Map();let sales=0,cancelled=0,active=0;
+  orders.forEach(o=>{
+   const status=latestStatus(db,o.order_id)?.status_name||"Unknown";
+   statuses.set(status,(statuses.get(status)||0)+1);
+   const cancel=/^cancel(l)?ed$/i.test(status);if(cancel)cancelled++;
+   const amount=Number(o.total_amount??o.total_price??o.total??0)||0;
+   const vendor=byId(db.Vendors,"vendor_id",o.vendor_id)?.vendor_name||"Unknown";
+   const v=vendors.get(vendor)||{count:0,sales:0};v.count++;if(!cancel){sales+=amount;active++;v.sales+=amount;}vendors.set(vendor,v);
+   if(!cancel)db.OrderItems.filter(i=>Number(i.order_id)===Number(o.order_id)).forEach(i=>{const item=byId(db.MenuItems,"menu_item_id",i.menu_item_id);const name=item?.item_name||"Unknown";const qty=Number(i.quantity)||0;const price=Number(i.unit_price??i.price_at_order??item?.price??0)||0;const v=items.get(name)||{qty:0,sales:0};v.qty+=qty;v.sales+=qty*price;items.set(name,v);});
+  });return {orders,statuses,vendors,items,sales,cancelled,active};
+ }
+ function fillReport(id,rows,cols){const body=document.getElementById(id);body.replaceChildren();if(!rows.length){const tr=body.insertRow(),td=tr.insertCell();td.colSpan=cols;td.textContent="No matching data";return;}rows.forEach(values=>{const tr=body.insertRow();values.forEach(v=>tr.insertCell().textContent=String(v));});}
+ function drawManagerReports(){if(!isManager)return;const from=document.getElementById("reportFrom").value,to=document.getElementById("reportTo").value;const message=document.getElementById("reportMessage");if(from&&to&&from>to){message.textContent="Start date cannot be after end date.";return;}message.textContent="Prototype data from this browser.";const r=managerData();document.getElementById("reportOrders").textContent=r.orders.length;document.getElementById("reportSales").textContent=money(r.sales);document.getElementById("reportAvg").textContent=money(r.active?r.sales/r.active:0);document.getElementById("reportCancelled").textContent=r.cancelled;fillReport("reportStatusBody",[...r.statuses].map(([name,n])=>[name,n]),2);fillReport("reportVendorBody",[...r.vendors].map(([name,v])=>[name,v.count,money(v.sales)]),3);fillReport("reportItemsBody",[...r.items].sort((a,b)=>b[1].qty-a[1].qty).map(([name,v])=>[name,v.qty,money(v.sales)]),3);}
+ function exportManagerReport(){if(!isManager)return;const from=document.getElementById("reportFrom").value,to=document.getElementById("reportTo").value;if(from&&to&&from>to)return;const r=managerData();const rows=[["Section","Name","Count","Value"],["Summary","Orders",r.orders.length,""],["Summary","Order Value","",r.sales.toFixed(2)],["Summary","Cancelled",r.cancelled,""]];r.statuses.forEach((n,k)=>rows.push(["Status",k,n,""]));r.vendors.forEach((v,k)=>rows.push(["Vendor",k,v.count,v.sales.toFixed(2)]));r.items.forEach((v,k)=>rows.push(["Item",k,v.qty,v.sales.toFixed(2)]));const csv=rows.map(row=>row.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(",")).join("\r\n");const url=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));const a=document.createElement("a");a.href=url;a.download="CampusFoodLink_Manager_Report.csv";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
  /* ---------------------------------------------------------
     PROFESSOR STUDENT DEMO
     --------------------------------------------------------- */
@@ -1753,6 +1782,7 @@ function ordersInit(db){
   os.hidden=false;
 
   ms.hidden=true;
+  reportsSection.hidden=true;
 
   drawOrders();
  };
@@ -1767,6 +1797,7 @@ function ordersInit(db){
   os.hidden=true;
 
   ms.hidden=false;
+  reportsSection.hidden=true;
 
   drawMenu();
  };

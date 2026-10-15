@@ -537,3 +537,5 @@ code {
 #studentOrderStatusFilter { margin: 8px 0 12px; min-width: 180px; }
 #studentOrderCount { color: #455a64; }
 #studentAllOrdersBody td { white-space: nowrap; }
+
+.report-controls{display:flex;flex-wrap:wrap;align-items:end;gap:12px;margin:16px 0}.report-controls label{display:flex;flex-direction:column;gap:4px}.report-controls input,.report-controls button{padding:8px}.report-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;margin:18px 0}.report-cards>div{background:#f1f4f5;border:1px solid #d6dfe2;border-radius:6px;padding:16px;display:flex;flex-direction:column;gap:8px}.report-cards strong{font-size:1.5rem}.report-cards span{font-size:.9rem}#reportsSection h3{margin-top:20px}
