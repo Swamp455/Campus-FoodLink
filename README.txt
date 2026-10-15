@@ -1,48 +1,9 @@
-Campus FoodLink+ — MySQL Schema-Matched Prototype
+Campus FoodLink+ student order history update
 
-This version is aligned to the eight supplied MySQL tables:
-1. Students
-2. Staff
-3. Vendors
-4. MenuItems
-5. Orders
-6. OrderItems
-7. OrderStatus
-8. Transactions
+Upload account.html, app.js, and style.css to the same directory on GitHub Pages. The other included files are unchanged originals.
 
-Important corrections:
-- Students uses meal_plan_balance.
-- Orders contains no status_id or handled_by.
-- OrderStatus is a history table linked by order_id and staff_id.
-- OrderItems includes total_price.
-- Orders uses special_instructions.
-- Transactions uses payment_method, meal_plan_used and transaction_status.
-- Menu management uses is_available only. inventory_quantity was removed because it is not in the supplied schema.
-- Status spelling is Cancelled.
-- DemoAccounts is prototype-only authentication data and is removed from the grading JSON export.
-- Add Funds was removed because the supplied Transactions table requires order_id NOT NULL and does not define deposit transactions.
+Student Dashboard now shows All My Orders with a status filter, sorted newest first. The Latest Order panel and cancellation button remain. Orders are filtered by the signed-in student ID, and statuses use the latest OrderStatus history entry.
 
-Demo accounts:
-Student: aleon / password
-Student: pparker / password
-Staff: dtoretto / password
-Manager: lhobbs / password
-IT: ebrown / password
-Professor demo: professor / demo
+This remains browser-local prototype data; orders from other browsers/devices will not automatically synchronize.
 
-Professor demo maps to staff_id 113 for demonstration purposes, then can switch to student_id 101.
-
-Export JSON:
-Use Export JSON on the Staff Dashboard. The downloaded file contains only the eight MySQL-shaped tables and omits DemoAccounts.
-
-Run through a local web server or GitHub Pages because apps.json is loaded with fetch().
-
-Peer-review fixes added:
-- Dynamic menu/order table data is rendered with textContent/createElement where practical.
-- Changing vendors warns before clearing a non-empty cart.
-- Pickup time must be in the future.
-- Per-item quantity is limited to 10 and validated again at order submission.
-- Insufficient-funds and unavailable-item failures keep the cart so the student can recover.
-- Special instructions are validated against the 255-character schema limit.
-- Staff cancellation restores meal-plan funds once and marks the existing transaction Cancelled.
-- Client-side demo authentication remains prototype-only; production authentication is later work.
+If you previously installed a test logger, keep its script and script references in your deployed files; this package is based on the original uploaded source files, not the logging add-on.

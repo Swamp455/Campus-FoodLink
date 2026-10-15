@@ -143,10 +143,26 @@
 
     </section>
 
+    <section class="panel" aria-labelledby="allOrdersHeading">
+      <h2 id="allOrdersHeading">All My Orders</h2>
+      <label for="studentOrderStatusFilter">Filter by status:</label>
+      <select id="studentOrderStatusFilter">
+        <option value="All">All statuses</option>
+      </select>
+      <p id="studentOrderCount" aria-live="polite"></p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Order #</th><th>Placed</th><th>Vendor</th><th>Total</th><th>Pickup</th><th>Status</th><th>Updated</th></tr></thead>
+          <tbody id="studentAllOrdersBody"></tbody>
+        </table>
+      </div>
+      <p id="studentOrdersEmpty" hidden>No orders match this filter.</p>
+    </section>
+
   </main>
 
   <script src="app.js"></script>
-  <script src="test-logger.js"></script>
 
 </body>
 </html>
+

@@ -35,21 +35,21 @@
       "is_active": true
     },
     {
-      "staff_id": 116,
-      "first_name": "Professor",
-      "last_name": "Demo",
-      "email_address": "pdemo@campus.edu",
-      "role": "IT Staff",
-      "is_active": true
-    }, 
-    {
       "staff_id": 115,
       "first_name": "Emmett",
       "last_name": "Brown",
       "email_address": "ebrown@campus.edu",
       "role": "IT Staff",
       "is_active": true
-    }
+    },
+   {
+      "staff_id": 116,
+      "first_name": "Professor",
+      "last_name": "Demo",
+      "email_address": "pdemo@campus.edu",
+      "role": "IT Staff",
+      "is_active": true
+   }
   ],
   "Vendors": [
     {
@@ -200,3 +200,4 @@
     }
   ]
 }
+

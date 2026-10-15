@@ -504,6 +504,50 @@ function accountInit(db){
   db.Orders.filter(
    x=>x.student_id===s.student_id
   );
+  // Student order history: current student only, latest status from OrderStatus.
+  const historyBody=document.getElementById("studentAllOrdersBody");
+  const statusFilter=document.getElementById("studentOrderStatusFilter");
+  const historyCount=document.getElementById("studentOrderCount");
+  const historyEmpty=document.getElementById("studentOrdersEmpty");
+  if(historyBody && statusFilter){
+    const orderRows=orders.map(order=>({
+      order,
+      status:latestStatus(db,order.order_id)
+    })).sort((a,b)=>new Date(b.order.order_date)-new Date(a.order.order_date) || Number(b.order.order_id)-Number(a.order.order_id));
+    const statuses=[...new Set(orderRows.map(row=>row.status?.status_name||"Pending"))].sort();
+    statuses.forEach(status=>{
+      const option=document.createElement("option");
+      option.value=status;
+      option.textContent=status;
+      statusFilter.appendChild(option);
+    });
+    const fmtDate=value=>{
+      if(!value)return "-";
+      const d=new Date(value);
+      return Number.isNaN(d.getTime())?"-":d.toLocaleString();
+    };
+    const renderHistory=()=>{
+      const selected=statusFilter.value;
+      const visible=orderRows.filter(row=>selected==="All" || (row.status?.status_name||"Pending")===selected);
+      historyBody.replaceChildren();
+      visible.forEach(({order,status})=>{
+        const vendor=byId(db.Vendors,"vendor_id",order.vendor_id);
+        const tr=document.createElement("tr");
+        [order.order_id,fmtDate(order.order_date),vendor?.vendor_name||"Unknown",
+         "$"+Number(order.total_amount||0).toFixed(2),fmtDate(order.pickup_time),
+         status?.status_name||"Pending",fmtDate(status?.updated_at)].forEach(value=>{
+          const td=document.createElement("td");td.textContent=String(value);tr.appendChild(td);
+        });
+        historyBody.appendChild(tr);
+      });
+      historyCount.textContent=`Showing ${visible.length} of ${orderRows.length} orders`;
+      historyEmpty.hidden=visible.length!==0;
+    };
+    statusFilter.addEventListener("change",renderHistory);
+    renderHistory();
+  }
+
+
 
  const o=orders.at(-1);
 
@@ -1293,7 +1337,9 @@ if (
   total > Number(s.meal_plan_balance)
 ) {
   orderMessage.textContent =
-    `Insufficient meal-plan funds. Order total is $${total.toFixed(2)} and available balance is $${Number(s.meal_plan_balance).toFixed(2)}. Remove an item, reduce the quantity, or return to your account to add funds and try again.`;
+    `Insufficient meal-plan funds. Order total is
+total.toFixed(2)andavailablebalanceis
+{Number(s.meal_plan_balance).toFixed(2)}. Remove an item, reduce the quantity, or return to your account to add funds and try again.`;
 
   return;
 }
@@ -2326,4 +2372,5 @@ document.addEventListener(
   ])?.(db);
  }
 );
+
 

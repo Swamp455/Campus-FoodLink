@@ -531,3 +531,9 @@ code {
   margin-top: 10px;
   font-weight: bold;
 }
+
+
+/* Student order history */
+#studentOrderStatusFilter { margin: 8px 0 12px; min-width: 180px; }
+#studentOrderCount { color: #455a64; }
+#studentAllOrdersBody td { white-space: nowrap; }
