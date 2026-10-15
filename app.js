@@ -882,6 +882,19 @@ function menuInit(db){
     box.className=
      "menu-item";
 
+    // Static menu imagery mapped by stable menu item ID; works with saved localStorage data.
+    const foodImagePaths={
+      991:"tuna-sandwich.jpg",992:"pizza.jpg",993:"roasted-green-beans.jpg",
+      994:"cheeseburger.jpg",995:"fries.jpg",996:"grilled-chicken-sandwich.jpg",
+      997:"turkey-club.jpg",998:"chicken-caesar-salad.jpg",999:"iced-coffee.jpg"
+    };
+    const foodPhoto=document.createElement("img");
+    foodPhoto.className="menu-food-image";
+    foodPhoto.src="images/food/"+(foodImagePaths[x.menu_item_id]||"food-placeholder.jpg");
+    foodPhoto.alt=x.item_name;
+    foodPhoto.loading="lazy";
+    foodPhoto.onerror=()=>{foodPhoto.onerror=null;foodPhoto.src="images/food/food-placeholder.jpg";};
+
 
     const info=
      document.createElement("div");
@@ -945,6 +958,7 @@ function menuInit(db){
 
 
     box.append(
+     foodPhoto,
      info,
      add
     );
