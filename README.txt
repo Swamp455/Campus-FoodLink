@@ -1,161 +1,120 @@
-<!doctype html>
-<html lang="en">
+Campus FoodLink+ — Combined Prototype README
+============================================
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+OVERVIEW
+--------
+This README combines the student order history, dietary manager reports,
+IT staff administration portal, and student menu food-image update notes.
+Campus FoodLink+ is a static GitHub Pages prototype using browser local storage
+for demonstration data. It is not connected to a live MySQL database.
 
-  <title>Staff Dashboard</title>
+DEPLOYMENT AND MERGING
+----------------------
+1. Upload the applicable updated application files to the root of the
+   Campus FoodLink GitHub repository. The updates reference:
+   - account.html: student order history
+   - orders.html: dietary manager reports
+   - admin.html: IT administration portal
+   - menu.html: student vendor menu display
+   - app.js and style.css: shared behavior and presentation
+2. Keep the images/food/ folder structure and image filenames unchanged.
+3. IMPORTANT: Several feature packages modify app.js and style.css. Do not
+   overwrite a newer version with an older feature package. Merge all features
+   into the same current versions of those files.
+4. Preserve any separately installed test-logger.js/test.js and its script
+   references in the HTML pages. The feature updates do not replace logging.
+5. Commit the changes to GitHub, reload GitHub Pages, and retest in Chrome
+   and Microsoft Edge.
 
-  <link rel="stylesheet" href="style.css">
-</head>
+STUDENT ORDER HISTORY
+---------------------
+The Student Dashboard (account.html) includes an All My Orders section with
+status filtering, newest orders first. The Latest Order panel and cancellation
+button remain. Orders are filtered by the signed-in student ID; the displayed
+status comes from the latest OrderStatus history entry.
 
-<body data-page="orders">
+DIETARY MANAGER REPORTS
+-----------------------
+Demo login: lhobbs / password
+Open orders.html and click Manager Reports. The report uses orders stored in
+the same browser. It supports date filtering based on order creation date and
+CSV export. Create demonstration student orders in the same browser to populate
+reports. These are prototype reports, not centralized MySQL reports.
 
-  <main class="wireframe">
+IT STAFF ADMINISTRATION PORTAL
+------------------------------
+Demo login: ebrown / password
+The IT Staff account opens admin.html.
 
-    <!-- Header -->
-    <header>
+Existing account management:
+- Search and edit student and staff demonstration accounts.
+- Change a username; reset a password by entering a new one, or leave the
+  password field blank to keep the existing password.
+- Change staff roles among Dietary Associate, Dietary Manager, and IT Staff.
+- Activate or deactivate demonstration accounts; inactive accounts cannot log in.
+- Prevent the signed-in IT administrator from deactivating their own account
+  or removing their own IT Staff role.
+- Export a local audit CSV without including passwords.
 
-      <b>Campus FoodLink+</b>
+Account creation and removal:
+- Add student or staff demonstration accounts using Add New Account.
+- Newly created student accounts start with a $0.00 meal-plan balance.
+- Removing an account requires confirmation. Accounts with related orders or
+  status records cannot be removed; deactivate them instead to preserve
+  historical order and transaction information.
+- An IT administrator cannot remove their own account.
+- Account creation and removal are recorded in the local audit log.
 
-      <nav aria-label="Staff navigation">
+STUDENT VENDOR MENU FOOD IMAGES
+-------------------------------
+Photos appear on the student vendor menu (menu.html). app.js associates each
+image with its MenuItems record using menu_item_id. A data reset is not needed.
+Keep the images/food/ directory intact when deploying.
 
-        <button id="showOrdersBtn" type="button">
-          Orders
-        </button>
+Menu item image mapping:
+  991  Tuna Sandwich          Text placeholder; replace with matching photo
+  992  Pizza                  Food photo
+  993  Roasted Green Beans    Text placeholder; replace with matching photo
+  994  Classic Cheeseburger   Food photo
+  995  Seasoned Fries         Food photo
+  996  Grilled Chicken Sandwich  Food photo
+  997  Turkey Club            Provisional generic chicken sandwich photo;
+                              replace with an accurate turkey club photo
+  998  Chicken Caesar Salad   Food photo
+  999  Iced Coffee            Provisional generic iced drink photo;
+                              replace with a coffee-specific photo
 
-        <button id="showMenuBtn" type="button">
-          Menu Availability
-        </button>
+Use the same filenames when replacing placeholder or provisional images.
 
-        <button id="showReportsBtn" type="button" hidden>Manager Reports</button>
+RECOMMENDED UNIT 8 TESTING
+--------------------------
+1. Log in as a student, create several orders, and verify All My Orders and
+   status filtering. Refresh the page and verify browser-local persistence.
+2. Log in as the dietary manager (lhobbs / password); open Manager Reports,
+   verify totals and date filters, and export the report CSV.
+3. Log in as IT staff (ebrown / password) and verify admin.html opens.
+4. Edit a test username, save, log out, and confirm the new username works.
+5. Reset a test password (at least eight characters) and verify the old
+   password no longer works.
+6. Deactivate and reactivate a test account; verify login behavior.
+7. Add a demonstration account and verify it can log in.
+8. Remove an eligible demonstration account; verify it is no longer available.
+   Confirm an account linked to historical orders is protected from deletion.
+9. Export the IT administrative audit CSV and capture test evidence.
+10. On the student vendor menu, switch vendors and confirm images correspond
+    to their menu items; check placeholders and provisional photos.
+11. Repeat key workflows in Google Chrome and Microsoft Edge. Each browser
+    has its own local storage data and may show different demonstration records.
 
-        <button id="studentDemoBtn" type="button" hidden>
-          Student Demo
-        </button>
-
-        <button id="exportDataBtn" type="button">
-          Export JSON
-        </button>
-
-        <button id="staffLogoutBtn" type="button">
-          Logout
-        </button>
-
-      </nav>
-
-    </header>
-
-
-    <!-- Staff Information -->
-    <section class="panel staff-welcome">
-
-      <p>
-        Hello,
-        <b id="staffName"></b>
-        —
-        <span id="staffRole"></span>
-      </p>
-
-    </section>
-
-
-    <!-- Orders -->
-    <section
-      id="ordersSection"
-      class="panel">
-
-      <h2>Orders</h2>
-
-      <div class="table-wrapper">
-
-        <table>
-
-          <thead>
-            <tr>
-              <th scope="col">Order #</th>
-              <th scope="col">Student</th>
-              <th scope="col">Vendor</th>
-              <th scope="col">Latest Status</th>
-              <th scope="col">Pickup</th>
-              <th scope="col">New Status</th>
-              <th scope="col">Details</th>
-            </tr>
-          </thead>
-
-          <tbody id="ordersBody">
-          </tbody>
-
-        </table>
-
-      </div>
-
-      <p
-        id="saveMessage"
-        aria-live="polite">
-      </p>
-
-    </section>
-
-
-    <!-- Menu Availability -->
-    <section
-      id="menuSection"
-      class="panel"
-      hidden>
-
-      <h2>Menu Availability</h2>
-
-      <p>
-        Menu availability corresponds to
-        <code>MenuItems.is_available</code>.
-        Quantity-based inventory is not included in the
-        current MySQL schema.
-      </p>
-
-      <div class="table-wrapper">
-
-        <table>
-
-          <thead>
-            <tr>
-              <th scope="col">ID</th>
-              <th scope="col">Vendor</th>
-              <th scope="col">Item</th>
-              <th scope="col">Category</th>
-              <th scope="col">Price</th>
-              <th scope="col">Available</th>
-              <th scope="col">Action</th>
-            </tr>
-          </thead>
-
-          <tbody id="menuAdminBody">
-          </tbody>
-
-        </table>
-
-      </div>
-
-      <p
-        id="menuMessage"
-        aria-live="polite">
-      </p>
-
-    </section>
-
-  <section id="reportsSection" class="panel" hidden>
-<h2>Dietary Manager Reports</h2><p>Reports use orders stored in this browser, not a live MySQL database.</p>
-<div class="report-controls"><label>From <input id="reportFrom" type="date"></label><label>To <input id="reportTo" type="date"></label><button id="reportApplyBtn" type="button">Apply</button><button id="reportClearBtn" type="button">Clear Dates</button><button id="reportExportBtn" type="button">Export CSV</button></div><p id="reportMessage" aria-live="polite"></p>
-<div class="report-cards"><div><strong id="reportOrders">0</strong><span>Total Orders</span></div><div><strong id="reportSales">$0.00</strong><span>Order Value (non-cancelled)</span></div><div><strong id="reportAvg">$0.00</strong><span>Average Order Value</span></div><div><strong id="reportCancelled">0</strong><span>Cancelled Orders</span></div></div>
-<h3>Orders by Status</h3><div class="table-wrapper"><table><thead><tr><th>Status</th><th>Orders</th></tr></thead><tbody id="reportStatusBody"></tbody></table></div>
-<h3>Orders by Vendor</h3><div class="table-wrapper"><table><thead><tr><th>Vendor</th><th>Orders</th><th>Order Value</th></tr></thead><tbody id="reportVendorBody"></tbody></table></div>
-<h3>Popular Menu Items</h3><div class="table-wrapper"><table><thead><tr><th>Item</th><th>Quantity</th><th>Item Value</th></tr></thead><tbody id="reportItemsBody"></tbody></table></div>
-</section>
-</main>
-
-  <script src="app.js"></script>
-
-</body>
-</html>
-
+PROTOTYPE LIMITATIONS AND SECURITY
+----------------------------------
+- Data and account changes are stored in browser local storage; they do not
+  automatically synchronize across browsers, devices, or users.
+- Demonstration credentials are stored as plaintext in local storage. Client-
+  side role checks can be manipulated using browser developer tools.
+- Never enter real passwords or sensitive personal information into this demo.
+- Resetting demonstration data can remove local account changes and orders.
+- This is not production-level authentication, authorization, or reporting.
+- A production deployment requires server-side identity management, salted
+  password hashing, authenticated sessions, server-enforced role-based access,
+  protected audit logging, and a centralized MySQL database.
