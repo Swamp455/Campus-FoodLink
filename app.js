@@ -2430,8 +2430,63 @@ function adminInit(db){
    const td=tr.insertCell(),button=document.createElement("button");
    button.type="button";button.textContent="Edit";button.onclick=()=>choose(a);
    td.append(button);
+   const remove=document.createElement("button");
+   remove.type="button";remove.textContent="Remove";remove.className="admin-remove";
+   remove.onclick=()=>removeAccount(a);
+   td.append(" ",remove);
   });
  }
+ function removeAccount(a){
+  if(a.account_type!=="Student" && Number(a.record_id)===Number(staff.staff_id)){
+   message("You cannot remove your own IT account.");return;
+  }
+  const record=person(a);
+  if(!record){message("Account record not found; removal cancelled.");return;}
+  if(!confirm(`Remove account ${a.login} (${label(a)})? This cannot be undone in this browser.`))return;
+  // Retain student and staff records referenced by orders, transactions or other records.
+  const id=Number(a.record_id);
+  const referenced=a.account_type==="Student"
+   ?db.Orders.some(o=>Number(o.student_id)===id)||db.Transactions.some(t=>Number(t.student_id)===id)
+   :db.Orders.some(o=>Number(o.handled_by)===id||Number(o.staff_id)===id)
+     ||db.OrderStatus.some(o=>Number(o.staff_id)===id||Number(o.updated_by)===id)
+     ||db.Transactions.some(t=>Number(t.staff_id)===id);
+  if(referenced){
+   message("This account has related records. Deactivate it instead to preserve order history.");return;
+  }
+  db.DemoAccounts.splice(db.DemoAccounts.indexOf(a),1);
+  const collection=a.account_type==="Student"?db.Students:db.Staff;
+  const ix=collection.indexOf(record);if(ix>=0)collection.splice(ix,1);
+  saveDB(db);
+  log("ACCOUNT_REMOVE",a.login,`Removed ${a.account_type} demo account without related records`);
+  if(selected.value===a.login){selected.value="";form.reset();document.getElementById("adminSelection").textContent="Select an account above to edit.";}
+  render();message("Account removed from this browser.");
+ }
+ const createForm=document.getElementById("adminCreateForm");
+ createForm.onsubmit=e=>{
+  e.preventDefault();
+  const username=document.getElementById("createLogin").value.trim().toLowerCase();
+  const pwd=document.getElementById("createPassword").value;
+  const first=document.getElementById("createFirst").value.trim();
+  const last=document.getElementById("createLast").value.trim();
+  const email=document.getElementById("createEmail").value.trim();
+  const newRole=document.getElementById("createRole").value;
+  const feedback=document.getElementById("createMessage");
+  if(!first||!last||!email){feedback.textContent="Name and email are required.";return;}
+  if(!/^[a-z0-9._-]{3,32}$/.test(username)){feedback.textContent="Username must be 3–32 letters, digits, dots, underscores, or hyphens.";return;}
+  if(db.DemoAccounts.some(a=>a.login.toLowerCase()===username)){feedback.textContent="Username already exists.";return;}
+  if(pwd.length<8){feedback.textContent="Password must be at least 8 characters.";return;}
+  if([...db.Students,...db.Staff].some(a=>String(a.email_address||"").toLowerCase()===email.toLowerCase())){
+   feedback.textContent="Email address is already assigned to an account.";return;
+  }
+  const student=newRole==="Student";
+  const recordId=student?next(db.Students,"student_id",101):next(db.Staff,"staff_id",113);
+  if(student){db.Students.push({student_id:recordId,first_name:first,last_name:last,email_address:email,phone_number:"",meal_plan_balance:0});}
+  else{db.Staff.push({staff_id:recordId,first_name:first,last_name:last,email_address:email,role:newRole,is_active:true});}
+  db.DemoAccounts.push({login:username,password:pwd,account_type:student?"Student":"Staff",record_id:recordId,is_active:true});
+  saveDB(db);
+  log("ACCOUNT_CREATE",username,`Created ${newRole} demonstration account (ID ${recordId})`);
+  createForm.reset();render();feedback.textContent=`Account ${username} created. It can now sign in on this browser.`;
+ };
  function choose(a){
   selected.value=a.login;
   login.value=a.login;

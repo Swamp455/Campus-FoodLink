@@ -552,3 +552,5 @@ code {
 .admin-page input:not([type=checkbox]),.admin-page select{max-width:100%;padding:9px;border:1px solid #9ca7b0;border-radius:4px}
 .admin-page button{padding:9px 13px;cursor:pointer}
 .admin-page .admin-check{display:flex;gap:8px;align-items:center;margin:16px 0}
+
+.admin-page .admin-remove{background:#fff2f2;border:1px solid #b42318;color:#8b1e16;border-radius:4px}

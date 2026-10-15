@@ -39,3 +39,12 @@ developer tools can tamper with roles or data. Do not use real credentials or pe
 information. Changes do not synchronize between devices and are lost on demo reset.
 A real production version requires server-side identity management, salted password
 hashing, authenticated sessions, server-enforced RBAC, protected audit logs and MySQL.
+
+ADD AND REMOVE ACCOUNTS
+- IT Staff can create student and staff demo accounts using Add New Account.
+- New students begin with a $0.00 meal-plan balance.
+- Remove requires confirmation. Accounts with related orders or status records cannot
+  be removed; deactivate them to preserve order and transaction history.
+- You cannot remove your own IT account.
+- Account creation and removal are recorded in the local administrative audit log.
+- This remains an insecure browser-only demonstration. Do not use real passwords.

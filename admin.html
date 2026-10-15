@@ -6,6 +6,15 @@
 <section class="panel"><h2>Account Directory</h2><label for="adminSearch">Search by name, username or role</label>
 <input id="adminSearch" type="search" placeholder="Search accounts">
 <div class="table-wrapper"><table><thead><tr><th>Username</th><th>Name</th><th>Role</th><th>Status</th><th>Action</th></tr></thead><tbody id="adminAccounts"></tbody></table></div></section>
+<section class="panel"><h2>Add New Account</h2>
+<form id="adminCreateForm"><div class="admin-grid">
+<label>First Name<input id="createFirst" required maxlength="60"></label>
+<label>Last Name<input id="createLast" required maxlength="60"></label>
+<label>Email<input id="createEmail" type="email" required maxlength="150"></label>
+<label>Username<input id="createLogin" required minlength="3" maxlength="32" autocomplete="off"></label>
+<label>Password<input id="createPassword" type="password" required minlength="8" autocomplete="new-password"></label>
+<label>Account Role<select id="createRole"><option>Student</option><option>Dietary Associate</option><option>Dietary Manager</option><option>IT Staff</option></select></label>
+</div><button type="submit">Create Account</button><p id="createMessage" role="status" aria-live="polite"></p></form></section>
 <section class="panel"><h2>Edit Account</h2><p id="adminSelection">Select an account above to edit.</p>
 <form id="adminForm"><input id="adminSelected" type="hidden">
 <div class="admin-grid"><label>Account type<input id="adminType" readonly></label>
