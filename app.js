@@ -276,7 +276,7 @@ function loginInit(db){
   if(!a){
 
    err.textContent=
-    "Invalid username or password.";
+    "Invalid demo username or password.";
 
    return;
   }
@@ -2400,6 +2400,24 @@ function adminInit(db){
  const active=document.getElementById("adminActive");
  const type=document.getElementById("adminType");
  const search=document.getElementById("adminSearch");
+ const editDialog=document.getElementById("adminEditDialog");
+ const removeDialog=document.getElementById("adminRemoveDialog");
+ const removeSummary=document.getElementById("adminRemoveSummary");
+ const removeWarning=document.getElementById("adminRemoveWarning");
+ const closeEdit=()=>editDialog.close();
+ document.getElementById("adminEditClose").onclick=closeEdit;
+ document.getElementById("adminRemoveClose").onclick=()=>removeDialog.close();
+ document.getElementById("adminRemoveCancel").onclick=()=>removeDialog.close();
+ // Keep the current selection inside the confirmation, never a stale row reference.
+ let pendingRemoval=null;
+ document.getElementById("adminRemoveConfirm").onclick=()=>{
+  if(!pendingRemoval)return;
+  const account=pendingRemoval;
+  pendingRemoval=null;
+  removeDialog.close();
+  executeRemoval(account);
+ };
+
  const accounts=()=>db.DemoAccounts.filter(a=>a.account_type!=="Professor Demo");
  const person=a=>a.account_type==="Student"
   ?byId(db.Students,"student_id",a.record_id)
@@ -2441,6 +2459,28 @@ function adminInit(db){
   });
  }
  function removeAccount(a){
+  const current=accounts().find(x=>x===a);
+  if(!current){message("Account no longer exists.");return;}
+  if(a.account_type!=="Student" && Number(a.record_id)===Number(staff.staff_id)){
+   message("You cannot remove your own IT account.");return;
+  }
+  const id=Number(a.record_id);
+  if(a.account_type==="Student"){
+   const activeOrders=db.Orders.filter(o=>Number(o.student_id)===id).filter(o=>{
+    const currentStatus=latestStatus(db,o.order_id);
+    return ["pending","approved","ready"].includes(String(currentStatus?.status_name||"Pending").trim().toLowerCase());
+   });
+   if(activeOrders.length){
+    message(`Cannot delete account with active orders (${activeOrders.length}). Pending, approved, or ready orders must be completed or cancelled first.`);
+    return;
+   }
+  }
+  pendingRemoval=a;
+  removeSummary.textContent=`Account: ${label(a)} | Username: ${a.login} | Role: ${status(a)} | Status: ${isActive(a)?"Active":"Inactive"}`;
+  removeWarning.textContent="This action cannot be undone for accounts without related records. Accounts with historical orders or transactions will be deactivated instead, preserving history.";
+  removeDialog.showModal();
+ }
+ function executeRemoval(a){
   if(a.account_type!=="Student" && Number(a.record_id)===Number(staff.staff_id)){
    message("You cannot remove your own IT account.");return;
   }
@@ -2458,7 +2498,6 @@ function adminInit(db){
     return;
    }
   }
-  if(!confirm(`Remove account ${a.login} (${label(a)})? Historical records will be retained.`))return;
   // Retain student and staff records referenced by orders, transactions or other records.
   const referenced=a.account_type==="Student"
    ?db.Orders.some(o=>Number(o.student_id)===id)||db.Transactions.some(t=>Number(t.student_id)===id)
@@ -2519,6 +2558,8 @@ function adminInit(db){
   active.checked=isActive(a);
   document.getElementById("adminSelection").textContent=`Editing ${label(a)} (${a.login})`;
   message("Leave New Password blank to keep the current password.");
+  editDialog.showModal();
+  login.focus();
  }
  form.onsubmit=e=>{
   e.preventDefault();
@@ -2548,6 +2589,7 @@ function adminInit(db){
   password.value="";
   selected.value=newLogin;
   render();message("Demo account updated in this browser.");
+  editDialog.close();
  };
  search.oninput=render;
  document.getElementById("adminLogout").onclick=()=>{sessionStorage.clear();location.href="index.html";};

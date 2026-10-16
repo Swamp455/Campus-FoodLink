@@ -15,14 +15,24 @@
 <label>Password<input id="createPassword" type="password" required minlength="8" autocomplete="new-password"></label>
 <label>Account Role<select id="createRole"><option>Student</option><option>Dietary Associate</option><option>Dietary Manager</option><option>IT Staff</option></select></label>
 </div><button type="submit">Create Account</button><p id="createMessage" role="status" aria-live="polite"></p></form></section>
-<section class="panel"><h2>Edit Account</h2><p id="adminSelection">Select an account above to edit.</p>
+<dialog id="adminEditDialog" class="admin-modal" aria-labelledby="adminEditTitle">
+<section class="panel"><div class="admin-modal-head"><h2 id="adminEditTitle">Edit Account</h2><button type="button" id="adminEditClose" class="admin-modal-close" aria-label="Close edit account">✕</button></div><p id="adminSelection">Select an account above to edit.</p>
 <form id="adminForm"><input id="adminSelected" type="hidden">
 <div class="admin-grid"><label>Account type<input id="adminType" readonly></label>
 <label>Username<input id="adminLogin" required minlength="3" maxlength="32" autocomplete="off"></label>
 <label>New Password (optional)<input id="adminPassword" type="password" minlength="8" autocomplete="new-password" placeholder="Leave blank to keep existing"></label>
 <label>Role<select id="adminRole"><option>Student</option><option>Dietary Associate</option><option>Dietary Manager</option><option>IT Staff</option></select></label></div>
 <label class="admin-check"><input type="checkbox" id="adminActive"> Account active</label>
-<button type="submit">Save Account Changes</button><p id="adminMessage" role="status" aria-live="polite"></p></form></section>
+<button type="submit">Save Account Changes</button><p id="adminMessage" role="status" aria-live="polite"></p></form></section></dialog>
+<dialog id="adminRemoveDialog" class="admin-modal" aria-labelledby="adminRemoveTitle">
+<section class="panel">
+<div class="admin-modal-head"><h2 id="adminRemoveTitle">Confirm Account Removal</h2><button type="button" id="adminRemoveClose" class="admin-modal-close" aria-label="Close removal confirmation">✕</button></div>
+<p id="adminRemoveSummary"></p>
+<p id="adminRemoveWarning" class="admin-remove-warning"></p>
+<div class="admin-modal-actions">
+<button type="button" id="adminRemoveCancel">Cancel</button>
+<button type="button" id="adminRemoveConfirm" class="admin-remove">Confirm Removal</button>
+</div></section></dialog>
 <section class="panel"><div class="admin-header"><h2>Administrative Activity</h2><button type="button" id="adminAuditExport">Export Audit CSV</button></div>
 <div class="table-wrapper"><table><thead><tr><th>Time</th><th>Action</th><th>Username</th><th>Changes</th></tr></thead><tbody id="adminAudit"></tbody></table></div></section>
 <p class="hint">Prototype only: passwords and roles are stored in localStorage. This is not a secure production administration system.</p>
