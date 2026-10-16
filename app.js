@@ -276,7 +276,7 @@ function loginInit(db){
   if(!a){
 
    err.textContent=
-    "Invalid demo username or password.";
+    "Invalid username or password.";
 
    return;
   }
@@ -890,10 +890,10 @@ function menuInit(db){
     };
     const foodPhoto=document.createElement("img");
     foodPhoto.className="menu-food-image";
-    foodPhoto.src=""+(foodImagePaths[x.menu_item_id]||"food-placeholder.jpg");
+    foodPhoto.src="images/food/"+(foodImagePaths[x.menu_item_id]||"food-placeholder.jpg");
     foodPhoto.alt=x.item_name;
     foodPhoto.loading="lazy";
-    foodPhoto.onerror=()=>{foodPhoto.onerror=null;foodPhoto.src="food-placeholder.jpg";};
+    foodPhoto.onerror=()=>{foodPhoto.onerror=null;foodPhoto.src="images/food/food-placeholder.jpg";};
 
 
     const info=
@@ -1333,23 +1333,12 @@ function menuInit(db){
   }
 
 
-  const total=
-   Number(
-    c.reduce((z,r)=>{
-
-     const x=
-      byId(
-       db.MenuItems,
-       "menu_item_id",
-       r.menu_item_id
-      );
-
-     return z+
-      Number(x.price)*
-      Number(r.quantity);
-
-    },0).toFixed(2)
-   );
+  // BUG-006: Calculate prices in integer cents to preserve decimals.
+  const totalCents = c.reduce((sum, r) => {
+    const x = byId(db.MenuItems, "menu_item_id", r.menu_item_id);
+    return sum + Math.round(Number(x.price) * 100) * Number(r.quantity);
+  }, 0);
+  const total = totalCents / 100;
 
 
   /* -------------------------------------------------------
@@ -1359,10 +1348,11 @@ function menuInit(db){
 if (
   total > Number(s.meal_plan_balance)
 ) {
+  // BUG-005: Interpolate actual dollar amounts.
   orderMessage.textContent =
-    `Insufficient meal-plan funds. Order total is
-total.toFixed(2)andavailablebalanceis
-{Number(s.meal_plan_balance).toFixed(2)}. Remove an item, reduce the quantity, or return to your account to add funds and try again.`;
+    `Insufficient meal-plan funds. Order total is $${total.toFixed(2)} ` +
+    `and available balance is $${Number(s.meal_plan_balance).toFixed(2)}. ` +
+    `Remove an item, reduce the quantity, or return to your account to add funds and try again.`;
 
   return;
 }
@@ -1413,13 +1403,10 @@ const now = new Date().toISOString();
      r.menu_item_id
     );
 
-   const line=
-    Number(
-     (
-      Number(x.price)*
-      Number(r.quantity)
-     ).toFixed(2)
-    );
+   // BUG-006: Preserve cents in the saved OrderItems line total.
+   const line = (
+     Math.round(Number(x.price) * 100) * Number(r.quantity)
+   ) / 100;
 
 
    db.OrderItems.push({
@@ -2428,9 +2415,12 @@ function adminInit(db){
   renderAudit();
  };
  const message=(txt)=>notice.textContent=txt;
+ // BUG-007: Hide earlier entries in this browser tab without erasing audit history.
+ const auditCutoffKey = "CFLAdminAuditHiddenBefore";
  function renderAudit(){
   audit.replaceChildren();
-  logs().slice(-15).reverse().forEach(e=>{
+  const cutoff = Number(sessionStorage.getItem(auditCutoffKey) || 0);
+  logs().filter(e => Date.parse(e.timestamp) > cutoff).slice(-15).reverse().forEach(e=>{
    const tr=audit.insertRow();
    [new Date(e.timestamp).toLocaleString(),e.action,e.username,e.detail].forEach(v=>tr.insertCell().textContent=v);
   });
@@ -2456,16 +2446,34 @@ function adminInit(db){
   }
   const record=person(a);
   if(!record){message("Account record not found; removal cancelled.");return;}
-  if(!confirm(`Remove account ${a.login} (${label(a)})? This cannot be undone in this browser.`))return;
-  // Retain student and staff records referenced by orders, transactions or other records.
+  // BUG-008: Reject removal if any current order is Pending, Approved, or Ready.
   const id=Number(a.record_id);
+  if(a.account_type==="Student"){
+   const activeOrders=db.Orders.filter(o=>Number(o.student_id)===id).filter(o=>{
+    const current=latestStatus(db,o.order_id);
+    return ["pending","approved","ready"].includes(String(current?.status_name||"Pending").trim().toLowerCase());
+   });
+   if(activeOrders.length){
+    message(`Cannot delete account with active orders (${activeOrders.length}). Pending, approved, or ready orders must be completed or cancelled first.`);
+    return;
+   }
+  }
+  if(!confirm(`Remove account ${a.login} (${label(a)})? Historical records will be retained.`))return;
+  // Retain student and staff records referenced by orders, transactions or other records.
   const referenced=a.account_type==="Student"
    ?db.Orders.some(o=>Number(o.student_id)===id)||db.Transactions.some(t=>Number(t.student_id)===id)
    :db.Orders.some(o=>Number(o.handled_by)===id||Number(o.staff_id)===id)
      ||db.OrderStatus.some(o=>Number(o.staff_id)===id||Number(o.updated_by)===id)
      ||db.Transactions.some(t=>Number(t.staff_id)===id);
   if(referenced){
-   message("This account has related records. Deactivate it instead to preserve order history.");return;
+   // BUG-008: Soft removal preserves order and transaction foreign-key relationships.
+   a.is_active=false;
+   record.is_active=false;
+   saveDB(db);
+   log("ACCOUNT_DEACTIVATE",a.login,"Account deactivated; historical order/transaction records preserved");
+   render();
+   message("Account deactivated. Login is disabled; historical orders and transactions are retained.");
+   return;
   }
   db.DemoAccounts.splice(db.DemoAccounts.indexOf(a),1);
   const collection=a.account_type==="Student"?db.Students:db.Staff;
@@ -2543,6 +2551,23 @@ function adminInit(db){
  };
  search.oninput=render;
  document.getElementById("adminLogout").onclick=()=>{sessionStorage.clear();location.href="index.html";};
+ // BUG-007: Clears the visible activity across refreshes in this tab only.
+ // Export Audit CSV still includes all historical entries.
+ let clearAuditButton=document.getElementById("adminClearDisplay");
+ if(!clearAuditButton){
+  clearAuditButton=document.createElement("button");
+  clearAuditButton.type="button";
+  clearAuditButton.id="adminClearDisplay";
+  clearAuditButton.textContent="Clear Display";
+  document.getElementById("adminAuditExport").before(clearAuditButton);
+ }
+ if(clearAuditButton){
+  clearAuditButton.onclick=()=>{
+   sessionStorage.setItem(auditCutoffKey,String(Date.now()));
+   renderAudit();
+   message("Activity display cleared for this tab. Full audit history remains available for export.");
+  };
+ }
  document.getElementById("adminAuditExport").onclick=()=>{
   const rows=[["Timestamp","Actor staff ID","Action","Username","Detail"],...logs().map(e=>[e.timestamp,e.actor,e.action,e.username,e.detail])];
   const csv=rows.map(row=>row.map(x=>'"'+String(x).replaceAll('"','""')+'"').join(",")).join("\r\n");
