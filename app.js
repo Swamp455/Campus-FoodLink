@@ -2391,6 +2391,7 @@ function adminInit(db){
  }
  const tbody=document.getElementById("adminAccounts");
  const notice=document.getElementById("adminMessage");
+ const directoryNotice=document.getElementById("adminDirectoryMessage");
  const audit=document.getElementById("adminAudit");
  const form=document.getElementById("adminForm");
  const selected=document.getElementById("adminSelected");
@@ -2432,7 +2433,7 @@ function adminInit(db){
   localStorage.setItem("CFLAdminAudit",JSON.stringify(entries.slice(-300)));
   renderAudit();
  };
- const message=(txt)=>notice.textContent=txt;
+ const message=(txt)=>{notice.textContent=txt;directoryNotice.textContent=txt;};
  // BUG-007: Hide earlier entries in this browser tab without erasing audit history.
  const auditCutoffKey = "CFLAdminAuditHiddenBefore";
  function renderAudit(){
@@ -2465,19 +2466,20 @@ function adminInit(db){
    message("You cannot remove your own IT account.");return;
   }
   const id=Number(a.record_id);
-  if(a.account_type==="Student"){
-   const activeOrders=db.Orders.filter(o=>Number(o.student_id)===id).filter(o=>{
-    const currentStatus=latestStatus(db,o.order_id);
-    return ["pending","approved","ready"].includes(String(currentStatus?.status_name||"Pending").trim().toLowerCase());
-   });
-   if(activeOrders.length){
-    message(`Cannot delete account with active orders (${activeOrders.length}). Pending, approved, or ready orders must be completed or cancelled first.`);
-    return;
-   }
-  }
-  pendingRemoval=a;
+  const activeOrders=a.account_type==="Student"
+   ?db.Orders.filter(o=>Number(o.student_id)===id).filter(o=>{
+      const currentStatus=latestStatus(db,o.order_id);
+      return ["pending","approved","ready"].includes(String(currentStatus?.status_name||"Pending").trim().toLowerCase());
+     }):[];
+  pendingRemoval=activeOrders.length?null:a;
   removeSummary.textContent=`Account: ${label(a)} | Username: ${a.login} | Role: ${status(a)} | Status: ${isActive(a)?"Active":"Inactive"}`;
-  removeWarning.textContent="This action cannot be undone for accounts without related records. Accounts with historical orders or transactions will be deactivated instead, preserving history.";
+  const confirmButton=document.getElementById("adminRemoveConfirm");
+  confirmButton.disabled=activeOrders.length>0;
+  if(activeOrders.length){
+   removeWarning.textContent=`Cannot delete account with active orders (${activeOrders.length}). Pending, approved, or ready orders must be completed or cancelled first.`;
+  }else{
+   removeWarning.textContent="Confirm removal? Accounts with historical orders or transactions will be deactivated instead, preserving history.";
+  }
   removeDialog.showModal();
  }
  function executeRemoval(a){

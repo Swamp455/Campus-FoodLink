@@ -576,3 +576,6 @@ code {
 .admin-modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
 .admin-remove-warning { color: #8a341e; font-weight: 600; }
 .admin-modal .admin-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+.admin-directory-message:not(:empty){padding:12px;margin:12px 0;border-left:4px solid #b45309;background:#fff7ed;color:#713f12;}
+.admin-remove:disabled{opacity:.5;cursor:not-allowed;}

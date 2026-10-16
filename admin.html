@@ -3,7 +3,7 @@
 <title>Campus FoodLink+ | IT Administration</title><link rel="stylesheet" href="style.css"></head>
 <body data-page="admin"><main class="wireframe admin-page">
 <header class="admin-header"><div><h1>Campus FoodLink+ IT Administration</h1><p>Demonstration account management · Browser-only</p></div><button type="button" id="adminLogout">Log Out</button></header>
-<section class="panel"><h2>Account Directory</h2><label for="adminSearch">Search by name, username or role</label>
+<section class="panel"><h2>Account Directory</h2><p id="adminDirectoryMessage" role="status" aria-live="polite" class="admin-directory-message"></p><label for="adminSearch">Search by name, username or role</label>
 <input id="adminSearch" type="search" placeholder="Search accounts">
 <div class="table-wrapper"><table><thead><tr><th>Username</th><th>Name</th><th>Role</th><th>Status</th><th>Action</th></tr></thead><tbody id="adminAccounts"></tbody></table></div></section>
 <section class="panel"><h2>Add New Account</h2>
