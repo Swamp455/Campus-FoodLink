@@ -890,10 +890,10 @@ function menuInit(db){
     };
     const foodPhoto=document.createElement("img");
     foodPhoto.className="menu-food-image";
-    foodPhoto.src="images/food/"+(foodImagePaths[x.menu_item_id]||"food-placeholder.jpg");
+    foodPhoto.src=""+(foodImagePaths[x.menu_item_id]||"food-placeholder.jpg");
     foodPhoto.alt=x.item_name;
     foodPhoto.loading="lazy";
-    foodPhoto.onerror=()=>{foodPhoto.onerror=null;foodPhoto.src="images/food/food-placeholder.jpg";};
+    foodPhoto.onerror=()=>{foodPhoto.onerror=null;foodPhoto.src="food-placeholder.jpg";};
 
 
     const info=
