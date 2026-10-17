@@ -580,56 +580,69 @@ code {
 .admin-directory-message:not(:empty){padding:12px;margin:12px 0;border-left:4px solid #b45309;background:#fff7ed;color:#713f12;}
 .admin-remove:disabled{opacity:.5;cursor:not-allowed;}
 
-/* =========================================
-   CAMPUS FOODLINK+ MENU ALIGNMENT FIX
-   ========================================= */
+/* ==========================================
+   CAMPUS FOODLINK+ MENU CARD LAYOUT
+   ========================================== */
 
-/* Apply this to the actual menu row container */
-.menu-item-card {
-    display: grid !important;
+/* Consistent menu card layout */
+.menu-item {
+    display: grid;
     grid-template-columns: 190px minmax(0, 1fr) 65px;
     align-items: center;
+    justify-content: initial;
     column-gap: 24px;
-    justify-content: initial !important;
+
     padding: 16px;
+    margin: 10px 0;
+
+    background: #f8fbfc;
+    border: 1px solid #cfd8dc;
+    border-radius: 6px;
 }
 
-/* Food image */
-.menu-food-image {
+/* Food images */
+.menu-item .menu-food-image {
     width: 185px;
     height: 125px;
+    max-width: 100%;
     object-fit: cover;
     border-radius: 8px;
+    display: block;
     margin: 0;
 }
 
-/* Text details */
-.menu-item-details {
+/* Text container */
+.menu-item .menu-item-details {
     width: 100%;
     min-width: 0;
-    margin: 0 !important;
+    margin: 0;
     text-align: left;
 }
 
 /* Add button */
-.menu-item-card button {
+.menu-item button {
     justify-self: end;
+    align-self: center;
+    white-space: nowrap;
 }
 
 /* Mobile layout */
-@media (max-width: 650px) {
-    .menu-item-card {
+@media (max-width: 700px) {
+    .menu-item {
+        display: grid;
         grid-template-columns: 110px minmax(0, 1fr);
         gap: 12px;
+        align-items: center;
     }
 
-    .menu-food-image {
+    .menu-item .menu-food-image {
         width: 110px;
         height: 85px;
     }
 
-    .menu-item-card button {
+    .menu-item button {
         grid-column: 2;
         justify-self: start;
+        width: auto;
     }
 }
