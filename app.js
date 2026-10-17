@@ -944,25 +944,29 @@ function menuInit(db){
     );
 
 
-    const add=
-     document.createElement("button");
-
-    add.className="add";
-
-    add.dataset.id=
-     x.menu_item_id;
-
-    add.type="button";
-
-    add.textContent="Add";
-
-
-    box.append(
-     foodPhoto,
-     info,
-     add
-    );
-
+    info.className="menu-item-details";
+    const controls=document.createElement("div");
+    controls.className="menu-qty-controls";
+    const existing=c.find(r=>Number(r.menu_item_id)===Number(x.menu_item_id));
+    const qty=Number(existing?.quantity||0);
+    const minus=document.createElement("button");
+    minus.type="button"; minus.className="qty-minus";
+    minus.dataset.id=x.menu_item_id;
+    minus.textContent="−";
+    minus.disabled=qty===0;
+    minus.setAttribute("aria-label",`Remove one ${x.item_name}`);
+    const count=document.createElement("span");
+    count.className="menu-qty-value";
+    count.textContent=String(qty);
+    count.setAttribute("aria-label",`${x.item_name} quantity: ${qty}`);
+    const plus=document.createElement("button");
+    plus.type="button"; plus.className="qty-plus";
+    plus.dataset.id=x.menu_item_id;
+    plus.textContent="+";
+    plus.disabled=qty>=10;
+    plus.setAttribute("aria-label",`Add one ${x.item_name}`);
+    controls.append(minus,count,plus);
+    box.append(foodPhoto,info,controls);
     items.appendChild(box);
    });
   }
@@ -989,8 +993,8 @@ function menuInit(db){
 
 
    const line=
-    Number(x.price)*
-    Number(r.quantity);
+    Math.round(Number(x.price)*100)*
+    Number(r.quantity)/100;
 
 
    const tr=
@@ -1042,76 +1046,36 @@ function menuInit(db){
   });
 
 
-  tot.textContent=
-   c.reduce((z,r)=>{
+  tot.textContent=(c.reduce((cents,r)=>{
+    const x=byId(db.MenuItems,"menu_item_id",r.menu_item_id);
+    return cents+(x?Math.round(Number(x.price)*100)*Number(r.quantity):0);
+  },0)/100).toFixed(2);
 
-    const x=
-     byId(
-      db.MenuItems,
-      "menu_item_id",
-      r.menu_item_id
-     );
-
-    return z+
-     (
-      x
-       ?Number(x.price)*
-        Number(r.quantity)
-       :0
-     );
-
-   },0).toFixed(2);
-
-
-  /* -------------------------------------------------------
-     ADD ITEM / QUANTITY LIMIT
-     ------------------------------------------------------- */
-
-  document
-  .querySelectorAll(".add")
-  .forEach(
-   b=>b.onclick=()=>{
-
-    let c=cart();
-
-    let id=
-     Number(b.dataset.id);
-
-    let r=
-     c.find(
-      x=>x.menu_item_id===id
-     );
-
-
-    if(r){
-
-     if(r.quantity>=10){
-
-      orderMessage.textContent=
-       "Maximum quantity is 10 of the same menu item.";
-
-      return;
-     }
-
-     r.quantity++;
-
-    }else{
-
-     c.push({
-      menu_item_id:id,
-      quantity:1
-     });
-    }
-
-
-    orderMessage.textContent="";
-
-    saveCart(c);
-
-    draw();
-   }
-  );
-
+  /* MENU QUANTITY CONTROLS */
+  items.querySelectorAll(".qty-plus, .qty-minus").forEach(button=>{
+    button.onclick=()=>{
+      const id=Number(button.dataset.id);
+      let current=cart();
+      const row=current.find(r=>Number(r.menu_item_id)===id);
+      const quantity=Number(row?.quantity||0);
+      const updated=quantity+(button.classList.contains("qty-plus")?1:-1);
+      if(updated>10){
+        orderMessage.textContent="Maximum quantity is 10 of the same menu item.";
+        return;
+      }
+      if(updated<0)return;
+      if(updated===0){
+        current=current.filter(r=>Number(r.menu_item_id)!==id);
+      }else if(row){
+        row.quantity=updated;
+      }else{
+        current.push({menu_item_id:id,quantity:1});
+      }
+      orderMessage.textContent="";
+      saveCart(current);
+      draw();
+    };
+  });
 
   /* -------------------------------------------------------
      REMOVE ITEM
