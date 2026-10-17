@@ -581,15 +581,65 @@ code {
 .admin-remove:disabled{opacity:.5;cursor:not-allowed;}
 
 /* ==========================================
-   CAMPUS FOODLINK+ VENDOR MENU IMAGES
+   CAMPUS FOODLINK+ VENDOR MENU LAYOUT
    ========================================== */
 
+/* Menu card */
+.menu-item-card {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 24px;
+
+    padding: 18px 24px;
+    margin-bottom: 12px;
+    min-height: 140px;
+
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+}
+
+/* Food image */
 .menu-food-image {
-    width: 180px;
-    max-width: 100%;
-    height: 120px;
+    width: 150px;
+    height: 100px;
     object-fit: cover;
     border-radius: 8px;
-    flex-shrink: 0;
+    display: block;
     margin: 0;
+}
+
+/* Food details */
+.menu-item-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    min-width: 0;
+}
+
+/* Add button */
+.menu-item-card button {
+    justify-self: end;
+    align-self: center;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+    .menu-item-card {
+        grid-template-columns: 110px minmax(0, 1fr);
+        gap: 12px;
+        padding: 12px;
+    }
+
+    .menu-food-image {
+        width: 110px;
+        height: 85px;
+    }
+
+    .menu-item-card button {
+        grid-column: 2;
+        justify-self: start;
+    }
 }
