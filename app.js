@@ -2430,16 +2430,16 @@ function adminInit(db){
    message("You cannot remove your own IT account.");return;
   }
   const id=Number(a.record_id);
-  const activeOrders=a.account_type==="Student"
+  const =a.account_type==="Student"
    ?db.Orders.filter(o=>Number(o.student_id)===id).filter(o=>{
       const currentStatus=latestStatus(db,o.order_id);
       return ["pending","approved","preparing","ready"].includes(String(currentStatus?.status_name||"Pending").trim().toLowerCase());
      }):[];
-  pendingRemoval=activeOrders.length?null:a;
+  pendingRemoval=.length?null:a;
   removeSummary.textContent=`Account: ${label(a)} | Username: ${a.login} | Role: ${status(a)} | Status: ${isActive(a)?"Active":"Inactive"}`;
   const confirmButton=document.getElementById("adminRemoveConfirm");
-  confirmButton.disabled=activeOrders.length>0;
-  if(activeOrders.length){
+  confirmButton.disabled=.length>0;
+  if(.length){
    removeWarning.textContent=`Cannot delete account with active orders (${activeOrders.length}). Pending, approved, or ready orders must be completed or cancelled first.`;
   }else{
    removeWarning.textContent="Confirm removal? Accounts with historical orders or transactions will be deactivated instead, preserving history.";
@@ -2460,7 +2460,7 @@ function adminInit(db){
     return ["pending","approved","ready"].includes(String(current?.status_name||"Pending").trim().toLowerCase());
    });
    if(activeOrders.length){
-    message(`Cannot delete account with active orders (${activeOrders.length}). Pending, approved, or ready orders must be completed or cancelled first.`);
+    message(`Cannot delete account with active orders (${activeOrders.length}). Pending, approved, preparing, or ready orders must be cancelled first.`);
     return;
    }
   }
