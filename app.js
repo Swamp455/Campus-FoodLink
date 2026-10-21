@@ -2440,7 +2440,7 @@ function adminInit(db){
   const confirmButton=document.getElementById("adminRemoveConfirm");
   confirmButton.disabled=activeOrders.length>0;
   if(activeOrders.length){
-   removeWarning.textContent=`Cannot delete account with active orders (${activeOrders.length}). Pending, approved, preparing, or ready orders must be completed or cancelled first.`;
+   removeWarning.textContent=`Cannot delete account with active orders (${activeOrders.length}). Pending, approved, or ready orders must be cancelled first.`;
   }else{
    removeWarning.textContent="Confirm removal? Accounts with historical orders or transactions will be deactivated instead, preserving history.";
   }
@@ -2452,7 +2452,7 @@ function adminInit(db){
   }
   const record=person(a);
   if(!record){message("Account record not found; removal cancelled.");return;}
-  //Reject removal if any current order is Pending, Approved, or Ready.
+  // Reject removal if any current order is Pending, Approved, or Ready.
   const id=Number(a.record_id);
   if(a.account_type==="Student"){
    const activeOrders=db.Orders.filter(o=>Number(o.student_id)===id).filter(o=>{
@@ -2559,7 +2559,7 @@ function adminInit(db){
  };
  search.oninput=render;
  document.getElementById("adminLogout").onclick=()=>{sessionStorage.clear();location.href="index.html";};
- // Clear the visible audit display persistently in this browser.
+ // BUG-007: Clear the visible audit display persistently in this browser.
  // Export Audit CSV still includes all historical entries.
  let clearAuditButton=document.getElementById("adminClearDisplay");
  if(!clearAuditButton){
