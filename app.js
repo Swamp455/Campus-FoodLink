@@ -2433,7 +2433,7 @@ function adminInit(db){
   const activeOrders=a.account_type==="Student"
    ?db.Orders.filter(o=>Number(o.student_id)===id).filter(o=>{
       const currentStatus=latestStatus(db,o.order_id);
-      return ["pending","approved","ready"].includes(String(currentStatus?.status_name||"Pending").trim().toLowerCase());
+      return ["pending","approved","preparing","ready"].includes(String(currentStatus?.status_name||"Pending").trim().toLowerCase());
      }):[];
   pendingRemoval=activeOrders.length?null:a;
   removeSummary.textContent=`Account: ${label(a)} | Username: ${a.login} | Role: ${status(a)} | Status: ${isActive(a)?"Active":"Inactive"}`;
