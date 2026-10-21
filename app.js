@@ -2457,7 +2457,7 @@ function adminInit(db){
   if(a.account_type==="Student"){
    const activeOrders=db.Orders.filter(o=>Number(o.student_id)===id).filter(o=>{
     const current=latestStatus(db,o.order_id);
-    return ["pending","approved","ready"].includes(String(current?.status_name||"Pending").trim().toLowerCase());
+    return ["pending","approved","preparing","ready"].includes(String(current?.status_name||"Pending").trim().toLowerCase());
    });
    if(activeOrders.length){
     message(`Cannot delete account with active orders (${activeOrders.length}). Pending, approved, preparing, or ready orders must be cancelled first.`);
