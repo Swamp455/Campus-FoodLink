@@ -2440,7 +2440,7 @@ function adminInit(db){
   const confirmButton=document.getElementById("adminRemoveConfirm");
   confirmButton.disabled=activeOrders.length>0;
   if(activeOrders.length){
-   removeWarning.textContent=`Cannot delete account with active orders (${activeOrders.length}). Pending, approved, or ready orders must be cancelled first.`;
+   removeWarning.textContent=`Cannot delete account with active orders (${activeOrders.length}). Pending, approved, preparing, or ready orders must be cancelled first.`;
   }else{
    removeWarning.textContent="Confirm removal? Accounts with historical orders or transactions will be deactivated instead, preserving history.";
   }
