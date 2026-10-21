@@ -2398,11 +2398,11 @@ function adminInit(db){
   renderAudit();
  };
  const message=(txt)=>{notice.textContent=txt;directoryNotice.textContent=txt;};
- // BUG-007: Hide earlier entries in this browser tab without erasing audit history.
+ // BUG-007: Persist the audit display cutoff across resets and logouts without deleting audit history.
  const auditCutoffKey = "CFLAdminAuditHiddenBefore";
  function renderAudit(){
   audit.replaceChildren();
-  const cutoff = Number(sessionStorage.getItem(auditCutoffKey) || 0);
+  const cutoff = Number(localStorage.getItem(auditCutoffKey) || 0);
   logs().filter(e => Date.parse(e.timestamp) > cutoff).slice(-15).reverse().forEach(e=>{
    const tr=audit.insertRow();
    [new Date(e.timestamp).toLocaleString(),e.action,e.username,e.detail].forEach(v=>tr.insertCell().textContent=v);
@@ -2452,7 +2452,7 @@ function adminInit(db){
   }
   const record=person(a);
   if(!record){message("Account record not found; removal cancelled.");return;}
-  // BUG-008: Reject removal if any current order is Pending, Approved, or Ready.
+  //Reject removal if any current order is Pending, Approved, or Ready.
   const id=Number(a.record_id);
   if(a.account_type==="Student"){
    const activeOrders=db.Orders.filter(o=>Number(o.student_id)===id).filter(o=>{
@@ -2559,7 +2559,7 @@ function adminInit(db){
  };
  search.oninput=render;
  document.getElementById("adminLogout").onclick=()=>{sessionStorage.clear();location.href="index.html";};
- // BUG-007: Clears the visible activity across refreshes in this tab only.
+ // Clear the visible audit display persistently in this browser.
  // Export Audit CSV still includes all historical entries.
  let clearAuditButton=document.getElementById("adminClearDisplay");
  if(!clearAuditButton){
@@ -2571,9 +2571,9 @@ function adminInit(db){
  }
  if(clearAuditButton){
   clearAuditButton.onclick=()=>{
-   sessionStorage.setItem(auditCutoffKey,String(Date.now()));
+   localStorage.setItem(auditCutoffKey,String(Date.now()));
    renderAudit();
-   message("Activity display cleared for this tab. Full audit history remains available for export.");
+   message("Activity display cleared. Hidden entries remain available in the full audit CSV export.");
   };
  }
  document.getElementById("adminAuditExport").onclick=()=>{
@@ -2624,5 +2624,4 @@ document.addEventListener(
   ])?.(db);
  }
 );
-
 
