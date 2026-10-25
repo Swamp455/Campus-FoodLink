@@ -808,3 +808,341 @@ body[data-page="account"] td {
     }
 }
 
+/* ==========================================
+   CAMPUS FOODLINK+ STUDENT DASHBOARD
+   ========================================== */
+
+body[data-page="account"] {
+    background: #253239;
+    color: #243746;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+}
+
+/* Main Dashboard Container */
+
+body[data-page="account"] .student-dashboard {
+    width: 94%;
+    max-width: 1250px;
+    margin: 20px auto;
+    padding: 0;
+    background: #f4f7fa;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+/* Header */
+
+body[data-page="account"] .dashboard-header {
+    background: #1763bd;
+    color: white;
+    padding: 18px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+body[data-page="account"] .dashboard-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+body[data-page="account"] .dashboard-brand b {
+    font-size: 20px;
+}
+
+body[data-page="account"] .dashboard-brand span {
+    font-size: 12px;
+    color: #d9e9fa;
+}
+
+body[data-page="account"] .student-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+body[data-page="account"] .header-button {
+    background: white;
+    color: #1763bd;
+    padding: 11px 17px;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Dashboard Content */
+
+body[data-page="account"] .dashboard-content {
+    padding: 26px;
+}
+
+body[data-page="account"] .dashboard-welcome {
+    margin-bottom: 24px;
+}
+
+body[data-page="account"] .dashboard-welcome h1 {
+    font-size: 28px;
+    color: #183b56;
+    margin: 0 0 8px;
+}
+
+body[data-page="account"] .dashboard-welcome p {
+    color: #64748b;
+    margin: 0;
+}
+
+/* Summary Cards */
+
+body[data-page="account"] .dashboard-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+body[data-page="account"] .dashboard-content .panel {
+    background: white;
+    border: 1px solid #dce4ec;
+    border-radius: 10px;
+    padding: 24px;
+    margin: 0 0 20px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+}
+
+body[data-page="account"] .dashboard-summary .panel {
+    margin-bottom: 0;
+}
+
+body[data-page="account"] .panel h2 {
+    color: #1763bd;
+    font-size: 23px;
+    margin: 0 0 18px;
+}
+
+body[data-page="account"] .field-label {
+    display: block;
+    color: #64748b;
+    font-size: 13px;
+    margin: 12px 0 5px;
+}
+
+body[data-page="account"] .field-value {
+    margin: 0 0 12px;
+    font-size: 17px;
+    overflow-wrap: anywhere;
+}
+
+/* Balance */
+
+body[data-page="account"] .balance-card {
+    background: #f8fcff !important;
+}
+
+body[data-page="account"] .balance-amount {
+    color: #1763bd;
+    font-size: 42px;
+    font-weight: 700;
+    margin: 15px 0 10px;
+}
+
+body[data-page="account"] .balance-description {
+    color: #64748b;
+    font-size: 13px;
+}
+
+/* Panel Headings */
+
+body[data-page="account"] .panel-heading {
+    margin-bottom: 20px;
+}
+
+body[data-page="account"] .panel-heading h2 {
+    margin-bottom: 6px;
+}
+
+body[data-page="account"] .panel-heading p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+/* Add Funds */
+
+body[data-page="account"] .funds-section label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+body[data-page="account"] .funds-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+body[data-page="account"] #fundAmount {
+    width: 220px;
+    max-width: 100%;
+    padding: 11px;
+    border: 1px solid #bac8d3;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+body[data-page="account"] #addFundsBtn {
+    background: #1763bd;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 20px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+body[data-page="account"] #fundMessage {
+    color: #287346;
+    margin-bottom: 0;
+}
+
+/* Latest Order */
+
+body[data-page="account"] .latest-order-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding: 10px 0 20px;
+}
+
+body[data-page="account"] .order-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow-wrap: anywhere;
+}
+
+body[data-page="account"] .order-detail .field-label {
+    margin: 0;
+}
+
+body[data-page="account"] .order-detail strong {
+    color: #183b56;
+}
+
+body[data-page="account"] .cancel-order-button {
+    background: #fff5f5;
+    color: #b42318;
+    border: 1px solid #f0b9b9;
+    border-radius: 6px;
+    padding: 10px 16px;
+    cursor: pointer;
+}
+
+body[data-page="account"] .cancel-order-button[hidden],
+body[data-page="account"] #returnStaffBtn[hidden],
+body[data-page="account"] #studentOrdersEmpty[hidden] {
+    display: none !important;
+}
+
+/* Order History */
+
+body[data-page="account"] .orders-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+body[data-page="account"] .orders-toolbar label {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+body[data-page="account"] #studentOrderStatusFilter {
+    padding: 10px;
+    border: 1px solid #bac8d3;
+    border-radius: 6px;
+    background: white;
+}
+
+body[data-page="account"] #studentOrderCount {
+    margin-left: auto;
+    color: #64748b;
+    font-size: 13px;
+}
+
+body[data-page="account"] .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+body[data-page="account"] table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+body[data-page="account"] th {
+    background: #eaf0f5;
+    color: #183b56;
+    text-align: left;
+}
+
+body[data-page="account"] th,
+body[data-page="account"] td {
+    padding: 12px;
+    border: 1px solid #dce4ec;
+}
+
+body[data-page="account"] tbody tr:nth-child(even) {
+    background: #f8fafc;
+}
+
+body[data-page="account"] tbody tr:hover {
+    background: #eef5fb;
+}
+
+/* Responsive Design */
+
+@media (max-width: 700px) {
+
+    body[data-page="account"] .student-dashboard {
+        width: 100%;
+        margin: 0;
+    }
+
+    body[data-page="account"] .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    body[data-page="account"] .dashboard-content {
+        padding: 15px;
+    }
+
+    body[data-page="account"] .dashboard-summary {
+        grid-template-columns: 1fr;
+    }
+
+    body[data-page="account"] .latest-order-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    body[data-page="account"] .balance-amount {
+        font-size: 34px;
+    }
+
+    body[data-page="account"] #studentOrderCount {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+
