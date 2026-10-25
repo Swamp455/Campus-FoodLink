@@ -2855,3 +2855,107 @@ body[data-page="confirmation"] .confirm-actions a:focus-visible {
     outline: 3px solid #ffb300;
     outline-offset: 2px;
 }
+
+/* ============================================================
+   LOGIN ROLE SELECTOR - scoped to index.html
+   ============================================================ */
+body[data-page="login"] .login-role-section {
+  width: 100%;
+  min-width: 0;
+  margin: 0 0 22px;
+  padding: 0;
+  border: 0;
+}
+body[data-page="login"] .login-role-section legend {
+  width: 100%;
+  color: var(--primary-blue, #1763bd);
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+}
+body[data-page="login"] .login-role-help {
+  margin: 8px 0 16px;
+  color: var(--text-secondary, #64748b);
+  font-size: 14px;
+  text-align: center;
+}
+body[data-page="login"] .login-role-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+body[data-page="login"] .login-role-option {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  min-height: 64px;
+  margin: 0;
+  padding: 12px 14px;
+  border: 2px solid var(--border-color, #dce4ec);
+  border-radius: 10px;
+  background: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+body[data-page="login"] .login-role-option input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  margin: 0;
+  accent-color: var(--primary-blue, #1763bd);
+}
+body[data-page="login"] .login-role-option:has(input:checked) {
+  background: #eaf3ff;
+  border-color: var(--primary-blue, #1763bd);
+  color: var(--primary-blue, #1763bd);
+}
+body[data-page="login"] .login-role-option:hover {
+  border-color: var(--primary-blue, #1763bd);
+}
+body[data-page="login"] .login-role-option:focus-within {
+  outline: 3px solid #ffb300;
+  outline-offset: 2px;
+}
+@media (max-width: 600px) {
+  body[data-page="login"] .login-role-grid { grid-template-columns: 1fr; }
+}
+
+/* ===========================================================
+   CAMPUS FOODLINK+ PROFESSIONAL DESIGN ENHANCEMENTS (2026)
+   Additive only: existing element IDs and app behavior retained.
+   =========================================================== */
+:root{--primary-blue:#1763bd;--primary-blue-hover:#104c94;--page-background:#f4f7fa;--border-color:#dce4ec;--text-primary:#243746;--shadow-soft:0 5px 22px rgba(25,54,80,.075)}
+body:not([data-page="login"]){line-height:1.5}
+body:not([data-page="login"]) .wireframe{background:var(--page-background);border:1px solid #d9e3ec;border-radius:14px;overflow:hidden;box-shadow:0 15px 40px rgba(0,0,0,.12)}
+body:not([data-page="login"]) .wireframe>header{padding:18px 24px;gap:16px}
+body:not([data-page="login"]) .wireframe>header b{font-size:20px;letter-spacing:-.35px}
+body:not([data-page="login"]) .wireframe>header nav{gap:9px;align-items:center}
+body:not([data-page="login"]) .wireframe>header nav a,body:not([data-page="login"]) .wireframe>header nav button{min-height:38px;border-radius:7px;font-weight:600}
+body:not([data-page="login"]) .panel{border:1px solid var(--border-color);border-radius:12px;box-shadow:var(--shadow-soft);padding:22px;margin:20px 24px;background:#fff}
+body:not([data-page="login"]) .panel h2{font-size:clamp(20px,2vw,25px);letter-spacing:-.4px;margin:0 0 18px}
+body:not([data-page="login"]) .panel h3{color:#183b56}
+body:not([data-page="login"]) button:not(.header-button),body:not([data-page="login"]) .button{border-radius:7px;min-height:38px;padding:9px 15px;font-weight:600;transition:background-color .15s ease,box-shadow .15s ease}
+body:not([data-page="login"]) button:not(.header-button):hover,body:not([data-page="login"]) .button:hover{box-shadow:0 3px 10px rgba(23,99,189,.16)}
+body:not([data-page="login"]) table{border-collapse:separate;border-spacing:0;width:100%;background:#fff}
+body:not([data-page="login"]) th{background:#eaf1f8;color:#24465e;font-size:12px;text-transform:uppercase;letter-spacing:.035em;padding:12px 10px}
+body:not([data-page="login"]) td{padding:12px 10px;font-size:13px;border-color:#e4eaf0}
+body:not([data-page="login"]) tbody tr:hover{background:#f7faff}
+body:not([data-page="login"]) input,body:not([data-page="login"]) select{min-height:38px;border-color:#c7d4df;border-radius:7px}
+.cfl-page-intro{margin:24px 24px 4px;padding:0 2px}.cfl-page-intro h1{color:#183b56;font-size:clamp(22px,2.6vw,29px);letter-spacing:-.6px;margin:0 0 4px}.cfl-page-intro p{color:#64748b;margin:0;font-size:14px}
+.cfl-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:14px;margin:20px 24px 4px}.cfl-stat{background:white;border:1px solid #dce4ec;border-radius:12px;box-shadow:var(--shadow-soft);padding:18px}.cfl-stat-label{display:block;color:#64748b;font-size:12px;font-weight:600;margin-bottom:7px}.cfl-stat-value{font-size:clamp(21px,2.6vw,28px);color:#1763bd;font-weight:750;overflow-wrap:anywhere}.cfl-stat-note{color:#64748b;font-size:11px;margin-top:5px}
+.cfl-footer{margin:26px 24px 0;padding:18px 0;border-top:1px solid #dce4ec;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#64748b;font-size:12px}
+.cfl-status{display:inline-flex;align-items:center;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;white-space:nowrap}.cfl-status--received{background:#e9eef5;color:#415b75}.cfl-status--preparing{background:#fff2d6;color:#8d5900}.cfl-status--ready{background:#def6e7;color:#17683b}.cfl-status--completed{background:#e5edf8;color:#24558d}.cfl-status--cancelled{background:#fce8e8;color:#a42b2b}
+body[data-page="login"] .wireframe{border-radius:16px;box-shadow:0 18px 55px rgba(0,0,0,.22)}
+body[data-page="login"] .login-form{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:25px;box-shadow:var(--shadow-soft)}
+body[data-page="login"] .login-form>button[type="submit"]{width:100%;padding:12px 16px;border-radius:8px;font-weight:700;font-size:15px;margin-top:10px}
+body[data-page="login"] .login-form>input{padding:11px 12px;border-radius:8px;border-color:#c7d4df}
+body[data-page="login"] .login-role-option{transition:border-color .15s,background-color .15s}
+body[data-page="login"] .cfl-login-heading{text-align:center;margin:0 0 18px;color:#183b56;font-size:23px}
+body[data-page="login"] .cfl-login-subtitle{text-align:center;margin:-10px 0 20px;color:#64748b;font-size:13px}
+body[data-page="login"] .cfl-show-password{display:flex;align-items:center;gap:8px;margin:10px 0 4px;font-size:13px;color:#475569;cursor:pointer}
+body[data-page="login"] .cfl-show-password input{width:auto;accent-color:#1763bd}
+body[data-page="login"] .cfl-footer{width:min(650px,100%);margin-top:16px}
+@media(max-width:700px){body:not([data-page="login"]) .wireframe{border-radius:0;margin:0 auto;width:100%}body:not([data-page="login"]) .panel{margin:12px;padding:16px}.cfl-page-intro{margin:18px 12px 0}.cfl-stats{margin:14px 12px 0;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.cfl-stat{padding:12px}.cfl-footer{margin:20px 12px 0}body[data-page="login"] .login-form{padding:17px}body:not([data-page="login"]) .wireframe>header{padding:14px}}
+@media(max-width:420px){.cfl-stats{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){body:not([data-page="login"]) button,body[data-page="login"] .login-role-option{transition:none}}

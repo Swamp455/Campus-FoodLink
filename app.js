@@ -282,6 +282,19 @@ function loginInit(db){
   }
 
 
+  // Verify that the selected role matches the authenticated demo account.
+  // Professor Demo is a special teaching account and retains staff access.
+  const selectedRole = document.querySelector('input[name="loginRole"]:checked')?.value;
+  const assignedRole = a.account_type === "Student"
+    ? "Student"
+    : (a.account_type === "Professor Demo" ? "Professor Demo" : String(linkedStaff?.role || "").trim());
+
+  if (!selectedRole || (assignedRole !== "Professor Demo" &&
+      selectedRole.toLowerCase() !== assignedRole.toLowerCase())) {
+    err.textContent = "The selected account type does not match this account. Please choose your assigned role.";
+    return;
+  }
+
   sessionStorage.clear();
 
 
@@ -2625,3 +2638,39 @@ document.addEventListener(
  }
 );
 
+
+/* Professional interface layer: presentation only, no changes to authentication or orders. */
+(function(){
+  'use strict';
+  const titles={account:['Student Dashboard','Your campus dining account at a glance.'],menu:['Student Menu','Browse available meals and build your order.'],confirmation:['Order Confirmation','Review the details of your latest order.'],orders:['Dining Operations','Manage incoming orders and menu availability.'],admin:['IT Administration','Manage user accounts and system access.']};
+  function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;}
+  function stat(label,value,note){const card=el('div','cfl-stat');card.append(el('span','cfl-stat-label',label),el('div','cfl-stat-value',value),el('div','cfl-stat-note',note));return card;}
+  function addIntro(main,page){if(!titles[page]||main.querySelector('.cfl-page-intro'))return;const intro=el('div','cfl-page-intro');intro.append(el('h1','',titles[page][0]),el('p','',titles[page][1]));const header=main.querySelector(':scope > header');if(header)header.after(intro);else main.prepend(intro);}
+  function addFooter(main){if(main.querySelector('.cfl-footer'))return;const foot=el('footer','cfl-footer');foot.append(el('span','', 'Campus FoodLink+ · IT499 Capstone Demonstration'),el('span','','Prototype · v1.0'));main.append(foot);}
+  function addStats(main,page){if(main.querySelector('.cfl-stats'))return;const wrap=el('div','cfl-stats');if(page==='account'){
+    const balance=stat('Meal Plan Balance','—','Current available balance');balance.querySelector('.cfl-stat-value').id='cflBalanceMirror';wrap.append(balance);
+    const order=stat('Latest Order','See below','Order details and status');wrap.append(order);
+  }else if(page==='orders'){
+    for(const [label,id] of [['Received','received'],['Preparing','preparing'],['Ready','ready']]){const s=stat(label,'—','Current order queue');s.querySelector('.cfl-stat-value').id='cflCount-'+id;wrap.append(s);}
+  }else if(page==='admin'){
+    const s=stat('User Accounts','—','Accounts in directory');s.querySelector('.cfl-stat-value').id='cflAccountCount';wrap.append(s);
+  }else return;
+    const intro=main.querySelector('.cfl-page-intro');if(intro)intro.after(wrap);
+  }
+  function update(){const balance=document.getElementById('balance'),mirror=document.getElementById('cflBalanceMirror');if(balance&&mirror)mirror.textContent=balance.textContent.trim()?('$'+balance.textContent.trim().replace(/^\$/,'')):'—';
+    const orders=document.getElementById('ordersBody');if(orders){const rows=Array.from(orders.querySelectorAll('tr'));for(const status of ['received','preparing','ready']){const dest=document.getElementById('cflCount-'+status);if(dest)dest.textContent=String(rows.filter(row=>Array.from(row.querySelectorAll('td')).some(td=>td.textContent.trim().toLowerCase()===status)).length);}}
+    const accounts=document.getElementById('adminAccounts'),dest=document.getElementById('cflAccountCount');if(accounts&&dest)dest.textContent=String(accounts.querySelectorAll('tr').length);
+  }
+  function start(){const page=document.body.dataset.page,main=document.querySelector('main.wireframe')||document.querySelector('main');if(!main)return;
+    if(page==='login'){
+      const form=document.getElementById('loginForm');if(form&&!form.querySelector('.cfl-login-heading')){
+        form.prepend(el('p','cfl-login-subtitle','Sign in to access your campus dining portal'));form.prepend(el('h1','cfl-login-heading','Welcome Back'));
+        const password=document.getElementById('password');if(password){const label=el('label','cfl-show-password');const toggle=el('input');toggle.type='checkbox';toggle.setAttribute('aria-label','Show password');toggle.addEventListener('change',()=>{password.type=toggle.checked?'text':'password';});label.append(toggle,document.createTextNode('Show password'));password.after(label);}
+      }
+    }else{addIntro(main,page);addStats(main,page);}
+    addFooter(main);update();
+    const targets=['balance','ordersBody','adminAccounts'].map(id=>document.getElementById(id)).filter(Boolean);
+    for(const t of targets){new MutationObserver(update).observe(t,{subtree:true,childList:true,characterData:true});}
+  }
+  document.addEventListener('DOMContentLoaded',start);
+})();
