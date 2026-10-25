@@ -709,3 +709,102 @@ body[data-page="login"] .demo-reset {
         max-width: 100%;
     }
 }
+
+/* ========================================
+   Campus FoodLink+ Student Dashboard
+   ======================================== */
+
+body[data-page="account"] {
+    background: #253239;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #243746;
+}
+
+/* Main dashboard container */
+body[data-page="account"] .wireframe {
+    width: 94%;
+    max-width: 1200px;
+    margin: 20px auto;
+    background: #f4f7fa;
+    box-sizing: border-box;
+}
+
+/* Dashboard content sections */
+body[data-page="account"] section {
+    background: #ffffff;
+    border: 1px solid #dce4ec;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+}
+
+/* Section headings */
+body[data-page="account"] section h2 {
+    color: #1763bd;
+    font-size: 25px;
+    margin-top: 0;
+    margin-bottom: 18px;
+}
+
+/* Better paragraph spacing */
+body[data-page="account"] section p {
+    line-height: 1.6;
+    margin: 9px 0;
+}
+
+/* Input fields */
+body[data-page="account"] input {
+    border: 1px solid #bac8d3;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 15px;
+}
+
+/* Buttons */
+body[data-page="account"] button {
+    border-radius: 6px;
+    padding: 11px 17px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Button hover */
+body[data-page="account"] button:hover {
+    filter: brightness(0.93);
+}
+
+/* Order tables */
+body[data-page="account"] table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+body[data-page="account"] th {
+    background: #eaf0f5;
+    color: #183b56;
+    font-weight: 600;
+}
+
+body[data-page="account"] th,
+body[data-page="account"] td {
+    padding: 12px;
+    border: 1px solid #dce4ec;
+}
+
+/* Responsive layout */
+@media (max-width: 700px) {
+    body[data-page="account"] .wireframe {
+        width: 100%;
+        margin: 0;
+    }
+
+    body[data-page="account"] section {
+        padding: 16px;
+    }
+
+    body[data-page="account"] section h2 {
+        font-size: 21px;
+    }
+}
+
