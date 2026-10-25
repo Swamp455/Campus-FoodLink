@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 
@@ -5,58 +6,106 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Order Confirmation</title>
+  <title>Order Confirmation | Campus FoodLink+</title>
 
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body data-page="confirmation">
 
-  <main class="wireframe confirmation">
+  <main class="wireframe confirmation confirmation-page">
 
-    <h1>Campus FoodLink+</h1>
+    <!-- CAMPUS FOODLINK+ LOGO -->
+    <div class="confirmation-branding">
 
-    <h2>Order Confirmation</h2>
-
-    <p>
-      Order #<b id="confirmOrder"></b> was successfully submitted.
-    </p>
-
-    <div class="order-summary">
-
-      <p>
-        Vendor:
-        <b id="confirmVendor"></b>
-      </p>
-
-      <p>
-        Status:
-        <b id="confirmStatus"></b>
-      </p>
-
-      <p>
-        Pickup:
-        <b id="confirmPickup"></b>
-      </p>
-
-      <p>
-        Total:
-        $<b id="confirmTotal"></b>
-      </p>
+      <img
+        src="./Campus%20FoodLink%2B%20Logo.png"
+        alt="Campus FoodLink+ Logo"
+        class="confirmation-logo"
+      >
 
     </div>
 
-    <div class="confirm-actions">
+    <!-- ORDER CONFIRMATION CARD -->
+    <section class="confirmation-card">
 
-      <a class="button" href="account.html">
-        Return to Dashboard
-      </a>
+      <div class="confirmation-success">
 
-      <button id="logoutBtn" type="button">
-        Logout
-      </button>
+        <div class="success-icon" aria-hidden="true">
+          &#10003;
+        </div>
 
-    </div>
+        <h1>Order Submitted Successfully!</h1>
+
+        <p class="confirmation-subtitle">
+          Your campus dining order has been received.
+        </p>
+
+        <p class="confirmation-order-number">
+          Order #<strong id="confirmOrder"></strong>
+        </p>
+
+      </div>
+
+      <!-- ORDER SUMMARY -->
+      <div class="order-summary">
+
+        <h2>Order Summary</h2>
+
+        <div class="confirmation-details">
+
+          <div class="confirmation-detail">
+            <span class="detail-label">Vendor</span>
+            <strong id="confirmVendor"></strong>
+          </div>
+
+          <div class="confirmation-detail">
+            <span class="detail-label">Order Status</span>
+            <strong id="confirmStatus" class="status-badge"></strong>
+          </div>
+
+          <div class="confirmation-detail">
+            <span class="detail-label">Pickup Time</span>
+            <strong id="confirmPickup"></strong>
+          </div>
+
+          <div class="confirmation-detail total-detail">
+            <span class="detail-label">Order Total</span>
+            <strong class="confirmation-total">
+              $<span id="confirmTotal"></span>
+            </strong>
+          </div>
+
+        </div>
+
+      </div>
+
+      <p class="confirmation-note">
+        You can monitor your order status from your
+        Student Dashboard.
+      </p>
+
+      <!-- ACTION BUTTONS -->
+      <div class="confirm-actions">
+
+        <a class="button dashboard-return" href="account.html">
+          Return to Dashboard
+        </a>
+
+        <button
+          id="logoutBtn"
+          class="confirmation-logout"
+          type="button">
+          Logout
+        </button>
+
+      </div>
+
+    </section>
+
+    <footer class="confirmation-footer">
+      Campus FoodLink+ | IT499 Capstone Demonstration Prototype
+    </footer>
 
   </main>
 
@@ -64,4 +113,3 @@
 
 </body>
 </html>
-
