@@ -137,53 +137,83 @@
 
       </section>
 
-      <!-- LATEST ORDER -->
-      <section class="panel dashboard-panel">
+      
+<!-- ==========================================
+     LATEST ORDER CONFIRMATION CARD
+     ========================================== -->
 
-        <div class="panel-heading">
-          <h2>Latest Order</h2>
-          <p>
-            View your most recent campus dining order.
-          </p>
-        </div>
+<section class="panel latest-confirmation-panel">
 
-        <div class="latest-order-grid">
+  <div class="latest-confirmation-header">
 
-          <div class="order-detail">
-            <span class="field-label">Order Number</span>
-            <strong id="orderId">-</strong>
-          </div>
+    <div class="latest-confirmation-icon"
+         aria-hidden="true">
+      &#10003;
+    </div>
 
-          <div class="order-detail">
-            <span class="field-label">Vendor</span>
-            <span id="orderVendor">-</span>
-          </div>
+    <div>
+      <h2>Latest Order</h2>
+      <p>Your most recent campus dining order</p>
+    </div>
 
-          <div class="order-detail">
-            <span class="field-label">Current Status</span>
-            <strong id="orderStatus">-</strong>
-          </div>
+  </div>
 
-          <div class="order-detail">
-            <span class="field-label">Last Updated</span>
-            <span id="statusUpdated">-</span>
-          </div>
+  <div class="latest-confirmation-card">
 
-        </div>
+    <div class="latest-confirmation-top">
 
-        <button
-          id="cancelOrderBtn"
-          class="cancel-order-button"
-          type="button">
-          Cancel Order
-        </button>
+      <span class="latest-confirmation-label">
+        Order Number
+      </span>
 
-        <p
-          id="accountMessage"
-          aria-live="polite">
-        </p>
+      <strong class="latest-confirmation-number">
+        #<span id="orderId">-</span>
+      </strong>
 
-      </section>
+    </div>
+
+    <div class="latest-confirmation-grid">
+
+      <div class="latest-confirmation-detail">
+        <span>Vendor</span>
+        <strong id="orderVendor">-</strong>
+      </div>
+
+      <div class="latest-confirmation-detail">
+        <span>Order Status</span>
+        <strong id="orderStatus"
+                class="latest-status-badge">-</strong>
+      </div>
+
+      <div class="latest-confirmation-detail">
+        <span>Last Updated</span>
+        <strong id="statusUpdated">-</strong>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="latest-confirmation-actions">
+
+    <button
+      id="cancelOrderBtn"
+      class="cancel-order-button"
+      type="button">
+      Cancel Order
+    </button>
+
+    <a href="menu.html"
+       class="button latest-order-again">
+      Place Another Order
+    </a>
+
+  </div>
+
+  <p id="accountMessage"
+     aria-live="polite"></p>
+
+</section>
 
       <!-- ALL MY ORDERS -->
       <section
