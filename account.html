@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 
@@ -5,24 +6,27 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Student Dashboard</title>
+  <title>Student Dashboard | Campus FoodLink+</title>
 
   <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body data-page="account">
 
-  <main class="wireframe">
+  <main class="wireframe student-dashboard">
 
-    <header>
+    <!-- DASHBOARD HEADER -->
+    <header class="dashboard-header">
 
-      <b>Campus FoodLink+</b>
+      <div class="dashboard-brand">
+        <b>Campus FoodLink+</b>
+        <span>Student Dashboard</span>
+      </div>
 
       <nav class="student-nav" aria-label="Student navigation">
 
-        <a
-          href="menu.html"
-          class="header-button">
+        <a href="menu.html" class="header-button">
           Place Order
         </a>
 
@@ -37,127 +41,207 @@
 
     </header>
 
+    <div class="dashboard-content">
 
-    <section class="panel">
-
-      <h2>Student Account</h2>
-
-      <p>
-        Name:
-        <b id="studentName"></b>
-      </p>
-
-      <p>
-        Email:
-        <span id="studentEmail"></span>
-      </p>
-
-      <p>
-        Meal Plan Balance:
-        $<span id="balance"></span>
-      </p>
-
-
-      <!-- =====================================================
-           ADD FUNDS
-           ===================================================== -->
-
-      <div class="funds-section">
-
-        <h3>Add Funds</h3>
-
+      <!-- WELCOME SECTION -->
+      <div class="dashboard-welcome">
+        <h1>Student Dashboard</h1>
         <p>
-          Add funds to your meal-plan balance.
+          Manage your campus dining account, meal-plan
+          balance, and food orders.
         </p>
+      </div>
 
-        <label for="fundAmount">
-          Amount:
-        </label>
+      <!-- STUDENT ACCOUNT AND BALANCE -->
+      <div class="dashboard-summary">
 
-        <input
-          type="number"
-          id="fundAmount"
-          min="0.01"
-          max="500"
-          step="0.01"
-          placeholder="Amount">
+        <section class="panel summary-card">
+
+          <h2>Student Account</h2>
+
+          <p class="field-label">Student Name</p>
+          <p class="field-value">
+            <b id="studentName"></b>
+          </p>
+
+          <p class="field-label">Email Address</p>
+          <p class="field-value">
+            <span id="studentEmail"></span>
+          </p>
+
+        </section>
+
+        <section class="panel summary-card balance-card">
+
+          <h2>Meal Plan Balance</h2>
+
+          <div class="balance-amount">
+            $<span id="balance"></span>
+          </div>
+
+          <p class="balance-description">
+            Available demonstration meal-plan funds
+          </p>
+
+        </section>
+
+      </div>
+
+      <!-- ADD FUNDS -->
+      <section class="panel dashboard-panel">
+
+        <div class="panel-heading">
+          <h2>Add Funds</h2>
+          <p>
+            Add funds to your demonstration meal-plan balance.
+          </p>
+        </div>
+
+        <div class="funds-section">
+
+          <label for="fundAmount">
+            Amount ($)
+          </label>
+
+          <div class="funds-controls">
+
+            <input
+              type="number"
+              id="fundAmount"
+              min="0.01"
+              max="500"
+              step="0.01"
+              placeholder="Enter amount">
+
+            <button
+              id="addFundsBtn"
+              type="button">
+              Add Funds
+            </button>
+
+          </div>
+
+          <p
+            id="fundMessage"
+            aria-live="polite">
+          </p>
+
+        </div>
 
         <button
-          id="addFundsBtn"
+          id="returnStaffBtn"
+          type="button"
+          hidden>
+          Return to Staff Dashboard
+        </button>
+
+      </section>
+
+      <!-- LATEST ORDER -->
+      <section class="panel dashboard-panel">
+
+        <div class="panel-heading">
+          <h2>Latest Order</h2>
+          <p>
+            View your most recent campus dining order.
+          </p>
+        </div>
+
+        <div class="latest-order-grid">
+
+          <div class="order-detail">
+            <span class="field-label">Order Number</span>
+            <strong id="orderId">-</strong>
+          </div>
+
+          <div class="order-detail">
+            <span class="field-label">Vendor</span>
+            <span id="orderVendor">-</span>
+          </div>
+
+          <div class="order-detail">
+            <span class="field-label">Current Status</span>
+            <strong id="orderStatus">-</strong>
+          </div>
+
+          <div class="order-detail">
+            <span class="field-label">Last Updated</span>
+            <span id="statusUpdated">-</span>
+          </div>
+
+        </div>
+
+        <button
+          id="cancelOrderBtn"
+          class="cancel-order-button"
           type="button">
-          Add Funds
+          Cancel Order
         </button>
 
         <p
-          id="fundMessage"
+          id="accountMessage"
           aria-live="polite">
         </p>
 
-      </div>
+      </section>
 
+      <!-- ALL MY ORDERS -->
+      <section
+        class="panel dashboard-panel"
+        aria-labelledby="allOrdersHeading">
 
-      <button
-        id="returnStaffBtn"
-        type="button"
-        hidden>
-        Return to Staff Dashboard
-      </button>
+        <div class="panel-heading">
+          <h2 id="allOrdersHeading">All My Orders</h2>
+          <p>
+            Review your order history and track order statuses.
+          </p>
+        </div>
 
-    </section>
+        <div class="orders-toolbar">
 
+          <label for="studentOrderStatusFilter">
+            Filter by Status
+          </label>
 
-    <section class="panel">
+          <select id="studentOrderStatusFilter">
+            <option value="All">All statuses</option>
+          </select>
 
-      <h2>Latest Order</h2>
+          <p
+            id="studentOrderCount"
+            aria-live="polite">
+          </p>
 
-      <p>
-        Order #:
-        <b id="orderId">-</b>
-      </p>
+        </div>
 
-      <p>
-        Vendor:
-        <span id="orderVendor">-</span>
-      </p>
+        <div class="table-wrapper">
 
-      <p>
-        Status:
-        <b id="orderStatus">-</b>
-      </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Order #</th>
+                <th>Placed</th>
+                <th>Vendor</th>
+                <th>Total</th>
+                <th>Pickup</th>
+                <th>Status</th>
+                <th>Updated</th>
+              </tr>
+            </thead>
 
-      <p>
-        Last Updated:
-        <span id="statusUpdated">-</span>
-      </p>
+            <tbody id="studentAllOrdersBody"></tbody>
 
-      <button
-        id="cancelOrderBtn"
-        type="button">
-        Cancel Order
-      </button>
+          </table>
 
-      <p
-        id="accountMessage"
-        aria-live="polite">
-      </p>
+        </div>
 
-    </section>
+        <p id="studentOrdersEmpty" hidden>
+          No orders match this filter.
+        </p>
 
-    <section class="panel" aria-labelledby="allOrdersHeading">
-      <h2 id="allOrdersHeading">All My Orders</h2>
-      <label for="studentOrderStatusFilter">Filter by status:</label>
-      <select id="studentOrderStatusFilter">
-        <option value="All">All statuses</option>
-      </select>
-      <p id="studentOrderCount" aria-live="polite"></p>
-      <div class="table-wrapper">
-        <table>
-          <thead><tr><th>Order #</th><th>Placed</th><th>Vendor</th><th>Total</th><th>Pickup</th><th>Status</th><th>Updated</th></tr></thead>
-          <tbody id="studentAllOrdersBody"></tbody>
-        </table>
-      </div>
-      <p id="studentOrdersEmpty" hidden>No orders match this filter.</p>
-    </section>
+      </section>
+
+    </div>
 
   </main>
 
@@ -165,4 +249,3 @@
 
 </body>
 </html>
-
