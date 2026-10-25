@@ -1146,3 +1146,266 @@ body[data-page="account"] tbody tr:hover {
     }
 }
 
+/* ==========================================
+   CAMPUS FOODLINK+ ORDER CONFIRMATION
+   ========================================== */
+
+body[data-page="confirmation"] {
+    margin: 0;
+    min-height: 100vh;
+    background: #253239;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #243746;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Main white container */
+
+body[data-page="confirmation"] .confirmation-page {
+    width: 94%;
+    max-width: 1050px;
+    min-height: 90vh;
+    margin: 20px auto;
+    padding: 30px 25px;
+    box-sizing: border-box;
+    background: #f4f7fa;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Logo */
+
+body[data-page="confirmation"] .confirmation-branding {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+body[data-page="confirmation"] .confirmation-logo {
+    display: block;
+    width: 220px;
+    max-width: 85%;
+    height: auto;
+    margin: 0 auto;
+    object-fit: contain;
+}
+
+/* Confirmation card */
+
+body[data-page="confirmation"] .confirmation-card {
+    width: 100%;
+    max-width: 650px;
+    background: #ffffff;
+    border: 1px solid #dce4ec;
+    border-radius: 12px;
+    padding: 35px;
+    box-sizing: border-box;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.07);
+}
+
+/* Success section */
+
+body[data-page="confirmation"] .confirmation-success {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+body[data-page="confirmation"] .success-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    background: #e5f5eb;
+    color: #16803e;
+    font-size: 38px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body[data-page="confirmation"] .confirmation-success h1 {
+    color: #1763bd;
+    font-size: 26px;
+    margin: 10px 0;
+}
+
+body[data-page="confirmation"] .confirmation-subtitle {
+    color: #64748b;
+    font-size: 15px;
+    margin: 8px 0;
+}
+
+body[data-page="confirmation"] .confirmation-order-number {
+    color: #183b56;
+    font-size: 17px;
+    margin-top: 15px;
+}
+
+/* Order summary */
+
+body[data-page="confirmation"] .order-summary {
+    width: 100%;
+    max-width: none;
+    background: #f8fafc;
+    border: 1px solid #dce4ec;
+    border-radius: 9px;
+    padding: 22px;
+    margin: 0;
+    box-sizing: border-box;
+    text-align: left;
+}
+
+body[data-page="confirmation"] .order-summary h2 {
+    color: #1763bd;
+    font-size: 20px;
+    margin: 0 0 18px;
+}
+
+body[data-page="confirmation"] .confirmation-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+}
+
+body[data-page="confirmation"] .confirmation-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+body[data-page="confirmation"] .detail-label {
+    color: #64748b;
+    font-size: 13px;
+}
+
+body[data-page="confirmation"] .confirmation-detail strong {
+    font-size: 16px;
+    color: #183b56;
+}
+
+/* Status badge */
+
+body[data-page="confirmation"] .status-badge {
+    display: inline-block;
+    align-self: flex-start;
+    background: #fff3d6;
+    color: #855900 !important;
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 13px !important;
+}
+
+/* Order total */
+
+body[data-page="confirmation"] .confirmation-total {
+    color: #1763bd !important;
+    font-size: 24px !important;
+}
+
+/* Note */
+
+body[data-page="confirmation"] .confirmation-note {
+    color: #64748b;
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.5;
+    margin: 24px 0;
+}
+
+/* Action buttons */
+
+body[data-page="confirmation"] .confirm-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+body[data-page="confirmation"] .dashboard-return {
+    display: inline-block;
+    background: #1763bd;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 20px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+body[data-page="confirmation"] .confirmation-logout {
+    background: white;
+    color: #1763bd;
+    border: 1px solid #1763bd;
+    border-radius: 6px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+body[data-page="confirmation"] .dashboard-return:hover {
+    background: #104c94;
+}
+
+body[data-page="confirmation"] .confirmation-logout:hover {
+    background: #eef5fb;
+}
+
+/* Footer */
+
+body[data-page="confirmation"] .confirmation-footer {
+    color: #64748b;
+    font-size: 12px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Responsive layout */
+
+@media (max-width: 600px) {
+
+    body[data-page="confirmation"] .confirmation-page {
+        width: 100%;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px 15px;
+    }
+
+    body[data-page="confirmation"] .confirmation-logo {
+        width: 180px;
+    }
+
+    body[data-page="confirmation"] .confirmation-card {
+        padding: 22px 18px;
+    }
+
+    body[data-page="confirmation"] .confirmation-success h1 {
+        font-size: 22px;
+    }
+
+    body[data-page="confirmation"] .confirmation-details {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    body[data-page="confirmation"] .confirm-actions {
+        flex-direction: column;
+    }
+
+    body[data-page="confirmation"] .confirm-actions a,
+    body[data-page="confirmation"] .confirm-actions button {
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
+    }
+}
+
