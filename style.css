@@ -1409,3 +1409,171 @@ body[data-page="confirmation"] .confirmation-footer {
     }
 }
 
+/* ==========================================
+   STUDENT DASHBOARD - LATEST CONFIRMATION
+   ========================================== */
+
+body[data-page="account"] .latest-confirmation-panel {
+    background: #ffffff;
+    border: 1px solid #dce4ec;
+    border-radius: 12px;
+    padding: 25px;
+}
+
+/* Header */
+
+body[data-page="account"] .latest-confirmation-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 22px;
+}
+
+body[data-page="account"] .latest-confirmation-header h2 {
+    margin: 0 0 5px;
+    color: #1763bd;
+    font-size: 23px;
+}
+
+body[data-page="account"] .latest-confirmation-header p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+/* Confirmation icon */
+
+body[data-page="account"] .latest-confirmation-icon {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    border-radius: 50%;
+    background: #e5f5eb;
+    color: #16803e;
+    font-size: 30px;
+    font-weight: bold;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Order card */
+
+body[data-page="account"] .latest-confirmation-card {
+    background: #f8fafc;
+    border: 1px solid #dce4ec;
+    border-radius: 10px;
+    padding: 22px;
+}
+
+/* Order number */
+
+body[data-page="account"] .latest-confirmation-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding-bottom: 18px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #dce4ec;
+}
+
+body[data-page="account"] .latest-confirmation-label {
+    color: #64748b;
+    font-size: 14px;
+}
+
+body[data-page="account"] .latest-confirmation-number {
+    color: #1763bd;
+    font-size: 22px;
+}
+
+/* Order details */
+
+body[data-page="account"] .latest-confirmation-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+body[data-page="account"] .latest-confirmation-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+body[data-page="account"] .latest-confirmation-detail span {
+    color: #64748b;
+    font-size: 13px;
+}
+
+body[data-page="account"] .latest-confirmation-detail strong {
+    color: #183b56;
+    font-size: 16px;
+    overflow-wrap: anywhere;
+}
+
+/* Status badge */
+
+body[data-page="account"] .latest-status-badge {
+    display: inline-block;
+    align-self: flex-start;
+    background: #fff3d6;
+    color: #855900 !important;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 13px !important;
+}
+
+/* Buttons */
+
+body[data-page="account"] .latest-confirmation-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+body[data-page="account"] .latest-order-again {
+    background: #1763bd;
+    color: white;
+    border-radius: 6px;
+    padding: 11px 18px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+body[data-page="account"] .latest-order-again:hover {
+    background: #104c94;
+}
+
+/* Mobile responsive */
+
+@media (max-width: 700px) {
+
+    body[data-page="account"] .latest-confirmation-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    body[data-page="account"] .latest-confirmation-top {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    body[data-page="account"] .latest-confirmation-actions {
+        flex-direction: column;
+    }
+
+    body[data-page="account"] .latest-confirmation-actions button,
+    body[data-page="account"] .latest-confirmation-actions a {
+        width: 100%;
+        text-align: center;
+    }
+}
+
