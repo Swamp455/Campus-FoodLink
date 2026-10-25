@@ -616,3 +616,96 @@ code {
 .login-branding .mini-logo {
     margin-top: 0;
 }
+
+/* =========================================
+   Campus FoodLink+ Login Page Formatting
+   ========================================= */
+
+body[data-page="login"] {
+    margin: 0;
+    min-height: 100vh;
+    background-color: #263238;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+/* Original white page */
+body[data-page="login"] .wireframe {
+    width: 95%;
+    max-width: 1200px;
+    min-height: 90vh;
+    margin: 20px auto;
+    padding: 30px 40px;
+    box-sizing: border-box;
+    background-color: #f8f8f8;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Logo positioning */
+body[data-page="login"] .login-branding {
+    width: 100%;
+    text-align: center;
+    margin: 0 0 25px;
+}
+
+/* Larger logo */
+body[data-page="login"] .login-logo {
+    display: block;
+    width: 350px;
+    max-width: 85%;
+    height: auto;
+    margin: 0 auto;
+    object-fit: contain;
+}
+
+/* Login form */
+body[data-page="login"] .login-form {
+    width: 100%;
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+/* Form labels */
+body[data-page="login"] .login-form label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+/* Username and password boxes */
+body[data-page="login"] .login-form input {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Reset Demo Data */
+body[data-page="login"] .demo-reset {
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+}
+
+/* Mobile screen adjustments */
+@media (max-width: 600px) {
+
+    body[data-page="login"] .wireframe {
+        width: 95%;
+        min-height: 90vh;
+        padding: 25px 20px;
+    }
+
+    body[data-page="login"] .login-logo {
+        width: 250px;
+    }
+
+    body[data-page="login"] .login-form {
+        max-width: 100%;
+    }
+}
