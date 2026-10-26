@@ -282,18 +282,7 @@ function loginInit(db){
   }
 
 
-  // Verify that the selected role matches the authenticated demo account.
-  // Professor Demo is a special teaching account and retains staff access.
-  const selectedRole = document.querySelector('input[name="loginRole"]:checked')?.value;
-  const assignedRole = a.account_type === "Student"
-    ? "Student"
-    : (a.account_type === "Professor Demo" ? "Professor Demo" : String(linkedStaff?.role || "").trim());
-
-  if (!selectedRole || (assignedRole !== "Professor Demo" &&
-      selectedRole.toLowerCase() !== assignedRole.toLowerCase())) {
-    err.textContent = "The selected account type does not match this account. Please choose your assigned role.";
-    return;
-  }
+  // Authenticate using username and password; the account determines its role.
 
   sessionStorage.clear();
 
