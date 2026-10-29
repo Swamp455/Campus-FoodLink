@@ -2640,7 +2640,7 @@ document.addEventListener(
     const balance=stat('Meal Plan Balance','—','Current available balance');balance.querySelector('.cfl-stat-value').id='cflBalanceMirror';wrap.append(balance);
     const order=stat('Latest Order','See below','Order details and status');wrap.append(order);
   }else if(page==='orders'){
-    for(const [label,id] of [['Pending','pending'],['Preparing','preparing'],['Ready','ready']]){const s=stat(label,'—','Current order queue');s.querySelector('.cfl-stat-value').id='cflCount-'+id;wrap.append(s);}
+    for(const [label,id] of [['Received','pending'],['Preparing','preparing'],['Ready','ready']]){const s=stat(label,'—','Current order queue');s.querySelector('.cfl-stat-value').id='cflCount-'+id;wrap.append(s);}
   }else if(page==='admin'){
     const s=stat('User Accounts','—','Accounts in directory');s.querySelector('.cfl-stat-value').id='cflAccountCount';wrap.append(s);
   }else return;
