@@ -2640,14 +2640,14 @@ document.addEventListener(
     const balance=stat('Meal Plan Balance','—','Current available balance');balance.querySelector('.cfl-stat-value').id='cflBalanceMirror';wrap.append(balance);
     const order=stat('Latest Order','See below','Order details and status');wrap.append(order);
   }else if(page==='orders'){
-    for(const [label,id] of [['Received','received'],['Preparing','preparing'],['Ready','ready']]){const s=stat(label,'—','Current order queue');s.querySelector('.cfl-stat-value').id='cflCount-'+id;wrap.append(s);}
+    for(const [label,id] of [['Pending','pending'],['Preparing','preparing'],['Ready','ready']]){const s=stat(label,'—','Current order queue');s.querySelector('.cfl-stat-value').id='cflCount-'+id;wrap.append(s);}
   }else if(page==='admin'){
     const s=stat('User Accounts','—','Accounts in directory');s.querySelector('.cfl-stat-value').id='cflAccountCount';wrap.append(s);
   }else return;
     const intro=main.querySelector('.cfl-page-intro');if(intro)intro.after(wrap);
   }
   function update(){const balance=document.getElementById('balance'),mirror=document.getElementById('cflBalanceMirror');if(balance&&mirror)mirror.textContent=balance.textContent.trim()?('$'+balance.textContent.trim().replace(/^\$/,'')):'—';
-    const orders=document.getElementById('ordersBody');if(orders){const rows=Array.from(orders.querySelectorAll('tr'));for(const status of ['received','preparing','ready']){const dest=document.getElementById('cflCount-'+status);if(dest)dest.textContent=String(rows.filter(row=>Array.from(row.querySelectorAll('td')).some(td=>td.textContent.trim().toLowerCase()===status)).length);}}
+    const orders=document.getElementById('ordersBody');if(orders){const rows=Array.from(orders.querySelectorAll('tr'));for(const status of ['Pending','preparing','ready']){const dest=document.getElementById('cflCount-'+status);if(dest)dest.textContent=String(rows.filter(row=>Array.from(row.querySelectorAll('td')).some(td=>td.textContent.trim().toLowerCase()===status)).length);}}
     const accounts=document.getElementById('adminAccounts'),dest=document.getElementById('cflAccountCount');if(accounts&&dest)dest.textContent=String(accounts.querySelectorAll('tr').length);
   }
   function start(){const page=document.body.dataset.page,main=document.querySelector('main.wireframe')||document.querySelector('main');if(!main)return;
